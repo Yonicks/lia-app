@@ -222,12 +222,12 @@ BASE_URL=http://localhost:8000 python3 tests/test_suite.py
 ```
 
 `.github/workflows/test-and-deploy.yml` runs the suite on every push and
-pull request. On `main`, a passing run deploys to GitHub Pages and
+pull request. On `master`, a passing run deploys to GitHub Pages and
 rewrites the service worker's cache version to the commit SHA so
-returning devices always pick up the new build. To enable Pages deploy:
-**Settings → Pages → Source → GitHub Actions** (not "deploy from branch").
-Note this repo is currently private, and GitHub Pages requires either a
-public repo or a paid GitHub plan.
+returning devices always pick up the new build. Pages is configured
+(Settings → Pages → Source → GitHub Actions) and live at
+https://yonicks.github.io/lia-app/. The repo is public, which GitHub
+Pages requires on the free plan.
 
 ## Updating
 

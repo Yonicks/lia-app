@@ -2,9 +2,9 @@ name: Test & Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 
 # Allow the deploy job to publish to GitHub Pages
@@ -71,7 +71,7 @@ jobs:
   deploy:
     name: Deploy to Pages
     needs: test
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
