@@ -1,12 +1,11 @@
-# האפליקציה של ליה (Lia's App)
+# Talki
 
-A Hebrew early-speech practice app built for a single child, grounded in
-real speech-language-pathology techniques for late talkers. It runs as an
-installable PWA with **no backend, no accounts, and no network required
-after first load** — every word tap, recording, and setting lives in
-IndexedDB on the child's own device.
+A Hebrew early-speech practice app grounded in real speech-language-pathology
+techniques for late talkers. It runs as an installable PWA with **no backend,
+no accounts, and no network required after first load** — every word tap,
+recording, and setting lives in IndexedDB on the child's own device.
 
-> תרגום קצר: אפליקציית PWA לתרגול דיבור בעברית לילדה קטנה, מבוססת על שיטות
+> תרגום קצר: Talki היא אפליקציית PWA לתרגול דיבור בעברית, מבוססת על שיטות
 > קליניות לעיכוב שפה (גירוי ממוקד, זיהוי לפני הפקה, זוגות מינימליים ועוד).
 > הכול רץ במכשיר בלבד — בלי שרת, בלי חשבון, בלי אינטרנט אחרי הטעינה הראשונה.
 
@@ -21,8 +20,7 @@ IndexedDB on the child's own device.
 
 ## What the app does
 
-Lia's App teaches a young child (the app is literally addressed to her —
-"היי ליה!") her first spoken words in Hebrew. The core loop is: tap a
+Talki teaches a young child first spoken words in Hebrew. The core loop is: tap a
 picture → hear the word spoken aloud (real recorded voice if a parent
 recorded one, otherwise Hebrew text-to-speech) → repeat it back. On top of
 that vocabulary loop sit two families of activities:
@@ -46,14 +44,81 @@ device is the only copy of the data.
 ## Feature tour
 
 ### Vocabulary categories
-Ten built-in categories, each a themed set of illustrated word tiles:
-חַיּוֹת (animals), אוֹכֶל (food), צְבָעִים וְצוּרוֹת (colors & shapes),
-בַּבַּיִת (home), מִשְׁפָּחָה (family), הַגּוּף (body), פְּעוּלוֹת
-(actions), מִסְפָּרִים (numbers), בַּחוּץ (outside), and רְגָשׁוֹת
-(emotions) — plus **הַמִּלִּים שֶׁלִּי** ("my words"), a category built
+Ten built-in categories (**182 words**), each a themed set of illustrated
+word tiles — plus **הַמִּלִּים שֶׁלִּי** ("my words"), a category built
 entirely from words a parent adds (see below). Tapping any tile speaks the
 word and marks it "learned" with a sticker; the home screen shows a
 progress bar per category.
+
+#### 🐶 חַיּוֹת (animals) — 26
+כֶּלֶב (dog), חָתוּל (cat), פָּרָה (cow), אַרְיֵה (lion), פִּיל (elephant),
+בַּרְוָוז (duck), סוּס (horse), תַּרְנְגוֹלֶת (chicken), כִּבְשָׂה (sheep),
+קוֹף (monkey), חֲזִיר (pig), צְפַרְדֵּעַ (frog), פַּרְפַּר (butterfly),
+אַרְנָב (rabbit), צָב (turtle), דָּג (fish), צִפּוֹר (bird), דֹּב (bear),
+גִּ'ירָפָה (giraffe), נָחָשׁ (snake), עַכְבָּר (mouse), זֶבְּרָה (zebra),
+יַנְשׁוּף (owl), דְּבוֹרָה (bee), נְמָלָה (ant), פִּינְגְּוִין (penguin)
+
+#### 🍎 אוֹכֶל (food) — 26
+תַּפּוּחַ (apple), בָּנָנָה (banana), מַיִם (water), לֶחֶם (bread),
+גְּלִידָה (ice cream), עַגְבָנִיָּה (tomato), מְלָפְפוֹן (cucumber),
+חָלָב (milk), עֲנָבִים (grapes), תּוּת (strawberry), תַּפּוּז (orange),
+אֲבַטִּיחַ (watermelon), בֵּיצָה (egg), גְּבִינָה (cheese), עוֹף (chicken),
+פִּצָּה (pizza), מָרָק (soup), עוּגָה (cake), עוּגִיָּה (cookie), מִיץ (juice),
+כָּרִיךְ (sandwich), פּוֹפְּקוֹרְן (popcorn), שׁוֹקוֹלָד (chocolate),
+גֶּזֶר (carrot), תִּירָס (corn), לִימוֹן (lemon)
+
+#### 🎨 צְבָעִים וְצוּרוֹת (colors & shapes) — 26
+אָדוֹם (red), כָּחוֹל (blue), צָהוֹב (yellow), יָרוֹק (green), כָּתוֹם (orange),
+סָגוֹל (purple), וָרוֹד (pink), חוּם (brown), שָׁחוֹר (black), לָבָן (white),
+אָפוֹר (gray), תְּכֵלֶת (light blue), צִבְעוֹנִי (colorful), כּוֹכָב (star),
+לֵב (heart), עִיגּוּל (circle), רִיבּוּעַ (square), מְשׁוּלָּשׁ (triangle),
+מְעוּיָּן (diamond), חֵץ (arrow), יָרֵחַ (moon), טִפָּה (drop), פֶּרַח (flower),
+תִּלְתָּן (clover), כֶּתֶר (crown), בָּלוֹן (balloon)
+
+#### 🧸 בַּבַּיִת (home) — 26
+כַּדּוּר (ball), בּוּבָּה (doll), מִיטָה (bed), נַעֲלַיִם (shoes),
+מוֹצֵץ (pacifier), סֵפֶר (book), כִּסֵּא (chair), סַפָּה (sofa),
+טֶלֶוִיזְיָה (television), דֶּלֶת (door), חַלּוֹן (window), שְׂמִיכָה (blanket),
+אַמְבַּטְיָה (bathtub), מִבְרֶשֶׁת שִׁנַּיִם (toothbrush), סַבּוֹן (soap),
+שֵׁירוּתִים (toilet), צַלַּחַת (plate), כּוֹס (cup), כַּף (spoon),
+שָׁעוֹן (clock), טֶלֶפוֹן (phone), מַפְתֵּחַ (key), מַשְׁקָפַיִם (glasses),
+מִטְרִיָּה (umbrella), בְּגָדִים (clothes), גַּרְבַּיִם (socks)
+
+#### 👨‍👩‍👧 מִשְׁפָּחָה (family) — 12
+אִמָּא (mom), אַבָּא (dad), סַבְתָּא (grandma), סַבָּא (grandpa),
+תִּינוֹק (baby), אָח (brother), אָחוֹת (sister), יַלְדָּה (girl),
+דּוֹדָה (aunt), דּוֹד (uncle), חָבֵר (friend), מִשְׁפָּחָה (family)
+
+#### 👀 הַגּוּף (body) — 12
+עַיִן (eye), אֹזֶן (ear), אַף (nose), פֶּה (mouth), יָד (hand), רֶגֶל (foot),
+אֶצְבַּע (finger), שֵׁן (tooth), לָשׁוֹן (tongue), שֵׂעָר (hair), לֵב (heart),
+בֶּרֶךְ (knee)
+
+#### 🏃 פְּעוּלוֹת (actions) — 16
+אוֹכֶלֶת (eating), שׁוֹתָה (drinking), יְשֵׁנָה (sleeping), רָצָה (running),
+קוֹפֶצֶת (jumping), מוֹחֵאת כַּפַּיִם (clapping), מְנַשֶּׁקֶת (kissing),
+מְחַבֶּקֶת (hugging), בּוֹכָה (crying), צוֹחֶקֶת (laughing),
+מִתְרַחֶצֶת (bathing), שָׁרָה (singing), מְצַיֶּרֶת (drawing),
+הוֹלֶכֶת (walking), שׂוֹחָה (swimming), רוֹקֶדֶת (dancing)
+
+#### 🔢 מִסְפָּרִים (numbers) — 10
+אַחַת (one), שְׁתַּיִם (two), שָׁלוֹשׁ (three), אַרְבַּע (four), חָמֵשׁ (five),
+שֵׁשׁ (six), שֶׁבַע (seven), שְׁמוֹנֶה (eight), תֵּשַׁע (nine), עֶשֶׂר (ten)
+
+#### 🌳 בַּחוּץ (outside) — 18
+עֵץ (tree), שֶׁמֶשׁ (sun), עָנָן (cloud), גֶּשֶׁם (rain), שֶׁלֶג (snow),
+מְכוֹנִית (car), אוֹטוֹבּוּס (bus), אוֹפַנַּיִם (bicycle), מָטוֹס (airplane),
+סִירָה (boat), רַכֶּבֶת (train), בַּיִת (house), גַּן שַׁעֲשׁוּעִים (playground),
+יָם (sea), חוֹל (sand), דֶּשֶׁא (grass), צֶמַח (plant), כּוֹכָבִים (stars)
+
+#### 😊 רְגָשׁוֹת (emotions) — 10
+שְׂמֵחָה (happy), עֲצוּבָה (sad), כּוֹעֶסֶת (angry), מְפֻחֶדֶת (scared),
+עֲיֵפָה (tired), מֻפְתַּעַת (surprised), אוֹהֶבֶת (loving), מִתְבַּיֶּשֶׁת (shy),
+רְעֵבָה (hungry), מִשְׁתַּעֲמֶמֶת (bored)
+
+#### 💜 הַמִּלִּים שֶׁלִּי (my words)
+Empty until a parent adds custom words (photo or emoji + optional real
+voice recording) from the parent screen.
 
 ### Flashcards
 A swipe-through, one-word-at-a-time card view for focused repetition,
@@ -177,7 +242,7 @@ instead of a broken mic prompt.
 ## Repo layout
 
 ```
-lia-app/
+talki/
 ├── index.html          the entire app (markup + CSS + JS)
 ├── manifest.json        PWA manifest (name, icons, shortcuts, portrait lock)
 ├── sw.js                 service worker — precaches the shell, cache-first
@@ -226,12 +291,12 @@ pull request. On `master`, a passing run deploys to GitHub Pages and
 rewrites the service worker's cache version to the commit SHA so
 returning devices always pick up the new build. Pages is configured
 (Settings → Pages → Source → GitHub Actions) and live at
-https://yonicks.github.io/lia-app/. The repo is public, which GitHub
+https://yonicks.github.io/talki/. The repo is public, which GitHub
 Pages requires on the free plan.
 
 ## Updating
 
-Bump `VERSION` in `sw.js` (e.g. `lia-v1` → `lia-v2`) on every deploy. Old
+Bump `VERSION` in `sw.js` (e.g. `talki-v1` → `talki-v2`) on every deploy. Old
 caches are purged on activation, and returning users see a "new version"
 toast on next launch.
 
@@ -275,7 +340,7 @@ bubblewrap build          # produces a signed .aab
 ### iOS — App Store via Capacitor
 ```bash
 npm init -y && npm i @capacitor/core @capacitor/cli
-npx cap init "Lia Words" com.yourname.liawords --web-dir=.
+npx cap init "Talki" com.yourname.talki --web-dir=.
 npx cap add ios && npx cap sync && npx cap open ios
 ```
 Requires a Mac, Xcode, and an Apple Developer account ($99/yr). Apple

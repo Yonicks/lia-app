@@ -1,9 +1,9 @@
-/* Lia words — service worker
+/* Talki — service worker
    Strategy: precache the whole shell, serve cache-first (this app has no
    server data at all), and refresh the HTML in the background so a new
    deploy is picked up on the next launch. */
 
-const VERSION = 'lia-v1';
+const VERSION = 'talki-v1';
 const SHELL = [
   './',
   './index.html',

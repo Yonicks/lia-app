@@ -117,7 +117,7 @@ def feature_graphic():
     d.ellipse([mx + 47, my + 10, mx + 74, my + 29], fill=(244, 160, 188))
     # wordmark
     f1, f2 = font(64), font(31)
-    t1 = heb("האפליקציה של ליה")
+    t1 = heb("Talki")
     b1 = d.textbbox((0, 0), t1, font=f1)
     d.text((W - 60 - (b1[2] - b1[0]), 168), t1, font=f1, fill=WHITE)
     t2 = heb("לוחצים, שומעים ולומדים לדבר")

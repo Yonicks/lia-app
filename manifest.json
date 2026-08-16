@@ -1,7 +1,7 @@
 {
-  "id": "/lia-words/",
-  "name": "האפליקציה של ליה",
-  "short_name": "ליה",
+  "id": "/talki/",
+  "name": "Talki",
+  "short_name": "Talki",
   "description": "לוחצים, שומעים ולומדים לדבר — מילים ראשונות בעברית",
   "lang": "he",
   "dir": "rtl",

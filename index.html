@@ -7,8 +7,8 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="ליה">
-<title>האפליקציה של ליה</title>
+<meta name="apple-mobile-web-app-title" content="Talki">
+<title>Talki</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -150,6 +150,8 @@
     transition:transform .15s ease,border-color .15s ease}
   .tile .emoji{font-size:clamp(2.2rem,5vw,3.4rem);line-height:1}
   .tile .photo{width:clamp(68px,9vw,104px);height:clamp(68px,9vw,104px);object-fit:cover;border-radius:18px;border:2px solid var(--line)}
+  .tile .art{width:clamp(72px,10vw,112px);height:clamp(72px,10vw,112px);object-fit:contain}
+  img.art{object-fit:contain;border:none;border-radius:0;background:transparent;display:block;margin:0 auto}
   .tile .word{font-weight:800;font-size:clamp(.95rem,1.6vw,1.25rem);text-align:center;line-height:1.25}
   .tile .speaker{position:absolute;top:8px;left:8px;opacity:.35;font-size:.8rem}
   .tile.learned{border-color:var(--sun)}
@@ -161,6 +163,7 @@
     box-shadow:var(--shadow);touch-action:pan-y;user-select:none}
   .flashcard .emoji{font-size:clamp(5rem,18vh,10rem);line-height:1;display:block}
   .flashcard img{width:clamp(160px,26vh,270px);height:clamp(160px,26vh,270px);object-fit:cover;border-radius:26px;border:3px solid var(--line)}
+  .flashcard img.art{width:clamp(180px,30vh,300px);height:clamp(180px,30vh,300px);border:none;border-radius:0}
   .flashcard .word{font-size:clamp(1.7rem,4.5vw,3rem);font-weight:900;margin-top:14px;font-family:'Rubik',sans-serif}
   .card-nav{display:flex;justify-content:center;gap:12px;margin-top:16px;align-items:center}
   .hint{color:var(--ink-soft);font-weight:600;font-size:.82rem;margin-top:10px}
@@ -183,6 +186,7 @@
     padding:clamp(16px,2.4vh,32px) 10px;font-size:clamp(2.4rem,7vh,4rem);
     box-shadow:var(--shadow);transition:transform .12s ease}
   .opt img{width:clamp(70px,10vh,120px);height:clamp(70px,10vh,120px);object-fit:cover;border-radius:16px}
+  .opt img.art{width:clamp(86px,13vh,150px);height:clamp(86px,13vh,150px);border-radius:0}
   .opt:active{transform:translateY(3px)}
   .opt.correct{border-color:var(--leaf);background:#EAFBF2;animation:pulse .5s ease}
   .opt.wrong{border-color:var(--berry);animation:shake .4s ease}
@@ -197,6 +201,7 @@
   .mem.open.text{font-size:.82rem;line-height:1.15;font-family:'Rubik',sans-serif}
   .mem.matched{background:#EAFBF2;border-color:var(--leaf);color:var(--ink)}
   .mem img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+  .mem img.art{width:82%;height:82%}
 
   .match-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,1.6vw,20px);
     max-width:min(640px,94vw);margin:0 auto}
@@ -205,6 +210,7 @@
     display:flex;align-items:center;justify-content:center}
   .match-item .em{font-size:2.1rem}
   .match-item img{width:52px;height:52px;object-fit:cover;border-radius:12px}
+  .match-item img.art{width:58px;height:58px;border-radius:0}
   .match-item.sel{border-color:var(--sky);background:#EAF6FD}
   .match-item.done{border-color:var(--leaf);background:#EAFBF2;opacity:.55;pointer-events:none}
 
@@ -238,6 +244,7 @@
     border-radius:14px;padding:8px 12px}
   .mini .m-em{font-size:1.5rem}
   .mini img{width:38px;height:38px;object-fit:cover;border-radius:10px}
+  .mini img.art{width:42px;height:42px;border-radius:0}
   .mini b{flex:1;font-size:.92rem}
   .tag{font-size:.7rem;font-weight:800;padding:3px 8px;border-radius:999px;background:#EAFBF2;color:var(--leaf-dark)}
   .tag.warn{background:#FFEFE0;color:var(--clay-dark)}
@@ -269,6 +276,7 @@
     box-shadow:0 6px 16px rgba(46,159,224,.28);animation:rise linear forwards;padding:6px}
   .bubble .b-em{font-size:1.9rem;line-height:1}
   .bubble .b-em img{width:40px;height:40px;object-fit:cover;border-radius:10px}
+  .bubble .b-em img.art{width:46px;height:46px;border-radius:0}
   .bubble .b-w{font-size:.72rem;font-weight:900;color:#1D4E68;text-align:center;line-height:1.05}
   .bubble.pop-out{animation:popout .26s ease forwards}
   @keyframes rise{to{transform:translateY(-105vh) translateX(var(--drift,0px))}}
@@ -287,6 +295,9 @@
     padding:clamp(20px,3vh,36px) 20px;max-width:min(560px,94vw);margin:0 auto;box-shadow:var(--shadow);text-align:center}
   .focus-card .em{font-size:clamp(4.5rem,16vh,9rem);line-height:1;display:block}
   .focus-card img{width:170px;height:170px;object-fit:cover;border-radius:24px;border:3px solid var(--line)}
+  .focus-card img.art{width:210px;height:210px;border:none;border-radius:0}
+  .prompt-box img.art{width:130px;height:130px}
+  .count-stage img.art{width:56px;height:56px;display:inline-block;margin:4px}
   .focus-word{font-size:2.2rem;font-weight:900;font-family:'Rubik',sans-serif;margin:12px 0 4px}
   .focus-phrase{font-size:1.15rem;font-weight:700;color:var(--ink-soft)}
   .dots{display:flex;gap:6px;justify-content:center;margin-top:16px}
@@ -303,6 +314,7 @@
   .mod{background:var(--paper);border:3px solid var(--line);border-radius:20px;padding:14px 8px;font-weight:900;
     font-size:1.1rem;box-shadow:var(--shadow)}
   .mod .mi{font-size:1.8rem;display:block}
+  .mod img.art{width:48px;height:48px;margin-bottom:4px}
   .mod.sel{border-color:var(--grape);background:#F3EDFC}
   .phrase-out{font-size:1.6rem;font-weight:900;font-family:'Rubik',sans-serif;text-align:center;margin:14px 0;min-height:2rem;color:var(--grape-dark)}
   /* start gate: also the gesture that unlocks audio on iOS */
@@ -392,6 +404,7 @@
     .tile{padding:20px 12px 18px;border-radius:26px}
     .tile .emoji{font-size:3.4rem}
     .tile .photo{width:104px;height:104px}
+    .tile .art{width:112px;height:112px}
     .tile .word{font-size:1.25rem}
     .card-stage{max-width:640px}
     .flashcard{padding:56px 30px}
@@ -529,7 +542,7 @@
   <div class="brand">
     <div class="brand-mark">✨</div>
     <div class="brand-text">
-      <h1>האפליקציה של ליה</h1>
+      <h1>Talki</h1>
       <span>לוחצים, שומעים ולומדים לדבר</span>
     </div>
   </div>
@@ -550,7 +563,7 @@
 
 <div class="gate" id="gate">
   <div id="gateMascot" style="width:clamp(120px,30vw,190px)"></div>
-  <h2>האפליקציה של ליה</h2>
+  <h2>Talki</h2>
   <p>לוחצים על הכפתור כדי להתחיל — זה גם מה שמפעיל את הקול במכשיר</p>
   <button id="gateBtn">מתחילים!</button>
 </div>
@@ -571,80 +584,121 @@ function mascot(mood, size){
 /* ============================================================
    1. DATA
 ============================================================ */
+const art = (cat, slug) => {
+  const file = cat === 'colors' ? `talki-colors-shapes-${slug}.png` : `talki-${cat}-${slug}.png`;
+  return `assets/words/${cat}/${file}`;
+};
 const CATEGORIES = {
   animals:{id:'animals',title:'חַיּוֹת',icon:'🐶',cls:'c-animals',items:[
-    {word:'כֶּלֶב',emoji:'🐶',sound:'הַב הַב'},{word:'חָתוּל',emoji:'🐱',sound:'מְיָאוּ'},
-    {word:'פָּרָה',emoji:'🐮',sound:'מוּ'},{word:'אַרְיֵה',emoji:'🦁',sound:'רְרְרָאוּ'},
-    {word:'פִּיל',emoji:'🐘'},{word:'בַּרְוָוז',emoji:'🦆',sound:'גַּע גַּע'},
-    {word:'סוּס',emoji:'🐎',sound:'הִי הָה'},{word:'תַּרְנְגוֹלֶת',emoji:'🐔',sound:'קוּ קוּ רִיקוּ'},
-    {word:'כִּבְשָׂה',emoji:'🐑',sound:'מֶה'},{word:'קוֹף',emoji:'🐒',sound:'אוּ אוּ אָה אָה'},
-    {word:'חֲזִיר',emoji:'🐷',sound:'אוֹיְנְק'},{word:'צְפַרְדֵּעַ',emoji:'🐸',sound:'קְוָואק'},
-    {word:'פַּרְפַּר',emoji:'🦋'},{word:'אַרְנָב',emoji:'🐰'},{word:'צָב',emoji:'🐢'},{word:'דָּג',emoji:'🐟'},
-    {word:'צִפּוֹר',emoji:'🐦',sound:'צִיוּ צִיוּ'},{word:'דֹּב',emoji:'🐻',sound:'גְּרְרְר'},
-    {word:'גִּ\'ירָפָה',emoji:'🦒'},{word:'נָחָשׁ',emoji:'🐍',sound:'שְׁשְׁשְׁ'},
-    {word:'עַכְבָּר',emoji:'🐭',sound:'צִיק צִיק'},{word:'זֶבְּרָה',emoji:'🦓'},
-    {word:'יַנְשׁוּף',emoji:'🦉',sound:'הוּ הוּ'},{word:'דְּבוֹרָה',emoji:'🐝',sound:'זְזְזְז'},
-    {word:'נְמָלָה',emoji:'🐜'},{word:'פִּינְגְּוִין',emoji:'🐧'}
+    {word:'כֶּלֶב',emoji:'🐶',sound:'הַב הַב',img:art('animals','dog')},{word:'חָתוּל',emoji:'🐱',sound:'מְיָאוּ',img:art('animals','cat')},
+    {word:'פָּרָה',emoji:'🐮',sound:'מוּ',img:art('animals','cow')},{word:'אַרְיֵה',emoji:'🦁',sound:'רְרְרָאוּ',img:art('animals','lion')},
+    {word:'פִּיל',emoji:'🐘',img:art('animals','elephant')},{word:'בַּרְוָוז',emoji:'🦆',sound:'גַּע גַּע',img:art('animals','duck')},
+    {word:'סוּס',emoji:'🐎',sound:'הִי הָה',img:art('animals','horse')},{word:'תַּרְנְגוֹלֶת',emoji:'🐔',sound:'קוּ קוּ רִיקוּ',img:art('animals','hen')},
+    {word:'כִּבְשָׂה',emoji:'🐑',sound:'מֶה',img:art('animals','sheep')},{word:'קוֹף',emoji:'🐒',sound:'אוּ אוּ אָה אָה',img:art('animals','monkey')},
+    {word:'חֲזִיר',emoji:'🐷',sound:'אוֹיְנְק',img:art('animals','pig')},{word:'צְפַרְדֵּעַ',emoji:'🐸',sound:'קְוָואק',img:art('animals','frog')},
+    {word:'פַּרְפַּר',emoji:'🦋',img:art('animals','butterfly')},{word:'אַרְנָב',emoji:'🐰',img:art('animals','rabbit')},
+    {word:'צָב',emoji:'🐢',img:art('animals','turtle')},{word:'דָּג',emoji:'🐟',img:art('animals','fish')},
+    {word:'צִפּוֹר',emoji:'🐦',sound:'צִיוּ צִיוּ',img:art('animals','bird')},{word:'דֹּב',emoji:'🐻',sound:'גְּרְרְר',img:art('animals','bear')},
+    {word:'גִּ\'ירָפָה',emoji:'🦒',img:art('animals','giraffe')},{word:'נָחָשׁ',emoji:'🐍',sound:'שְׁשְׁשְׁ',img:art('animals','snake')},
+    {word:'עַכְבָּר',emoji:'🐭',sound:'צִיק צִיק',img:art('animals','mouse')},{word:'זֶבְּרָה',emoji:'🦓',img:art('animals','zebra')},
+    {word:'יַנְשׁוּף',emoji:'🦉',sound:'הוּ הוּ',img:art('animals','owl')},{word:'דְּבוֹרָה',emoji:'🐝',sound:'זְזְזְז',img:art('animals','bee')},
+    {word:'נְמָלָה',emoji:'🐜',img:art('animals','ant')},{word:'פִּינְגְּוִין',emoji:'🐧',img:art('animals','penguin')}
   ]},
   food:{id:'food',title:'אוֹכֶל',icon:'🍎',cls:'c-food',items:[
-    {word:'תַּפּוּחַ',emoji:'🍎'},{word:'בָּנָנָה',emoji:'🍌'},{word:'מַיִם',emoji:'💧'},{word:'לֶחֶם',emoji:'🍞'},
-    {word:'גְּלִידָה',emoji:'🍦'},{word:'עַגְבָנִיָּה',emoji:'🍅'},{word:'מְלָפְפוֹן',emoji:'🥒'},{word:'חָלָב',emoji:'🥛'},
-    {word:'עֲנָבִים',emoji:'🍇'},{word:'תּוּת',emoji:'🍓'},{word:'תַּפּוּז',emoji:'🍊'},{word:'אֲבַטִּיחַ',emoji:'🍉'},
-    {word:'בֵּיצָה',emoji:'🥚'},{word:'גְּבִינָה',emoji:'🧀'},{word:'עוֹף',emoji:'🍗'},{word:'פִּצָּה',emoji:'🍕'},
-    {word:'מָרָק',emoji:'🥣'},{word:'עוּגָה',emoji:'🍰'},{word:'עוּגִיָּה',emoji:'🍪'},{word:'מִיץ',emoji:'🧃'},
-    {word:'כָּרִיךְ',emoji:'🥪'},{word:'פּוֹפְּקוֹרְן',emoji:'🍿'},{word:'שׁוֹקוֹלָד',emoji:'🍫'},{word:'גֶּזֶר',emoji:'🥕'},
-    {word:'תִּירָס',emoji:'🌽'},{word:'לִימוֹן',emoji:'🍋'}
+    {word:'תַּפּוּחַ',emoji:'🍎',img:art('food','apple')},{word:'בָּנָנָה',emoji:'🍌',img:art('food','banana')},
+    {word:'מַיִם',emoji:'💧',img:art('food','water')},{word:'לֶחֶם',emoji:'🍞',img:art('food','bread')},
+    {word:'גְּלִידָה',emoji:'🍦',img:art('food','ice-cream')},{word:'עַגְבָנִיָּה',emoji:'🍅',img:art('food','tomato')},
+    {word:'מְלָפְפוֹן',emoji:'🥒',img:art('food','cucumber')},{word:'חָלָב',emoji:'🥛',img:art('food','milk')},
+    {word:'עֲנָבִים',emoji:'🍇',img:art('food','grapes')},{word:'תּוּת',emoji:'🍓',img:art('food','strawberry')},
+    {word:'תַּפּוּז',emoji:'🍊',img:art('food','orange')},{word:'אֲבַטִּיחַ',emoji:'🍉',img:art('food','watermelon')},
+    {word:'בֵּיצָה',emoji:'🥚',img:art('food','egg')},{word:'גְּבִינָה',emoji:'🧀',img:art('food','cheese')},
+    {word:'עוֹף',emoji:'🍗',img:art('food','chicken')},{word:'פִּצָּה',emoji:'🍕',img:art('food','pizza')},
+    {word:'מָרָק',emoji:'🥣',img:art('food','soup')},{word:'עוּגָה',emoji:'🍰',img:art('food','cake')},
+    {word:'עוּגִיָּה',emoji:'🍪',img:art('food','cookie')},{word:'מִיץ',emoji:'🧃',img:art('food','juice')},
+    {word:'כָּרִיךְ',emoji:'🥪',img:art('food','sandwich')},{word:'פּוֹפְּקוֹרְן',emoji:'🍿',img:art('food','popcorn')},
+    {word:'שׁוֹקוֹלָד',emoji:'🍫',img:art('food','chocolate')},{word:'גֶּזֶר',emoji:'🥕',img:art('food','carrot')},
+    {word:'תִּירָס',emoji:'🌽',img:art('food','corn')},{word:'לִימוֹן',emoji:'🍋',img:art('food','lemon')}
   ]},
   colors:{id:'colors',title:'צְבָעִים וְצוּרוֹת',icon:'🎨',cls:'c-colors',items:[
-    {word:'אָדוֹם',emoji:'🔴'},{word:'כָּחוֹל',emoji:'🔵'},{word:'צָהוֹב',emoji:'🟡'},{word:'יָרוֹק',emoji:'🟢'},
-    {word:'כָּתוֹם',emoji:'🟠'},{word:'סָגוֹל',emoji:'🟣'},{word:'וָרוֹד',emoji:'🩷'},{word:'חוּם',emoji:'🤎'},
-    {word:'שָׁחוֹר',emoji:'🖤'},{word:'לָבָן',emoji:'🤍'},{word:'אָפוֹר',emoji:'🩶'},{word:'תְּכֵלֶת',emoji:'🩵'},
-    {word:'צִבְעוֹנִי',emoji:'🌈'},{word:'כּוֹכָב',emoji:'⭐'},{word:'לֵב',emoji:'❤️'},{word:'עִיגּוּל',emoji:'⭕'},
-    {word:'רִיבּוּעַ',emoji:'🟦'},{word:'מְשׁוּלָּשׁ',emoji:'🔺'},{word:'מְעוּיָּן',emoji:'🔸'},{word:'חֵץ',emoji:'➡️'},
-    {word:'יָרֵחַ',emoji:'🌙'},{word:'טִפָּה',emoji:'💧'},{word:'פֶּרַח',emoji:'🌸'},{word:'תִּלְתָּן',emoji:'☘️'},
-    {word:'כֶּתֶר',emoji:'👑'},{word:'בָּלוֹן',emoji:'🎈'}
+    {word:'אָדוֹם',emoji:'🔴',img:art('colors','red')},{word:'כָּחוֹל',emoji:'🔵',img:art('colors','blue')},
+    {word:'צָהוֹב',emoji:'🟡',img:art('colors','yellow')},{word:'יָרוֹק',emoji:'🟢',img:art('colors','green')},
+    {word:'כָּתוֹם',emoji:'🟠',img:art('colors','orange')},{word:'סָגוֹל',emoji:'🟣',img:art('colors','purple')},
+    {word:'וָרוֹד',emoji:'🩷',img:art('colors','pink')},{word:'חוּם',emoji:'🤎',img:art('colors','brown')},
+    {word:'שָׁחוֹר',emoji:'🖤',img:art('colors','black')},{word:'לָבָן',emoji:'🤍',img:art('colors','white')},
+    {word:'אָפוֹר',emoji:'🩶',img:art('colors','gray')},{word:'תְּכֵלֶת',emoji:'🩵',img:art('colors','light-blue')},
+    {word:'צִבְעוֹנִי',emoji:'🌈',img:art('colors','colorful')},{word:'כּוֹכָב',emoji:'⭐',img:art('colors','star')},
+    {word:'לֵב',emoji:'❤️',img:art('colors','heart')},{word:'עִיגּוּל',emoji:'⭕',img:art('colors','circle')},
+    {word:'רִיבּוּעַ',emoji:'🟦',img:art('colors','square')},{word:'מְשׁוּלָּשׁ',emoji:'🔺',img:art('colors','triangle')},
+    {word:'מְעוּיָּן',emoji:'🔸',img:art('colors','diamond')},{word:'חֵץ',emoji:'➡️',img:art('colors','arrow')},
+    {word:'יָרֵחַ',emoji:'🌙',img:art('colors','moon')},{word:'טִפָּה',emoji:'💧',img:art('colors','drop')},
+    {word:'פֶּרַח',emoji:'🌸',img:art('colors','flower')},{word:'תִּלְתָּן',emoji:'☘️',img:art('colors','clover')},
+    {word:'כֶּתֶר',emoji:'👑',img:art('colors','crown')},{word:'בָּלוֹן',emoji:'🎈',img:art('colors','balloon')}
   ]},
   home:{id:'home',title:'בַּבַּיִת',icon:'🧸',cls:'c-home',items:[
-    {word:'כַּדּוּר',emoji:'⚽'},{word:'בּוּבָּה',emoji:'🧸'},{word:'מִיטָה',emoji:'🛏️'},{word:'נַעֲלַיִם',emoji:'👟'},
-    {word:'מוֹצֵץ',emoji:'🍼'},{word:'סֵפֶר',emoji:'📖'},{word:'כִּסֵּא',emoji:'🪑'},{word:'סַפָּה',emoji:'🛋️'},
-    {word:'טֶלֶוִיזְיָה',emoji:'📺'},{word:'דֶּלֶת',emoji:'🚪'},{word:'חַלּוֹן',emoji:'🪟'},{word:'שְׂמִיכָה',emoji:'🛌'},
-    {word:'אַמְבַּטְיָה',emoji:'🛁'},{word:'מִבְרֶשֶׁת שִׁנַּיִם',emoji:'🪥'},{word:'סַבּוֹן',emoji:'🧼'},{word:'שֵׁירוּתִים',emoji:'🚽'},
-    {word:'צַלַּחַת',emoji:'🍽️'},{word:'כּוֹס',emoji:'🥤'},{word:'כַּף',emoji:'🥄'},{word:'שָׁעוֹן',emoji:'⏰'},
-    {word:'טֶלֶפוֹן',emoji:'📱'},{word:'מַפְתֵּחַ',emoji:'🔑'},{word:'מַשְׁקָפַיִם',emoji:'👓'},{word:'מִטְרִיָּה',emoji:'☂️'},
-    {word:'בְּגָדִים',emoji:'👕'},{word:'גַּרְבַּיִם',emoji:'🧦'}
+    {word:'כַּדּוּר',emoji:'⚽',img:art('home','ball')},{word:'בּוּבָּה',emoji:'🧸',img:art('home','doll')},
+    {word:'מִיטָה',emoji:'🛏️',img:art('home','bed')},{word:'נַעֲלַיִם',emoji:'👟',img:art('home','shoes')},
+    {word:'מוֹצֵץ',emoji:'🍼',img:art('home','pacifier')},{word:'סֵפֶר',emoji:'📖',img:art('home','book')},
+    {word:'כִּסֵּא',emoji:'🪑',img:art('home','chair')},{word:'סַפָּה',emoji:'🛋️',img:art('home','sofa')},
+    {word:'טֶלֶוִיזְיָה',emoji:'📺',img:art('home','television')},{word:'דֶּלֶת',emoji:'🚪',img:art('home','door')},
+    {word:'חַלּוֹן',emoji:'🪟',img:art('home','window')},{word:'שְׂמִיכָה',emoji:'🛌',img:art('home','blanket')},
+    {word:'אַמְבַּטְיָה',emoji:'🛁',img:art('home','bathtub')},{word:'מִבְרֶשֶׁת שִׁנַּיִם',emoji:'🪥',img:art('home','toothbrush')},
+    {word:'סַבּוֹן',emoji:'🧼',img:art('home','soap')},{word:'שֵׁירוּתִים',emoji:'🚽',img:art('home','toilet')},
+    {word:'צַלַּחַת',emoji:'🍽️',img:art('home','plate')},{word:'כּוֹס',emoji:'🥤',img:art('home','cup')},
+    {word:'כַּף',emoji:'🥄',img:art('home','spoon')},{word:'שָׁעוֹן',emoji:'⏰',img:art('home','clock')},
+    {word:'טֶלֶפוֹן',emoji:'📱',img:art('home','phone')},{word:'מַפְתֵּחַ',emoji:'🔑',img:art('home','key')},
+    {word:'מַשְׁקָפַיִם',emoji:'👓',img:art('home','glasses')},{word:'מִטְרִיָּה',emoji:'☂️',img:art('home','umbrella')},
+    {word:'בְּגָדִים',emoji:'👕',img:art('home','clothes')},{word:'גַּרְבַּיִם',emoji:'🧦',img:art('home','socks')}
   ]},
   family:{id:'family',title:'מִשְׁפָּחָה',icon:'👨‍👩‍👧',cls:'c-family',items:[
-    {word:'אִמָּא',emoji:'👩'},{word:'אַבָּא',emoji:'👨'},{word:'סַבְתָּא',emoji:'👵'},{word:'סַבָּא',emoji:'👴'},
-    {word:'תִּינוֹק',emoji:'👶'},{word:'אָח',emoji:'👦'},{word:'אָחוֹת',emoji:'👧'},{word:'יַלְדָּה',emoji:'🧒'},
-    {word:'דּוֹדָה',emoji:'💃'},{word:'דּוֹד',emoji:'🕺'},{word:'חָבֵר',emoji:'🧑‍🤝‍🧑'},{word:'מִשְׁפָּחָה',emoji:'👨‍👩‍👧‍👦'}
+    {word:'אִמָּא',emoji:'👩',img:art('family','mom')},{word:'אַבָּא',emoji:'👨',img:art('family','dad')},
+    {word:'סַבְתָּא',emoji:'👵',img:art('family','grandma')},{word:'סַבָּא',emoji:'👴',img:art('family','grandpa')},
+    {word:'תִּינוֹק',emoji:'👶',img:art('family','baby')},{word:'אָח',emoji:'👦',img:art('family','brother')},
+    {word:'אָחוֹת',emoji:'👧',img:art('family','sister')},{word:'יַלְדָּה',emoji:'🧒',img:art('family','girl')},
+    {word:'דּוֹדָה',emoji:'💃',img:art('family','aunt')},{word:'דּוֹד',emoji:'🕺',img:art('family','uncle')},
+    {word:'חָבֵר',emoji:'🧑‍🤝‍🧑',img:art('family','friend')},{word:'מִשְׁפָּחָה',emoji:'👨‍👩‍👧‍👦',img:art('family','family')}
   ]},
   body:{id:'body',title:'הַגּוּף',icon:'👀',cls:'c-body',items:[
-    {word:'עַיִן',emoji:'👁️'},{word:'אֹזֶן',emoji:'👂'},{word:'אַף',emoji:'👃'},{word:'פֶּה',emoji:'👄'},
-    {word:'יָד',emoji:'✋'},{word:'רֶגֶל',emoji:'🦶'},{word:'אֶצְבַּע',emoji:'☝️'},{word:'שֵׁן',emoji:'🦷'},
-    {word:'לָשׁוֹן',emoji:'👅'},{word:'שֵׂעָר',emoji:'💇'},{word:'לֵב',emoji:'🫀'},{word:'בֶּרֶךְ',emoji:'🦵'}
+    {word:'עַיִן',emoji:'👁️',img:art('body','eye')},{word:'אֹזֶן',emoji:'👂',img:art('body','ear')},
+    {word:'אַף',emoji:'👃',img:art('body','nose')},{word:'פֶּה',emoji:'👄',img:art('body','mouth')},
+    {word:'יָד',emoji:'✋',img:art('body','hand')},{word:'רֶגֶל',emoji:'🦶',img:art('body','foot')},
+    {word:'אֶצְבַּע',emoji:'☝️',img:art('body','finger')},{word:'שֵׁן',emoji:'🦷',img:art('body','tooth')},
+    {word:'לָשׁוֹן',emoji:'👅',img:art('body','tongue')},{word:'שֵׂעָר',emoji:'💇',img:art('body','hair')},
+    {word:'לֵב',emoji:'🫀',img:art('body','heart')},{word:'בֶּרֶךְ',emoji:'🦵',img:art('body','knee')}
   ]},
   actions:{id:'actions',title:'פְּעוּלוֹת',icon:'🏃',cls:'c-actions',items:[
-    {word:'אוֹכֶלֶת',emoji:'🍽️'},{word:'שׁוֹתָה',emoji:'🥤'},{word:'יְשֵׁנָה',emoji:'😴'},{word:'רָצָה',emoji:'🏃'},
-    {word:'קוֹפֶצֶת',emoji:'🤸'},{word:'מוֹחֵאת כַּפַּיִם',emoji:'👏'},{word:'מְנַשֶּׁקֶת',emoji:'😘'},{word:'מְחַבֶּקֶת',emoji:'🤗'},
-    {word:'בּוֹכָה',emoji:'😢'},{word:'צוֹחֶקֶת',emoji:'😂'},{word:'מִתְרַחֶצֶת',emoji:'🛁'},{word:'שָׁרָה',emoji:'🎤'},
-    {word:'מְצַיֶּרֶת',emoji:'🎨'},{word:'הוֹלֶכֶת',emoji:'🚶'},{word:'שׂוֹחָה',emoji:'🏊'},{word:'רוֹקֶדֶת',emoji:'💃'}
+    {word:'אוֹכֶלֶת',emoji:'🍽️',img:art('actions','eating')},{word:'שׁוֹתָה',emoji:'🥤',img:art('actions','drinking')},
+    {word:'יְשֵׁנָה',emoji:'😴',img:art('actions','sleeping')},{word:'רָצָה',emoji:'🏃',img:art('actions','running')},
+    {word:'קוֹפֶצֶת',emoji:'🤸',img:art('actions','jumping')},{word:'מוֹחֵאת כַּפַּיִם',emoji:'👏',img:art('actions','clapping')},
+    {word:'מְנַשֶּׁקֶת',emoji:'😘',img:art('actions','kissing')},{word:'מְחַבֶּקֶת',emoji:'🤗',img:art('actions','hugging')},
+    {word:'בּוֹכָה',emoji:'😢',img:art('actions','crying')},{word:'צוֹחֶקֶת',emoji:'😂',img:art('actions','laughing')},
+    {word:'מִתְרַחֶצֶת',emoji:'🛁',img:art('actions','bathing')},{word:'שָׁרָה',emoji:'🎤',img:art('actions','singing')},
+    {word:'מְצַיֶּרֶת',emoji:'🎨',img:art('actions','drawing')},{word:'הוֹלֶכֶת',emoji:'🚶',img:art('actions','walking')},
+    {word:'שׂוֹחָה',emoji:'🏊',img:art('actions','swimming')},{word:'רוֹקֶדֶת',emoji:'💃',img:art('actions','dancing')}
   ]},
   numbers:{id:'numbers',title:'מִסְפָּרִים',icon:'🔢',cls:'c-numbers',items:[
-    {word:'אַחַת',emoji:'1️⃣'},{word:'שְׁתַּיִם',emoji:'2️⃣'},{word:'שָׁלוֹשׁ',emoji:'3️⃣'},{word:'אַרְבַּע',emoji:'4️⃣'},
-    {word:'חָמֵשׁ',emoji:'5️⃣'},{word:'שֵׁשׁ',emoji:'6️⃣'},{word:'שֶׁבַע',emoji:'7️⃣'},{word:'שְׁמוֹנֶה',emoji:'8️⃣'},
-    {word:'תֵּשַׁע',emoji:'9️⃣'},{word:'עֶשֶׂר',emoji:'🔟'}
+    {word:'אַחַת',emoji:'1️⃣',img:art('numbers','one')},{word:'שְׁתַּיִם',emoji:'2️⃣',img:art('numbers','two')},
+    {word:'שָׁלוֹשׁ',emoji:'3️⃣',img:art('numbers','three')},{word:'אַרְבַּע',emoji:'4️⃣',img:art('numbers','four')},
+    {word:'חָמֵשׁ',emoji:'5️⃣',img:art('numbers','five')},{word:'שֵׁשׁ',emoji:'6️⃣',img:art('numbers','six')},
+    {word:'שֶׁבַע',emoji:'7️⃣',img:art('numbers','seven')},{word:'שְׁמוֹנֶה',emoji:'8️⃣',img:art('numbers','eight')},
+    {word:'תֵּשַׁע',emoji:'9️⃣',img:art('numbers','nine')},{word:'עֶשֶׂר',emoji:'🔟',img:art('numbers','ten')}
   ]},
   outside:{id:'outside',title:'בַּחוּץ',icon:'🌳',cls:'c-outside',items:[
-    {word:'עֵץ',emoji:'🌳'},{word:'שֶׁמֶשׁ',emoji:'☀️'},{word:'עָנָן',emoji:'☁️'},{word:'גֶּשֶׁם',emoji:'🌧️'},
-    {word:'שֶׁלֶג',emoji:'❄️'},{word:'מְכוֹנִית',emoji:'🚗'},{word:'אוֹטוֹבּוּס',emoji:'🚌'},{word:'אוֹפַנַּיִם',emoji:'🚲'},
-    {word:'מָטוֹס',emoji:'✈️'},{word:'סִירָה',emoji:'⛵'},{word:'רַכֶּבֶת',emoji:'🚂'},{word:'בַּיִת',emoji:'🏠'},
-    {word:'גַּן שַׁעֲשׁוּעִים',emoji:'🎠'},{word:'יָם',emoji:'🌊'},{word:'חוֹל',emoji:'🏖️'},{word:'דֶּשֶׁא',emoji:'🌿'},
-    {word:'צֶמַח',emoji:'🌷'},{word:'כּוֹכָבִים',emoji:'🌟'}
+    {word:'עֵץ',emoji:'🌳',img:art('outside','tree')},{word:'שֶׁמֶשׁ',emoji:'☀️',img:art('outside','sun')},
+    {word:'עָנָן',emoji:'☁️',img:art('outside','cloud')},{word:'גֶּשֶׁם',emoji:'🌧️',img:art('outside','rain')},
+    {word:'שֶׁלֶג',emoji:'❄️',img:art('outside','snow')},{word:'מְכוֹנִית',emoji:'🚗',img:art('outside','car')},
+    {word:'אוֹטוֹבּוּס',emoji:'🚌',img:art('outside','bus')},{word:'אוֹפַנַּיִם',emoji:'🚲',img:art('outside','bicycle')},
+    {word:'מָטוֹס',emoji:'✈️',img:art('outside','airplane')},{word:'סִירָה',emoji:'⛵',img:art('outside','boat')},
+    {word:'רַכֶּבֶת',emoji:'🚂',img:art('outside','train')},{word:'בַּיִת',emoji:'🏠',img:art('outside','house')},
+    {word:'גַּן שַׁעֲשׁוּעִים',emoji:'🎠',img:art('outside','playground')},{word:'יָם',emoji:'🌊',img:art('outside','sea')},
+    {word:'חוֹל',emoji:'🏖️',img:art('outside','sand')},{word:'דֶּשֶׁא',emoji:'🌿',img:art('outside','grass')},
+    {word:'צֶמַח',emoji:'🌷',img:art('outside','plant')},{word:'כּוֹכָבִים',emoji:'🌟',img:art('outside','stars')}
   ]},
   emotions:{id:'emotions',title:'רְגָשׁוֹת',icon:'😊',cls:'c-emotions',items:[
-    {word:'שְׂמֵחָה',emoji:'😊'},{word:'עֲצוּבָה',emoji:'😢'},{word:'כּוֹעֶסֶת',emoji:'😠'},{word:'מְפֻחֶדֶת',emoji:'😨'},
-    {word:'עֲיֵפָה',emoji:'🥱'},{word:'מֻפְתַּעַת',emoji:'😲'},{word:'אוֹהֶבֶת',emoji:'🥰'},{word:'מִתְבַּיֶּשֶׁת',emoji:'🙈'},
-    {word:'רְעֵבָה',emoji:'😋'},{word:'מִשְׁתַּעֲמֶמֶת',emoji:'😑'}
+    {word:'שְׂמֵחָה',emoji:'😊',img:art('emotions','happy')},{word:'עֲצוּבָה',emoji:'😢',img:art('emotions','sad')},
+    {word:'כּוֹעֶסֶת',emoji:'😠',img:art('emotions','angry')},{word:'מְפֻחֶדֶת',emoji:'😨',img:art('emotions','scared')},
+    {word:'עֲיֵפָה',emoji:'🥱',img:art('emotions','tired')},{word:'מֻפְתַּעַת',emoji:'😲',img:art('emotions','surprised')},
+    {word:'אוֹהֶבֶת',emoji:'🥰',img:art('emotions','loving')},{word:'מִתְבַּיֶּשֶׁת',emoji:'🙈',img:art('emotions','shy')},
+    {word:'רְעֵבָה',emoji:'😋',img:art('emotions','hungry')},{word:'מִשְׁתַּעֲמֶמֶת',emoji:'😑',img:art('emotions','bored')}
   ]}
 };
 
@@ -655,33 +709,33 @@ const CARRIERS = ['הִנֵּה {w}','עוֹד {w}','וַואו, {w}!','אֵיפ
 
 /* Cloze routines: familiar sequences that stop one word short. */
 const CLOZE = [
-  {phrase:'אֶחָד, שְׁתַּיִם, ...', answer:'שָׁלוֹשׁ', emoji:'3️⃣'},
-  {phrase:'מוּכָנִים, הִכּוֹן, ...', answer:'צֵא', emoji:'🏃'},
-  {phrase:'הַכֶּלֶב אוֹמֵר ...', answer:'הַב הַב', emoji:'🐶'},
-  {phrase:'הַפָּרָה אוֹמֶרֶת ...', answer:'מוּ', emoji:'🐮'},
+  {phrase:'אֶחָד, שְׁתַּיִם, ...', answer:'שָׁלוֹשׁ', emoji:'3️⃣', img:art('numbers','three')},
+  {phrase:'מוּכָנִים, הִכּוֹן, ...', answer:'צֵא', emoji:'🏃', img:art('actions','running')},
+  {phrase:'הַכֶּלֶב אוֹמֵר ...', answer:'הַב הַב', emoji:'🐶', img:art('animals','dog')},
+  {phrase:'הַפָּרָה אוֹמֶרֶת ...', answer:'מוּ', emoji:'🐮', img:art('animals','cow')},
   {phrase:'בְּבַקָּשָׁה וְ...', answer:'תּוֹדָה', emoji:'🙏'},
-  {phrase:'לַיְלָה טוֹב, לַיְלָה ...', answer:'טוֹב', emoji:'🌙'},
-  {phrase:'אֲנִי רוֹצָה עוֹד ...', answer:'מַיִם', emoji:'💧'},
-  {phrase:'הַחָתוּל אוֹמֵר ...', answer:'מְיָאוּ', emoji:'🐱'}
+  {phrase:'לַיְלָה טוֹב, לַיְלָה ...', answer:'טוֹב', emoji:'🌙', img:art('colors','moon')},
+  {phrase:'אֲנִי רוֹצָה עוֹד ...', answer:'מַיִם', emoji:'💧', img:art('food','water')},
+  {phrase:'הַחָתוּל אוֹמֵר ...', answer:'מְיָאוּ', emoji:'🐱', img:art('animals','cat')}
 ];
 
 /* Hebrew minimal pairs: one phoneme apart, both picturable. */
 const PAIRS = [
-  [{word:'עֵץ',emoji:'🌳'},{word:'עֵז',emoji:'🐐'}],
-  [{word:'יָד',emoji:'✋'},{word:'יָם',emoji:'🌊'}],
-  [{word:'בַּיִת',emoji:'🏠'},{word:'זַיִת',emoji:'🫒'}],
+  [{word:'עֵץ',emoji:'🌳',img:art('outside','tree')},{word:'עֵז',emoji:'🐐'}],
+  [{word:'יָד',emoji:'✋',img:art('body','hand')},{word:'יָם',emoji:'🌊',img:art('outside','sea')}],
+  [{word:'בַּיִת',emoji:'🏠',img:art('outside','house')},{word:'זַיִת',emoji:'🫒'}],
   [{word:'סִיר',emoji:'🍲'},{word:'שִׁיר',emoji:'🎵'}],
-  [{word:'כַּף',emoji:'🥄'},{word:'כַּד',emoji:'🏺'}],
-  [{word:'דֹּב',emoji:'🐻'},{word:'דָּג',emoji:'🐟'}],
-  [{word:'תַּפּוּחַ',emoji:'🍎'},{word:'תַּפּוּז',emoji:'🍊'}]
+  [{word:'כַּף',emoji:'🥄',img:art('home','spoon')},{word:'כַּד',emoji:'🏺'}],
+  [{word:'דֹּב',emoji:'🐻',img:art('animals','bear')},{word:'דָּג',emoji:'🐟',img:art('animals','fish')}],
+  [{word:'תַּפּוּחַ',emoji:'🍎',img:art('food','apple')},{word:'תַּפּוּז',emoji:'🍊',img:art('food','orange')}]
 ];
 
 /* Early two-word semantic relations (recurrence, disappearance, size, possession) */
 const MODIFIERS = [
   {w:'עוֹד', emoji:'➕', expand:'אֲנִי רוֹצָה עוֹד {w}'},
   {w:'אֵין', emoji:'🚫', expand:'אֵין יוֹתֵר {w}'},
-  {w:'גָּדוֹל', emoji:'🐘', expand:'אֵיזֶה {w} גָּדוֹל'},
-  {w:'שֶׁלִּי', emoji:'🤗', expand:'זֶה {w} שֶׁלִּי'}
+  {w:'גָּדוֹל', emoji:'🐘', img:art('animals','elephant'), expand:'אֵיזֶה {w} גָּדוֹל'},
+  {w:'שֶׁלִּי', emoji:'🤗', img:art('actions','hugging'), expand:'זֶה {w} שֶׁלִּי'}
 ];
 
 /* ============================================================
@@ -807,7 +861,7 @@ async function exportBackup(){
   const all = {};
   for(const k of await Store.keys()) all[k] = await Store.get(k);
   const payload = {
-    app: 'lia-words',
+    app: 'talki',
     version: BACKUP_VERSION,
     exported_at: new Date().toISOString(),
     word_count: learned.size,
@@ -817,7 +871,7 @@ async function exportBackup(){
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   const stamp = new Date().toISOString().slice(0,10);
-  a.href = url; a.download = `lia-backup-${stamp}.json`;
+  a.href = url; a.download = `talki-backup-${stamp}.json`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(url), 4000);
   settings.lastBackup = new Date().toISOString();
@@ -830,7 +884,7 @@ async function importBackup(file, mode){
   let payload;
   try{ payload = JSON.parse(await file.text()); }
   catch(e){ toast('הקובץ אינו תקין'); return; }
-  if(!payload || payload.app !== 'lia-words' || !payload.data){ toast('זה לא קובץ גיבוי של ליה'); return; }
+  if(!payload || (payload.app !== 'talki' && payload.app !== 'lia-words') || !payload.data){ toast('זה לא קובץ גיבוי של Talki'); return; }
 
   if(mode === 'replace'){
     for(const k of await Store.keys()) await Store.del(k);
@@ -1061,9 +1115,9 @@ function toast(msg){
 ============================================================ */
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 function media(item, cls){
-  return item.photo
-    ? `<img class="${cls==='tile'?'photo':''}" src="${item.photo}" alt="">`
-    : `<span class="${cls==='tile'?'emoji':'em'}">${item.emoji||'💜'}</span>`;
+  if(item.photo) return `<img class="${cls==='tile'?'photo':''}" src="${item.photo}" alt="">`;
+  if(item.img) return `<img class="art" src="${item.img}" alt="">`;
+  return `<span class="${cls==='tile'||cls==='card'?'emoji':'em'}">${item.emoji||'💜'}</span>`;
 }
 
 function updateHeader(){
@@ -1135,7 +1189,7 @@ function renderHome(){
     <div class="hero">
       <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:6px">
         ${mascot(learned.size > 0 ? 'cheer' : 'idle', 78)}
-        <div style="text-align:right"><h2 style="margin:0">היי ליה! מה נלמד היום?</h2>
+        <div style="text-align:right"><h2 style="margin:0">היי! מה נלמד היום?</h2>
           <p>בוחרים קופסה, לוחצים על תמונה ושומעים את המילה</p></div>
       </div></div>
     ${speechOk?'':'<div class="banner">הדפדפן לא תומך בהקראת קול. אפשר להקליט קול אמיתי במסך ההורים, או לנסות בכרום.</div>'}
@@ -1198,7 +1252,7 @@ function renderCards(){
     </div>
     <div class="card-stage">
       <div class="flashcard" id="flash" data-word="${esc(it.word)}">
-        ${it.photo?`<img src="${it.photo}" alt="">`:`<span class="emoji">${it.emoji}</span>`}
+        ${media(it,'card')}
         <div class="word">${display(it.word)}</div>
       </div>
       <div class="card-nav">
@@ -1306,7 +1360,7 @@ function renderQuiz(){
   if(!game || game.type!=='quiz'){ if(!startGame('quiz', activeCat)) return renderHome(); }
   if(game.done) return gameHeader('🎧 איפה ה...?') + doneCard(game.score, game.pool.length, game.best);
   const opts = game.options.map(o=>`<button class="opt" data-opt="${esc(o.word)}">
-      ${o.photo?`<img src="${o.photo}" alt="">`:o.emoji}</button>`).join('');
+      ${media(o)}</button>`).join('');
   return gameHeader('🎧 איפה ה...?', chips([`שאלה ${game.i+1}/${game.pool.length}`,`✅ ${game.score}`,`🔥 רצף ${game.streak}`])) +
     `<div class="prompt-box"><p>לוחצים על התמונה של המילה שאתם שומעים</p>
       <button class="big-btn b-sky" data-say="1">🔊 להשמיע שוב</button></div>
@@ -1320,7 +1374,7 @@ function renderMemory(){
   const cells = game.cards.map(c=>{
     const shown = c.open || c.matched;
     const inner = !shown ? '❔' : (c.kind==='pic'
-      ? (c.it.photo?`<img src="${c.it.photo}" alt="">`:c.it.emoji)
+      ? media(c.it)
       : display(c.it.word));
     return `<button class="mem ${shown?'open':''} ${c.matched?'matched':''} ${shown&&c.kind==='word'?'text':''}"
       data-mem="${c.idx}">${inner}</button>`;
@@ -1346,7 +1400,7 @@ function renderMissing(){
   const items = game.set.map(it=>{
     const gone = !showing && it.word===game.missing.word;
     return `<button class="opt ${gone?'gone':''}" data-missing="${esc(it.word)}" ${showing?'disabled':''}>
-      ${it.photo?`<img src="${it.photo}" alt="">`:it.emoji}</button>`;
+      ${media(it)}</button>`;
   }).join('');
   const opts = showing ? '' : `<div class="opt-grid" style="margin-top:16px">${
     game.askOrder.map(it=>`<button class="opt" data-guess="${esc(it.word)}" style="font-size:1rem;font-weight:900">
@@ -1363,7 +1417,7 @@ function renderMatch(){
   const L = game.left.map(it=>`<button class="match-item ${game.matched.includes(it.word)?'done':''} ${game.sel===it.word?'sel':''}"
       data-mleft="${esc(it.word)}">${display(it.word)}</button>`).join('');
   const R = game.right.map(it=>`<button class="match-item ${game.matched.includes(it.word)?'done':''}"
-      data-mright="${esc(it.word)}">${it.photo?`<img src="${it.photo}" alt="">`:`<span class="em">${it.emoji}</span>`}</button>`).join('');
+      data-mright="${esc(it.word)}">${media(it)}</button>`).join('');
   return gameHeader('🔗 חיבורים', chips([`חוברו ${game.matched.length}/${game.left.length}`])) +
     `<div class="prompt-box"><p>לוחצים על מילה, ואז על התמונה שמתאימה לה</p></div>
      <div class="match-cols"><div style="display:grid;gap:10px">${L}</div>
@@ -1381,7 +1435,7 @@ function renderSpeech(){
   const it = game.pool[game.i];
   return gameHeader('🎤 תגידי את זה', chips([`מילה ${game.i+1}/${game.pool.length}`,`✅ ${game.score}`])) +
     `<div class="prompt-box">
-      <div style="font-size:4rem">${it.photo?`<img src="${it.photo}" style="width:120px;height:120px;object-fit:cover;border-radius:24px" alt="">`:it.emoji}</div>
+      <div style="font-size:4rem">${media(it)}</div>
       <div class="prompt-word">${display(it.word)}</div>
       <p>${game.feedback || 'לוחצים על המיקרופון ואומרים את המילה'}</p>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
@@ -1412,7 +1466,7 @@ function spawnBubble(){
   b.style.setProperty('--drift', (Math.random()*60-30)+'px');
   const dur = 8 + Math.random()*4;
   b.style.animationDuration = dur+'s';
-  b.innerHTML = `<span class="b-em">${it.photo?`<img src="${it.photo}" alt="">`:it.emoji}</span><span class="b-w">${display(it.word)}</span>`;
+  b.innerHTML = `<span class="b-em">${media(it)}</span><span class="b-w">${display(it.word)}</span>`;
   b.addEventListener('click', ()=>{
     if(b.classList.contains('pop-out')) return;
     b.classList.add('pop-out'); setTimeout(()=>b.remove(), 280);
@@ -1441,7 +1495,7 @@ function setupSoundsRound(){
 function renderSounds(){
   if(!game || game.type!=='sounds'){ if(!startGame('sounds','animals')) return renderHome(); }
   if(game.done) return gameHeader('🐮 מי אמר את זה?', '', true) + doneCard(game.score, game.pool.length, 0);
-  const opts = game.options.map(o=>`<button class="opt" data-sopt="${esc(o.word)}">${o.emoji}</button>`).join('');
+  const opts = game.options.map(o=>`<button class="opt" data-sopt="${esc(o.word)}">${media(o)}</button>`).join('');
   return gameHeader('🐮 מי אמר את זה?', chips([`שאלה ${game.i+1}/${game.pool.length}`,`✅ ${game.score}`]), true) +
     `<div class="prompt-box"><p>איזו חיה עושה את הקול הזה?</p>
       <button class="big-btn b-sky" data-playsound="1">🔊 לשמוע שוב</button></div>
@@ -1463,7 +1517,7 @@ function setupCountRound(){
 function renderCount(){
   if(!game || game.type!=='count'){ if(!startGame('count', activeCat)) return renderHome(); }
   if(game.done) return gameHeader('🔢 כמה יש?') + doneCard(game.score, 5, 0);
-  const pics = Array.from({length:game.n}, ()=>`<span>${game.it.emoji}</span>`).join('');
+  const pics = Array.from({length:game.n}, ()=>media(game.it)).join('');
   const opts = game.options.map(n=>`<button class="opt" data-count="${n}" style="font-size:2.4rem">${n}</button>`).join('');
   return gameHeader('🔢 כמה יש?', chips([`סיבוב ${game.round+1}/5`,`✅ ${game.score}`])) +
     `<div class="prompt-box" style="padding:14px"><p>כמה ${display(game.it.word)} יש כאן?</p></div>
@@ -1485,7 +1539,7 @@ function renderSort(){
   const boxes = game.boxes.map(c=>`<button class="box" data-box="${c.id}">
       <span class="bi">${c.icon}</span>${display(c.title)}</button>`).join('');
   return gameHeader('📦 לאיזו קופסה?', chips([`סיבוב ${game.round+1}/6`,`✅ ${game.score}`]), true) +
-    `<div class="prompt-box"><div style="font-size:4rem">${game.it.emoji}</div>
+    `<div class="prompt-box"><div style="font-size:4rem">${media(game.it)}</div>
       <div class="prompt-word">${display(game.it.word)}</div>
       <p>לאיזו קופסה זה שייך?</p></div>
      <div class="box-row">${boxes}</div>`;
@@ -1507,7 +1561,7 @@ function renderFocus(){
   const dots = CARRIERS.map((_,i)=>`<i class="${i<=game.step?'on':''}"></i>`).join('');
   return gameHeader('🎯 מילה במיקוד', chips([`${game.step+1}/${game.total}`])) +
     `<div class="focus-card" id="focusCard">
-      ${game.it.photo?`<img src="${game.it.photo}" alt="">`:`<span class="em">${game.it.emoji}</span>`}
+      ${media(game.it)}
       <div class="focus-word">${display(game.it.word)}</div>
       <div class="focus-phrase">${phrase}</div>
       <div class="dots">${dots}</div>
@@ -1524,7 +1578,7 @@ function renderCloze(){
   const body = game.phase==='wait'
     ? `${mascot('listen', 96)}<p>מחכים... תני לה חמש שניות שלמות</p>`
     : game.phase==='model'
-      ? `<div style="font-size:4rem">${it.emoji}</div><div class="prompt-word">${display(it.answer)}</div>`
+      ? `<div style="font-size:4rem">${media(it)}</div><div class="prompt-word">${display(it.answer)}</div>`
       : `<div style="font-size:3.4rem">🗣️</div><p>מקשיבים למשפט...</p>`;
   return gameHeader('⏸️ משלימים ביחד', chips([`${game.i+1}/${game.pool.length}`,`✅ ${game.score}`]), true) +
     `<div class="prompt-box"><div class="prompt-word">${display(it.phrase)}</div>${body}
@@ -1565,7 +1619,7 @@ function renderTemptation(){
     `<div class="prompt-box">
       <p>${game.opened ? 'נפתח!' : 'רואים מה יש בפנים? צריך להגיד כדי לפתוח'}</p>
       <div class="jar ${game.opened?'open':''}" id="jar">${game.opened?'':'🫙'}</div>
-      ${game.opened ? `<div style="font-size:5rem">${it.photo?`<img src="${it.photo}" style="width:130px;height:130px;object-fit:cover;border-radius:24px" alt="">`:it.emoji}</div>
+      ${game.opened ? `<div style="font-size:5rem">${media(it)}</div>
         <div class="prompt-word">${display(it.word)}</div>` :
         `<div style="opacity:.35;font-size:2.2rem;margin-top:-70px;position:relative;z-index:-1">${it.emoji||''}</div>`}
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
@@ -1590,7 +1644,7 @@ function renderReceptive(){
   if(game.done) return gameHeader('👉 תראי לי') + doneCard(game.score, 8, 0, `רמה ${game.level} אפשרויות`);
   const cols = game.options.length<=2 ? 2 : game.options.length===3 ? 3 : 2;
   const opts = game.options.map(o=>`<button class="opt" data-recept="${esc(o.word)}">
-      ${o.photo?`<img src="${o.photo}" alt="">`:o.emoji}</button>`).join('');
+      ${media(o)}</button>`).join('');
   return gameHeader('👉 תראי לי', chips([`${game.i+1}/8`,`✅ ${game.score}`,`${game.level} אפשרויות`])) +
     `<div class="prompt-box"><p>מקשיבים ולוחצים על התמונה הנכונה</p>
       <button class="big-btn b-sky" data-receptsay="1">🔊 לשמוע שוב</button></div>
@@ -1610,7 +1664,7 @@ function renderPairs(){
   if(!game || game.type!=='pairs'){ if(!startGame('pairs', activeCat)) return renderHome(); }
   if(game.done) return gameHeader('👂 דומה אבל לא','',true) + doneCard(game.score, game.pool.length, 0);
   const opts = game.shown.map(o=>`<button class="opt" data-pair="${esc(o.word)}" style="font-size:2.6rem">
-      ${o.emoji}<div style="font-size:1rem;font-weight:900;margin-top:6px">${display(o.word)}</div></button>`).join('');
+      ${media(o)}<div style="font-size:1rem;font-weight:900;margin-top:6px">${display(o.word)}</div></button>`).join('');
   return gameHeader('👂 דומה אבל לא', chips([`${game.i+1}/${game.pool.length}`,`✅ ${game.score}`]), true) +
     `<div class="prompt-box"><p>שתי מילים כמעט זהות — איזו נשמעה?</p>
       <button class="big-btn b-sky" data-pairsay="1">🔊 לשמוע שוב</button></div>
@@ -1622,9 +1676,9 @@ function renderCombine(){
   if(!game || game.type!=='combine'){ if(!startGame('combine', activeCat)) return renderHome(); }
   if(game.done) return gameHeader('➕ שתי מילים') + doneCard(game.round, 6, 0, 'צירופים נבנו');
   const mods = MODIFIERS.map(m=>`<button class="mod ${game.mod===m.w?'sel':''}" data-mod="${esc(m.w)}">
-      <span class="mi">${m.emoji}</span>${display(m.w)}</button>`).join('');
+      <span class="mi">${media(m)}</span>${display(m.w)}</button>`).join('');
   const pics = game.pics.map(p=>`<button class="opt" data-combine="${esc(p.word)}">
-      ${p.photo?`<img src="${p.photo}" alt="">`:p.emoji}
+      ${media(p)}
       <div style="font-size:.9rem;font-weight:900;margin-top:6px">${display(p.word)}</div></button>`).join('');
   return gameHeader('➕ שתי מילים', chips([`צירוף ${game.round}/6`])) +
     `<div class="prompt-box" style="padding:14px"><p>בוחרים מילה קטנה, ואז תמונה — ומקבלים משפט</p></div>
@@ -1637,7 +1691,7 @@ function doneCard(score, total, best, extra){
   const ratio = total ? score/total : 0;
   const stars = ratio>=0.85?'🌟🌟🌟':ratio>=0.5?'🌟🌟':'🌟';
   return `<div class="done-card">${mascot('cheer', 96)}<div class="big">${stars}</div>
-    <h3>כל הכבוד ליה!</h3>
+    <h3>כל הכבוד!</h3>
     <p>${score} מתוך ${total}${best?` • רצף הכי טוב: ${best}`:''}${extra?` • ${extra}`:''}</p>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
       <button class="big-btn b-berry" data-again="1">לשחק שוב</button>
@@ -1720,7 +1774,7 @@ function parentRecord(){
     const k = key(cat.id,it.word);
     const has = recordings[k];
     return `<div class="mini">
-      ${it.photo?`<img src="${it.photo}" alt="">`:`<span class="m-em">${it.emoji}</span>`}
+      ${media(it)}
       <b>${display(it.word)}</b>
       ${has?'<span class="tag rec">מוקלט</span>':''}
       <button class="pill-btn" data-recplay="${esc(it.word)}" style="padding:6px 10px">▶</button>
@@ -2352,7 +2406,7 @@ document.getElementById('musicBtn').addEventListener('click', ()=> setMusic(!set
 document.getElementById('speedBtn').addEventListener('click', ()=>{
   settings.rate = settings.rate<=0.6 ? 0.85 : settings.rate<1 ? 1 : 0.6;
   saveSettings(); syncSpeedIcon();
-  speakTTS('שלום ליה',{});
+  speakTTS('שלום',{});
 });
 let holdTimer = null, holdFired = false;
 const pBtn = document.getElementById('parentBtn');

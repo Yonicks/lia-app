@@ -83,7 +83,7 @@ jobs:
         # Guarantees returning devices pick up the new build instead of
         # serving the old shell from cache forever.
         run: |
-          sed -i "s/const VERSION = '.*'/const VERSION = 'lia-${GITHUB_SHA::7}'/" sw.js
+          sed -i "s/const VERSION = '.*'/const VERSION = 'talki-${GITHUB_SHA::7}'/" sw.js
           grep "const VERSION" sw.js
 
       - uses: actions/configure-pages@v5

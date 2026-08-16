@@ -1,8 +1,8 @@
 """
-Playwright suite for האפליקציה של ליה.
+Playwright suite for Talki.
 
 Run locally:
-    cd lia-app
+    cd talki
     python3 -m http.server 8000 &
     BASE_URL=http://localhost:8000 python3 tests/test_suite.py
 
@@ -206,7 +206,7 @@ def test_storage(b):
     path = os.path.join(DL, dl.value.suggested_filename)
     dl.value.save_as(path)
     payload = json.load(open(path, encoding="utf-8"))
-    if payload.get("app") != "lia-words":
+    if payload.get("app") != "talki":
         fail("backup", "export missing the app marker")
     elif not any(k.startswith("lia:rec:") for k in payload["data"]):
         fail("backup", "export missing recordings")
