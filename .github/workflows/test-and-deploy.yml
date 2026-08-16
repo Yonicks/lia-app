@@ -1,0 +1,94 @@
+name: Test & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow the deploy job to publish to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Playwright suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Check the app's JavaScript parses
+        run: |
+          python - <<'PY'
+          import re, sys, subprocess, pathlib
+          html = pathlib.Path('index.html').read_text(encoding='utf-8')
+          scripts = re.findall(r'<script>(.*?)</script>', html, re.S)
+          pathlib.Path('/tmp/app.js').write_text(scripts[-1], encoding='utf-8')
+          sys.exit(subprocess.run(['node','--check','/tmp/app.js']).returncode)
+          PY
+
+      - name: Serve the app
+        run: |
+          python -m http.server 8000 --bind 127.0.0.1 &
+          for i in $(seq 1 20); do
+            curl -sf http://127.0.0.1:8000/index.html > /dev/null && break
+            sleep 0.5
+          done
+
+      - name: Run tests
+        env:
+          BASE_URL: http://127.0.0.1:8000
+          SHOT_DIR: ${{ runner.temp }}/screenshots
+        run: |
+          mkdir -p "$SHOT_DIR"
+          python tests/test_suite.py
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: ${{ runner.temp }}/screenshots
+          if-no-files-found: ignore
+          retention-days: 14
+
+  deploy:
+    name: Deploy to Pages
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bump the service worker cache version
+        # Guarantees returning devices pick up the new build instead of
+        # serving the old shell from cache forever.
+        run: |
+          sed -i "s/const VERSION = '.*'/const VERSION = 'lia-${GITHUB_SHA::7}'/" sw.js
+          grep "const VERSION" sw.js
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4

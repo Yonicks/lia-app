@@ -1,0 +1,8 @@
+# Backup exports contain voice recordings as base64 — never commit these
+lia-backup-*.json
+
+# Local tooling
+__pycache__/
+.venv/
+node_modules/
+.DS_Store
