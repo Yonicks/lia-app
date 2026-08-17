@@ -26,12 +26,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#FFF6E4; --paper:#FFFDF8; --ink:#33263D; --ink-soft:#6B5C78;
-    --berry:#E8447A; --berry-dark:#C22C60; --sun:#FFB627; --sun-dark:#E89A00;
-    --leaf:#3FAE79; --leaf-dark:#268C5C; --sky:#2E9FE0; --sky-dark:#1D82BE;
-    --grape:#8A5CC7; --grape-dark:#6B3FA6; --clay:#E4713C; --clay-dark:#BF5522;
-    --teal:#18A5A0; --teal-dark:#0E7F7B;
-    --line:#F0DDA8; --shadow:0 6px 0 rgba(51,38,61,.12);
+    --cream:#F7F0DF; --paper:#FFFDF8; --ink:#3A2E4D; --ink-soft:#6E6178;
+    --berry:#D9705C; --berry-dark:#B8543F; --sun:#E0A83E; --sun-dark:#C08726;
+    --leaf:#7FA363; --leaf-dark:#5C7A46; --sky:#7FA8C9; --sky-dark:#5580A3;
+    --grape:#5B4A8C; --grape-dark:#443368; --clay:#D97B4F; --clay-dark:#B85F38;
+    --teal:#4C8577; --teal-dark:#386258;
+    --wood:#9C6B41; --wood-dark:#6E4626;
+    --line:#E8D9A8; --shadow:0 6px 0 rgba(58,46,77,.14);
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;overscroll-behavior:none}
@@ -47,7 +48,7 @@
     padding-top:env(safe-area-inset-top);
   }
   /* --barh is measured from the real top bar height by JS */
-  :root{ --barh:70px; }
+  :root{ --barh:70px; --ad-h:0px; }
   h1,h2,h3,.display,.focus-word,.prompt-word,.flashcard .word,.phrase-out{
     font-family:'Rubik','Heebo','Arial Hebrew','Segoe UI',system-ui,sans-serif}
   button{font-family:inherit;cursor:pointer}
@@ -60,9 +61,9 @@
   .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1;overflow:hidden}
   .brand-text{min-width:0;overflow:hidden}
   .bar-right{flex:none}
-  .brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(155deg,var(--berry),var(--grape));
+  .brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(155deg,var(--grape),var(--grape-dark));
     display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:var(--shadow);transform:rotate(-6deg);flex:none}
-  .brand-text h1{margin:0;font-size:1.05rem;font-weight:900;color:var(--berry-dark);line-height:1.1;white-space:nowrap}
+  .brand-text h1{margin:0;font-size:1.05rem;font-weight:900;color:var(--grape-dark);line-height:1.1;white-space:nowrap}
   .brand-text span{font-size:.68rem;color:var(--ink-soft);font-weight:600}
   @media(max-width:430px){
     .brand-text span{display:none}
@@ -87,7 +88,7 @@
     display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 3px 0 rgba(51,38,61,.08);flex:none}
   .icon-btn:active{transform:translateY(2px);box-shadow:none}
 
-  main{max-width:1080px;margin:0 auto;padding:18px 14px calc(70px + env(safe-area-inset-bottom));
+  main{max-width:1080px;margin:0 auto;padding:18px 14px calc(70px + env(safe-area-inset-bottom) + var(--ad-h,0px));
     padding-left:max(14px, env(safe-area-inset-left));padding-right:max(14px, env(safe-area-inset-right))}
   @media(min-width:768px){ main{max-width:940px;padding:24px 22px 80px} }
   @media(min-width:1100px){ main{max-width:1180px;padding:28px 28px 90px} }
@@ -102,26 +103,31 @@
 
   .grid-home{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(150px,42vw,250px),1fr));
     gap:clamp(10px,1.6vw,20px)}
-  .cat-card{position:relative;border:none;text-align:right;overflow:hidden;border-radius:24px;padding:18px;
-    color:#fff;box-shadow:var(--shadow);transition:transform .18s ease}
+  .cat-card{position:relative;border:3px solid var(--line);text-align:right;overflow:hidden;border-radius:24px;padding:18px;
+    color:var(--ink);background:var(--paper);box-shadow:var(--shadow);transition:transform .18s ease}
   .cat-card:active{transform:translateY(4px);box-shadow:none}
   .cat-card{padding:clamp(14px,1.8vw,26px)}
   .cat-card .name{font-size:clamp(1rem,2vw,1.5rem)}
-  .cat-card .glyph{font-size:clamp(34px,4.5vw,60px);display:block;margin-bottom:8px;filter:drop-shadow(0 3px 0 rgba(0,0,0,.12))}
+  .cat-card .hero-chip{width:clamp(62px,12vw,88px);height:clamp(62px,12vw,88px);border-radius:22px;margin:0 0 10px;
+    display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 3px rgba(255,255,255,.55)}
+  .cat-card .hero-chip img{width:76%;height:76%;object-fit:contain;filter:drop-shadow(0 3px 0 rgba(58,46,77,.18))}
   .cat-card .name{font-size:1.2rem;font-weight:900;margin:0 0 9px}
-  .bar-track{background:rgba(255,255,255,.35);height:9px;border-radius:999px;overflow:hidden}
-  .bar-fill{height:100%;background:#fff;border-radius:999px;transition:width .4s ease}
-  .cat-card .cap{display:flex;justify-content:space-between;margin-top:7px;font-size:.72rem;font-weight:700;opacity:.95}
-  .cat-card .stickers{position:absolute;top:12px;left:12px;font-size:.75rem;background:rgba(255,255,255,.25);padding:3px 8px;border-radius:999px}
-  .c-animals{background:linear-gradient(155deg,var(--leaf),var(--leaf-dark))}
-  .c-food{background:linear-gradient(155deg,var(--berry),var(--berry-dark))}
-  .c-colors{background:linear-gradient(155deg,var(--grape),var(--grape-dark))}
-  .c-home{background:linear-gradient(155deg,var(--sky),var(--sky-dark))}
-  .c-family{background:linear-gradient(155deg,var(--clay),var(--clay-dark))}
-  .c-body{background:linear-gradient(155deg,#D8567F,#A83560)}
-  .c-actions{background:linear-gradient(155deg,var(--teal),var(--teal-dark))}
-  .c-numbers{background:linear-gradient(155deg,var(--sun),var(--sun-dark))}
-  .c-outside{background:linear-gradient(155deg,#4FA3D1,#2E6E96)}
+  .bar-track{background:var(--cream);height:9px;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+  .bar-fill{height:100%;background:linear-gradient(155deg,var(--sun),var(--sun-dark));border-radius:999px;transition:width .4s ease}
+  .cat-card .cap{display:flex;justify-content:space-between;margin-top:7px;font-size:.72rem;font-weight:700;color:var(--ink-soft)}
+  .cat-card .stickers{position:absolute;top:12px;left:12px;font-size:.75rem;font-weight:800;background:var(--cream);
+    color:var(--ink);border:1px solid var(--line);padding:3px 8px;border-radius:999px}
+  .c-animals .hero-chip{background:linear-gradient(155deg,var(--leaf),var(--leaf-dark))}
+  .c-food .hero-chip{background:linear-gradient(155deg,var(--berry),var(--berry-dark))}
+  .c-colors .hero-chip{background:linear-gradient(155deg,var(--grape),var(--grape-dark))}
+  .c-home .hero-chip{background:linear-gradient(155deg,var(--sky),var(--sky-dark))}
+  .c-family .hero-chip{background:linear-gradient(155deg,var(--clay),var(--clay-dark))}
+  .c-body .hero-chip{background:linear-gradient(155deg,#D8567F,#A83560)}
+  .c-actions .hero-chip{background:linear-gradient(155deg,var(--teal),var(--teal-dark))}
+  .c-numbers .hero-chip{background:linear-gradient(155deg,var(--sun),var(--sun-dark))}
+  .c-outside .hero-chip{background:linear-gradient(155deg,#4FA3D1,#2E6E96)}
+  .c-emotions .hero-chip{background:linear-gradient(155deg,var(--wood),var(--wood-dark))}
+  .c-mine .hero-chip{background:linear-gradient(155deg,var(--grape),var(--grape-dark))}
   .c-emotions{background:linear-gradient(155deg,#C9599E,#973576)}
   .c-mine{background:linear-gradient(155deg,#7A8CD0,#4E5FA6)}
 
@@ -133,6 +139,26 @@
   .game-card .gi{font-size:32px;flex:none}
   .game-card b{display:block;font-size:1rem;font-weight:900}
   .game-card small{color:var(--ink-soft);font-weight:600;font-size:.78rem}
+
+  /* ---- per-screen scenic backdrops (illustrated game environments) ---- */
+  body[data-view]{background-repeat:no-repeat;background-position:top center;background-size:cover;
+    background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%)}
+  body[data-view="quiz"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/quiz/talki-game-quiz-background.png')}
+  body[data-view="memory"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/memory/talki-game-memory-background.png')}
+  body[data-view="missing"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/missing-item/talki-game-missing-item-background.png')}
+  body[data-view="match"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/matching/talki-game-matching-background.png')}
+  body[data-view="cards"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/flashcards/talki-game-flashcards-background.png')}
+  body[data-view="bubbles"]{background-image:linear-gradient(180deg,rgba(247,240,223,.5),rgba(247,240,223,.93) 55%),url('assets/games/bubbles/talki-game-bubbles-background.png')}
+  body[data-view="sounds"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/animal-sounds/talki-game-animal-sounds-background.png')}
+  body[data-view="count"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/counting/talki-game-counting-background.png')}
+  body[data-view="sort"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/sorting/talki-game-sorting-background.png')}
+  body[data-view="focus"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-focus-word.png')}
+  body[data-view="receptive"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-show-me.png')}
+  body[data-view="cloze"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-fill-sentence.png')}
+  body[data-view="temptation"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-repetition-jar.png')}
+  body[data-view="pairs"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-minimal-pairs.png')}
+  body[data-view="combine"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-two-word.png')}
+  body[data-view="speech"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-show-me.png')}
 
   .cat-header{position:sticky;top:var(--barh,68px);z-index:20;background:var(--cream);padding:8px 2px 14px;
     display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
@@ -178,7 +204,10 @@
   .b-sky{background:linear-gradient(155deg,var(--sky),var(--sky-dark));box-shadow:0 4px 0 var(--sky-dark)}
   .b-berry{background:linear-gradient(155deg,var(--berry),var(--berry-dark));box-shadow:0 4px 0 var(--berry-dark)}
   .b-leaf{background:linear-gradient(155deg,var(--leaf),var(--leaf-dark));box-shadow:0 4px 0 var(--leaf-dark)}
+  .b-grape{background:linear-gradient(155deg,var(--grape),var(--grape-dark));box-shadow:0 4px 0 var(--grape-dark)}
+  .b-wood{background:linear-gradient(155deg,var(--wood),var(--wood-dark));box-shadow:0 4px 0 var(--wood-dark)}
   .big-btn:active{transform:translateY(3px);box-shadow:none}
+  .reward-star{width:clamp(34px,7vw,46px);height:clamp(34px,7vw,46px);object-fit:contain;margin:0 2px;filter:drop-shadow(0 2px 0 rgba(58,46,77,.15))}
 
   .opt-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(10px,1.5vw,18px);
     max-width:min(680px,94vw);margin:0 auto}
@@ -215,7 +244,7 @@
   .match-item.done{border-color:var(--leaf);background:#EAFBF2;opacity:.55;pointer-events:none}
 
   .done-card{background:var(--paper);border:3px solid var(--sun);border-radius:26px;padding:32px 20px;max-width:430px;
-    margin:20px auto;box-shadow:var(--shadow);text-align:center}
+    margin:20px auto;box-shadow:var(--shadow);text-align:center;position:relative}
   .done-card .big{font-size:2.8rem;margin-bottom:6px}
   .done-card h3{margin:0 0 6px;font-size:1.25rem}
   .done-card p{color:var(--ink-soft);font-weight:600;margin:0 0 16px}
@@ -263,7 +292,7 @@
   .empty{text-align:center;padding:36px 16px;color:var(--ink-soft);font-weight:700}
   .empty .e-em{font-size:3rem;display:block;margin-bottom:10px}
 
-  .toast{position:fixed;bottom:22px;right:50%;transform:translateX(50%);background:var(--ink);color:#fff;
+  .toast{position:fixed;bottom:calc(22px + var(--ad-h,0px));right:50%;transform:translateX(50%);background:var(--ink);color:#fff;
     padding:11px 20px;border-radius:999px;font-weight:800;font-size:.88rem;z-index:80;opacity:0;transition:opacity .25s;pointer-events:none}
   .toast.show{opacity:1}
 
@@ -318,19 +347,21 @@
   .mod.sel{border-color:var(--grape);background:#F3EDFC}
   .phrase-out{font-size:1.6rem;font-weight:900;font-family:'Rubik',sans-serif;text-align:center;margin:14px 0;min-height:2rem;color:var(--grape-dark)}
   /* start gate: also the gesture that unlocks audio on iOS */
-  .gate{position:fixed;inset:0;z-index:90;background:var(--cream);
+  .gate{position:fixed;inset:0;z-index:90;background:var(--cream) center/cover no-repeat url('assets/world/backgrounds/talki-world-day-field-background.png');
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center}
-  .gate h2{font-size:clamp(1.5rem,5vw,2.4rem);margin:0;color:var(--berry-dark);font-weight:900}
+  .gate::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(247,240,223,.35),rgba(247,240,223,.82) 75%)}
+  .gate>*{position:relative}
+  .gate h2{font-size:clamp(1.5rem,5vw,2.4rem);margin:0;color:var(--grape-dark);font-weight:900}
   .gate p{margin:0;color:var(--ink-soft);font-weight:700;max-width:22rem}
   .gate .mark{width:clamp(110px,26vw,170px);height:clamp(110px,26vw,170px);border-radius:34px;
-    background:linear-gradient(155deg,var(--berry),var(--grape));display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(155deg,var(--grape),var(--grape-dark));display:flex;align-items:center;justify-content:center;
     font-size:clamp(3.4rem,9vw,5rem);box-shadow:var(--shadow);transform:rotate(-6deg)}
   .gate button{border:none;border-radius:999px;padding:16px 44px;font-size:1.25rem;font-weight:900;color:#fff;
-    background:linear-gradient(155deg,var(--berry),var(--berry-dark));box-shadow:0 6px 0 var(--berry-dark)}
+    background:linear-gradient(155deg,var(--wood),var(--wood-dark));box-shadow:0 6px 0 var(--wood-dark)}
   .gate button:active{transform:translateY(4px);box-shadow:none}
   /* ---- כּוֹכִי the mascot ---- */
   .mascot-wrap{display:inline-block;line-height:0}
-  .mascot-wrap svg{width:100%;height:100%;overflow:visible}
+  .mascot-wrap svg,.mascot-wrap img{width:100%;height:100%;overflow:visible;object-fit:contain}
   .mascot-idle{animation:float 3.4s ease-in-out infinite}
   .mascot-cheer{animation:jump .7s cubic-bezier(.3,1.6,.5,1) infinite}
   .mascot-listen{animation:tilt 1.8s ease-in-out infinite}
@@ -574,11 +605,11 @@
 
 <script>
 /* ---- generated art: mascot + category patterns (see make_art.py) ---- */
-const MASCOT = {"idle": "<svg viewBox=\"0 0 120 120\" xmlns=\"http://www.w3.org/2000/svg\" class=\"mascot mascot-idle\" aria-hidden=\"true\">\n  <defs>\n    <linearGradient id=\"mg-idle\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0\" stop-color=\"#FFD35C\"/><stop offset=\"1\" stop-color=\"#FFB627\"/>\n    </linearGradient>\n  </defs>\n  <path d=\"M67.6,21.5Q75.3,37.0 92.4,39.4Q109.5,41.9 97.1,54.0Q84.7,66.0 87.6,83.1Q90.6,100.1 75.3,92.0Q60.0,84.0 44.7,92.0Q29.4,100.1 32.4,83.1Q35.3,66.0 22.9,54.0Q10.5,41.9 27.6,39.4Q44.7,37.0 52.4,21.5Q60.0,6.0 67.6,21.5Z\" fill=\"url(#mg-idle)\" stroke=\"#E89A00\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  \n  <ellipse cx=\"38\" cy=\"64\" rx=\"6\" ry=\"4\" fill=\"#F4A0BC\" opacity=\".75\"/>\n  <ellipse cx=\"82\" cy=\"64\" rx=\"6\" ry=\"4\" fill=\"#F4A0BC\" opacity=\".75\"/>\n      <ellipse cx=\"46\" cy=\"54\" rx=\"5\" ry=\"6.5\" fill=\"#33263D\"/>\n      <ellipse cx=\"74\" cy=\"54\" rx=\"5\" ry=\"6.5\" fill=\"#33263D\"/>\n      <circle cx=\"47.6\" cy=\"51.6\" r=\"1.8\" fill=\"#fff\"/><circle cx=\"75.6\" cy=\"51.6\" r=\"1.8\" fill=\"#fff\"/>\n      <path d=\"M52,68 Q60,75 68,68\" stroke=\"#33263D\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\"/>\n</svg>", "cheer": "<svg viewBox=\"0 0 120 120\" xmlns=\"http://www.w3.org/2000/svg\" class=\"mascot mascot-cheer\" aria-hidden=\"true\">\n  <defs>\n    <linearGradient id=\"mg-cheer\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0\" stop-color=\"#FFD35C\"/><stop offset=\"1\" stop-color=\"#FFB627\"/>\n    </linearGradient>\n  </defs>\n  <path d=\"M67.6,21.5Q75.3,37.0 92.4,39.4Q109.5,41.9 97.1,54.0Q84.7,66.0 87.6,83.1Q90.6,100.1 75.3,92.0Q60.0,84.0 44.7,92.0Q29.4,100.1 32.4,83.1Q35.3,66.0 22.9,54.0Q10.5,41.9 27.6,39.4Q44.7,37.0 52.4,21.5Q60.0,6.0 67.6,21.5Z\" fill=\"url(#mg-cheer)\" stroke=\"#E89A00\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  \n  <ellipse cx=\"38\" cy=\"64\" rx=\"6\" ry=\"4\" fill=\"#F4A0BC\" opacity=\".75\"/>\n  <ellipse cx=\"82\" cy=\"64\" rx=\"6\" ry=\"4\" fill=\"#F4A0BC\" opacity=\".75\"/>\n      <path d=\"M40,54 Q46,47 52,54\" stroke=\"#33263D\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\"/>\n      <path d=\"M68,54 Q74,47 80,54\" stroke=\"#33263D\" stroke-width=\"3.4\" fill=\"none\" stroke-linecap=\"round\"/>\n      <path d=\"M51,66 Q60,80 69,66 Z\" fill=\"#33263D\"/>\n      <path d=\"M55,72 Q60,77 65,72 Z\" fill=\"#E8447A\"/>\n</svg>", "listen": "<svg viewBox=\"0 0 120 120\" xmlns=\"http://www.w3.org/2000/svg\" class=\"mascot mascot-listen\" aria-hidden=\"true\">\n  <defs>\n    <linearGradient id=\"mg-listen\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0\" stop-color=\"#FFD35C\"/><stop offset=\"1\" stop-color=\"#FFB627\"/>\n    </linearGradient>\n  </defs>\n  <path d=\"M67.6,21.5Q75.3,37.0 92.4,39.4Q109.5,41.9 97.1,54.0Q84.7,66.0 87.6,83.1Q90.6,100.1 75.3,92.0Q60.0,84.0 44.7,92.0Q29.4,100.1 32.4,83.1Q35.3,66.0 22.9,54.0Q10.5,41.9 27.6,39.4Q44.7,37.0 52.4,21.5Q60.0,6.0 67.6,21.5Z\" fill=\"url(#mg-listen)\" stroke=\"#E89A00\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  \n  <ellipse cx=\"38\" cy=\"64\" rx=\"6\" ry=\"4\" fill=\"#F4A0BC\" opacity=\".75\"/>\n  <ellipse cx=\"82\" cy=\"64\" rx=\"6\" ry=\"4\" fill=\"#F4A0BC\" opacity=\".75\"/>\n      <ellipse cx=\"46\" cy=\"53\" rx=\"6.2\" ry=\"7.6\" fill=\"#33263D\"/>\n      <ellipse cx=\"74\" cy=\"53\" rx=\"6.2\" ry=\"7.6\" fill=\"#33263D\"/>\n      <circle cx=\"48\" cy=\"50\" r=\"2.2\" fill=\"#fff\"/><circle cx=\"76\" cy=\"50\" r=\"2.2\" fill=\"#fff\"/>\n      <ellipse cx=\"60\" cy=\"70\" rx=\"5\" ry=\"6\" fill=\"#33263D\"/>\n</svg>", "think": "<svg viewBox=\"0 0 120 120\" xmlns=\"http://www.w3.org/2000/svg\" class=\"mascot mascot-think\" aria-hidden=\"true\">\n  <defs>\n    <linearGradient id=\"mg-think\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0\" stop-color=\"#FFD35C\"/><stop offset=\"1\" stop-color=\"#FFB627\"/>\n    </linearGradient>\n  </defs>\n  <path d=\"M67.6,21.5Q75.3,37.0 92.4,39.4Q109.5,41.9 97.1,54.0Q84.7,66.0 87.6,83.1Q90.6,100.1 75.3,92.0Q60.0,84.0 44.7,92.0Q29.4,100.1 32.4,83.1Q35.3,66.0 22.9,54.0Q10.5,41.9 27.6,39.4Q44.7,37.0 52.4,21.5Q60.0,6.0 67.6,21.5Z\" fill=\"url(#mg-think)\" stroke=\"#E89A00\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  \n  <ellipse cx=\"38\" cy=\"64\" rx=\"6\" ry=\"4\" fill=\"#F4A0BC\" opacity=\".75\"/>\n  <ellipse cx=\"82\" cy=\"64\" rx=\"6\" ry=\"4\" fill=\"#F4A0BC\" opacity=\".75\"/>\n      <ellipse cx=\"46\" cy=\"55\" rx=\"5\" ry=\"6\" fill=\"#33263D\"/>\n      <ellipse cx=\"74\" cy=\"54\" rx=\"5\" ry=\"6.5\" fill=\"#33263D\"/>\n      <path d=\"M68,43 Q74,39 80,43\" stroke=\"#33263D\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/>\n      <path d=\"M53,69 Q60,72 67,69\" stroke=\"#33263D\" stroke-width=\"3.2\" fill=\"none\" stroke-linecap=\"round\"/>\n</svg>", "sleep": "<svg viewBox=\"0 0 120 120\" xmlns=\"http://www.w3.org/2000/svg\" class=\"mascot mascot-sleep\" aria-hidden=\"true\">\n  <defs>\n    <linearGradient id=\"mg-sleep\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n      <stop offset=\"0\" stop-color=\"#FFD35C\"/><stop offset=\"1\" stop-color=\"#FFB627\"/>\n    </linearGradient>\n  </defs>\n  <path d=\"M67.6,21.5Q75.3,37.0 92.4,39.4Q109.5,41.9 97.1,54.0Q84.7,66.0 87.6,83.1Q90.6,100.1 75.3,92.0Q60.0,84.0 44.7,92.0Q29.4,100.1 32.4,83.1Q35.3,66.0 22.9,54.0Q10.5,41.9 27.6,39.4Q44.7,37.0 52.4,21.5Q60.0,6.0 67.6,21.5Z\" fill=\"url(#mg-sleep)\" stroke=\"#E89A00\" stroke-width=\"3\" stroke-linejoin=\"round\"/>\n  \n  <ellipse cx=\"38\" cy=\"64\" rx=\"6\" ry=\"4\" fill=\"#F4A0BC\" opacity=\".75\"/>\n  <ellipse cx=\"82\" cy=\"64\" rx=\"6\" ry=\"4\" fill=\"#F4A0BC\" opacity=\".75\"/>\n      <path d=\"M40,55 Q46,60 52,55\" stroke=\"#33263D\" stroke-width=\"3.2\" fill=\"none\" stroke-linecap=\"round\"/>\n      <path d=\"M68,55 Q74,60 80,55\" stroke=\"#33263D\" stroke-width=\"3.2\" fill=\"none\" stroke-linecap=\"round\"/>\n      <ellipse cx=\"60\" cy=\"70\" rx=\"4\" ry=\"5\" fill=\"#33263D\" opacity=\".8\"/>\n</svg>"};
+const MASCOT_IMG = {idle:"assets/mascot/talki-mascot-waving.png",cheer:"assets/mascot/talki-mascot-celebrating.png",listen:"assets/mascot/talki-mascot-listening.png",think:"assets/mascot/talki-mascot-thinking.png",sleep:"assets/mascot/talki-mascot-neutral.png",point:"assets/mascot/talki-mascot-pointing.png",speak:"assets/mascot/talki-mascot-speaking.png",encourage:"assets/mascot/talki-mascot-encouraging.png",star:"assets/mascot/talki-mascot-holding-star.png",happy:"assets/mascot/talki-mascot-happy.png"};
 const CAT_ART = {"animals": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Ccircle%20cx%3D%2218%22%20cy%3D%2222%22%20r%3D%224%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.30%29%22/%3E%3Ccircle%20cx%3D%2228%22%20cy%3D%2216%22%20r%3D%224%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.30%29%22/%3E%3Ccircle%20cx%3D%2238%22%20cy%3D%2222%22%20r%3D%224%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.30%29%22/%3E%3Cellipse%20cx%3D%2228%22%20cy%3D%2234%22%20rx%3D%229%22%20ry%3D%227%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.30%29%22/%3E%3C/svg%3E')", "food": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2215%22%20r%3D%225%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.28%29%22/%3E%3Ccircle%20cx%3D%2245%22%20cy%3D%2235%22%20r%3D%227%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.28%29%22/%3E%3Ccircle%20cx%3D%2228%22%20cy%3D%2246%22%20r%3D%223.5%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.28%29%22/%3E%3C/svg%3E')", "colors": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Crect%20x%3D%2210%22%20y%3D%2210%22%20width%3D%2214%22%20height%3D%2214%22%20rx%3D%223%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3Ccircle%20cx%3D%2242%22%20cy%3D%2220%22%20r%3D%227%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3Cpath%20d%3D%22M20%2C50%20L30%2C34%20L40%2C50%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')", "home": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M14%2C34%20L26%2C22%20L38%2C34%20V46%20H14%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3Crect%20x%3D%2242%22%20y%3D%2230%22%20width%3D%2212%22%20height%3D%2216%22%20rx%3D%222%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')", "family": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M28%2C44%20C10%2C30%2014%2C16%2024%2C16%20C28%2C16%2028%2C20%2028%2C20%20C28%2C20%2028%2C16%2032%2C16%20C42%2C16%2046%2C30%2028%2C44%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')", "body": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%2214%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.27%29%22%20stroke-width%3D%224%22/%3E%3Ccircle%20cx%3D%2225%22%20cy%3D%2226%22%20r%3D%222.5%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3Ccircle%20cx%3D%2235%22%20cy%3D%2226%22%20r%3D%222.5%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3Cpath%20d%3D%22M24%2C35%20Q30%2C40%2036%2C35%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.27%29%22%20stroke-width%3D%223%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E')", "actions": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M0%2C30%20Q15%2C18%2030%2C30%20T60%2C30%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.32%29%22%20stroke-width%3D%225%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E')", "numbers": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Crect%20x%3D%2212%22%20y%3D%2214%22%20width%3D%226%22%20height%3D%2220%22%20rx%3D%223%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.28%29%22/%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2224%22%20r%3D%2210%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.28%29%22%20stroke-width%3D%225%22/%3E%3C/svg%3E')", "outside": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M14%2C46%20C14%2C26%2030%2C14%2046%2C14%20C46%2C34%2030%2C46%2014%2C46%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')", "emotions": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M30%2C12%20L34%2C26%20L48%2C30%20L34%2C34%20L30%2C48%20L26%2C34%20L12%2C30%20L26%2C26%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')", "mine": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M28%2C44%20C10%2C30%2014%2C16%2024%2C16%20C28%2C16%2028%2C20%2028%2C20%20C28%2C20%2028%2C16%2032%2C16%20C42%2C16%2046%2C30%2028%2C44%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')"};
 function mascot(mood, size){
-  const svg = MASCOT[mood] || MASCOT.idle;
-  return `<span class="mascot-wrap" style="width:${size||96}px;height:${size||96}px">${svg}</span>`;
+  const src = MASCOT_IMG[mood] || MASCOT_IMG.idle;
+  return `<span class="mascot-wrap mascot-${mood}" style="width:${size||96}px;height:${size||96}px"><img src="${src}" alt="" draggable="false"></span>`;
 }
 
 /* ============================================================
@@ -1143,20 +1174,27 @@ function render(){
   clearTimeout(clozeTimer);
   if(view!=='cloze' && speechOk) window.speechSynthesis.cancel();
   if(view!=='bubbles' && bubbleTimer){ clearInterval(bubbleTimer); bubbleTimer=null; }
+  if(views[view]) document.body.dataset.view = view; else delete document.body.dataset.view;
   app.innerHTML = (views[view]||renderHome)();
   bind();
   syncBarHeight();
   window.scrollTo({top:0,behavior:'instant'});
 }
 
+const REP_IMG = {
+  animals:art('animals','rabbit'), food:art('food','apple'), colors:art('colors','red'),
+  home:art('home','ball'), family:art('family','mom'), body:art('body','heart'),
+  actions:art('actions','jumping'), numbers:art('numbers','five'), outside:art('outside','sun'),
+  emotions:art('emotions','happy')
+};
 function renderHome(){
   const cards = allCats().map(cat=>{
     const done = catLearned(cat), tot = cat.items.length;
     const pct = tot ? Math.round(done/tot*100) : 0;
-    return `<button class="cat-card ${cat.cls}" data-cat="${cat.id}"
-              style="--art:${CAT_ART[cat.id]||CAT_ART.mine}">
+    const rep = REP_IMG[cat.id];
+    return `<button class="cat-card ${cat.cls}" data-cat="${cat.id}">
       <div class="stickers">⭐ ${done}/${tot}</div>
-      <span class="glyph">${cat.icon}</span>
+      <div class="hero-chip">${rep?`<img src="${rep}" alt="">`:`<span class="glyph" style="font-size:34px">${cat.icon}</span>`}</div>
       <div class="name">${display(cat.title)}</div>
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
       <div class="cap"><span>${tot? 'לוחצים ולומדים':'עוד אין מילים'}</span><span>${pct}%</span></div>
@@ -1552,10 +1590,10 @@ let clozeTimer = null;
 function renderFocus(){
   if(!game || game.type!=='focus'){ if(!startGame('focus', activeCat)) return renderHome(); }
   if(game.done) return gameHeader('🎯 מילה במיקוד') +
-    `<div class="done-card">${mascot('cheer', 96)}<div class="big">🌟</div><h3>סיימנו את ${display(game.it.word)}</h3>
+    `<div class="done-card">${mascot('cheer', 96)}<div class="big"><img class="reward-star" src="assets/rewards/talki-reward-star-gold.png" alt=""></div><h3>סיימנו את ${display(game.it.word)}</h3>
       <p>המילה נשמעה ${game.total} פעמים במשפטים שונים</p>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="big-btn b-berry" data-nextword="1">מילה הבאה</button>
+        <button class="big-btn b-grape" data-nextword="1">מילה הבאה</button>
         <button class="pill-btn" data-nav="home">🏠 הביתה</button></div></div>`;
   const phrase = CARRIERS[game.step].replace('{w}', display(game.it.word));
   const dots = CARRIERS.map((_,i)=>`<i class="${i<=game.step?'on':''}"></i>`).join('');
@@ -1624,7 +1662,7 @@ function renderTemptation(){
         `<div style="opacity:.35;font-size:2.2rem;margin-top:-70px;position:relative;z-index:-1">${it.emoji||''}</div>`}
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
         ${game.opened
-          ? `<button class="big-btn b-berry" data-temptnext="1">הצנצנת הבאה ◀</button>`
+          ? `<button class="big-btn b-grape" data-temptnext="1">הצנצנת הבאה ◀</button>`
           : `<button class="big-btn b-berry" data-temptmic="1">${game.listening?'<span class="rec-dot"></span> מקשיבים...':'🎤 להקשיב'}</button>
              <button class="pill-btn" data-temptopen="1">👐 לפתוח</button>`}
       </div>
@@ -1689,12 +1727,14 @@ function renderCombine(){
 
 function doneCard(score, total, best, extra){
   const ratio = total ? score/total : 0;
-  const stars = ratio>=0.85?'🌟🌟🌟':ratio>=0.5?'🌟🌟':'🌟';
+  const filled = ratio>=0.85?3:ratio>=0.5?2:1;
+  const stars = [0,1,2].map(i=>
+    `<img class="reward-star" src="assets/rewards/talki-reward-star-${i<filled?'gold':'empty'}.png" alt="">`).join('');
   return `<div class="done-card">${mascot('cheer', 96)}<div class="big">${stars}</div>
     <h3>כל הכבוד!</h3>
     <p>${score} מתוך ${total}${best?` • רצף הכי טוב: ${best}`:''}${extra?` • ${extra}`:''}</p>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <button class="big-btn b-berry" data-again="1">לשחק שוב</button>
+      <button class="big-btn b-grape" data-again="1">לשחק שוב</button>
       <button class="pill-btn" data-nav="home">🏠 הביתה</button></div></div>`;
 }
 
@@ -1730,7 +1770,13 @@ function renderLock(){
   </div>`;
 }
 function parentSettings(){
+  const native = !!(window.Capacitor && typeof Capacitor.isNativePlatform==='function' && Capacitor.isNativePlatform());
   const sw = (id,on)=>`<button class="switch ${on?'on':''}" data-toggle="${id}"><i></i></button>`;
+  const install = native ? '' : `<div class="panel"><h3>התקנה על מסך הבית</h3>
+    <div class="note">אנדרואיד/כרום: תפריט ⋮ ← "הוספה למסך הבית".<br>
+    אייפון: שיתוף ⬆️ ← "הוספה למסך הבית". האפליקציה תיפתח במסך מלא, בלי סרגל דפדפן.</div>
+    <div style="margin-top:12px"><button class="pill-btn" id="installBtn">📲 התקנה</button></div>
+  </div>`;
   return `<div class="panel"><h3>הקראה ותצוגה</h3>
     <div class="row"><div class="lbl"><b>מהירות דיבור</b><small>איטי עוזר לילדים להתחיל לחקות</small></div>
       <div class="seg">${[['0.6','🐢 איטי'],['0.85','🐇 רגיל'],['1','⚡ מהיר']].map(([v,t])=>
@@ -1743,11 +1789,7 @@ function parentSettings(){
     <div class="row"><div class="lbl"><b>צלילי פידבק</b><small>צליל בתשובה נכונה ושגויה</small></div>${sw('sounds',settings.sounds)}</div>
     <div class="row"><div class="lbl"><b>קונפטי ואנימציות</b><small>אפשר לכבות אם זה מסיח דעת</small></div>${sw('effects',settings.effects)}</div>
   </div>
-  <div class="panel"><h3>התקנה על מסך הבית</h3>
-    <div class="note">אנדרואיד/כרום: תפריט ⋮ ← "הוספה למסך הבית".<br>
-    אייפון: שיתוף ⬆️ ← "הוספה למסך הבית". האפליקציה תיפתח במסך מלא, בלי סרגל דפדפן.</div>
-    <div style="margin-top:12px"><button class="pill-btn" id="installBtn">📲 התקנה</button></div>
-  </div>
+  ${install}
   <div class="panel"><h3>גיבוי ושחזור</h3>
     <p style="color:var(--ink-soft);font-weight:600;font-size:.86rem;margin-top:0">
       הכול נשמר על המכשיר הזה בלבד. קובץ גיבוי אחד מכיל את ההתקדמות, ההגדרות, המילים האישיות וכל ההקלטות.</p>
@@ -1762,6 +1804,11 @@ function parentSettings(){
           <input type="file" id="importReplace" accept="application/json,.json" style="display:none"></label>
       </div></div>
     <div id="storageInfo" class="note" style="margin-top:12px">בודקים את שיטת האחסון...</div>
+  </div>
+  <div class="panel"><h3>פרטיות</h3>
+    <p style="color:var(--ink-soft);font-weight:600;font-size:.86rem;margin-top:0">
+      אין חשבון ואין שרת. מילים והקלטות נשארות במכשיר. בגרסת החנות מוצג באנר מודעות לילדים (לא מותאם אישית).</p>
+    <a class="pill-btn" href="https://yonicks.github.io/talki/privacy.html" target="_blank" rel="noopener">מדיניות פרטיות</a>
   </div>
   <div class="panel"><h3>איפוס</h3>
     <div class="row"><div class="lbl"><b>איפוס התקדמות</b><small>מוחק מדבקות וסטטיסטיקות בלבד</small></div>
@@ -2450,12 +2497,67 @@ async function keepAwake(){
 function lockPortrait(){
   try{ if(screen.orientation && screen.orientation.lock) screen.orientation.lock('portrait').catch(()=>{}); }catch(e){}
 }
+
+/* AdMob only runs inside the Capacitor Android/iOS wrapper — never in the browser PWA.
+   Uses Google sample ad units until you paste real IDs from https://admob.google.com
+   Requests are tagged child-directed + G-rated + non-personalized (COPPA). */
+const ADMOB = {
+  banner: 'ca-app-pub-3940256099942544/6300978111'
+};
+function nativeAdMob(){
+  const Cap = window.Capacitor;
+  if(!Cap || typeof Cap.isNativePlatform !== 'function' || !Cap.isNativePlatform()) return null;
+  if(Cap.Plugins && Cap.Plugins.AdMob) return Cap.Plugins.AdMob;
+  if(typeof Cap.registerPlugin === 'function') return Cap.registerPlugin('AdMob');
+  return null;
+}
+async function startAds(){
+  const AdMob = nativeAdMob();
+  if(!AdMob) return;
+  try{
+    await AdMob.initialize({
+      tagForChildDirectedTreatment: true,
+      maxAdContentRating: 'General'
+    });
+    if(typeof AdMob.addListener === 'function'){
+      AdMob.addListener('bannerAdSizeChanged', size => {
+        const h = size && (size.height || size.adHeight);
+        if(h) document.documentElement.style.setProperty('--ad-h', h+'px');
+      });
+    }
+    await AdMob.showBanner({
+      adId: ADMOB.banner,
+      adSize: 'ADAPTIVE_BANNER',
+      position: 'BOTTOM_CENTER',
+      margin: 0,
+      npa: true
+    });
+    document.body.classList.add('has-ad');
+    if(!document.documentElement.style.getPropertyValue('--ad-h')){
+      document.documentElement.style.setProperty('--ad-h', '50px');
+    }
+  }catch(e){ console.warn('AdMob', e); }
+}
+async function polishNativeShell(){
+  const Cap = window.Capacitor;
+  if(!Cap || typeof Cap.isNativePlatform !== 'function' || !Cap.isNativePlatform()) return;
+  const plugins = Cap.Plugins || {};
+  try{
+    if(plugins.StatusBar && plugins.StatusBar.setStyle) await plugins.StatusBar.setStyle({style:'DARK'});
+    if(plugins.StatusBar && plugins.StatusBar.setBackgroundColor) await plugins.StatusBar.setBackgroundColor({color:'#FFF6E4'});
+  }catch(e){}
+  try{
+    if(plugins.SplashScreen && plugins.SplashScreen.hide) await plugins.SplashScreen.hide();
+  }catch(e){}
+}
+
 document.getElementById('gateMascot').innerHTML = mascot('idle', 190);
 document.getElementById('gateBtn').addEventListener('click', ()=>{
   unlockAudio();
   keepAwake();
   lockPortrait();
   if(settings.music) startMusic();
+  startAds();
   const g = document.getElementById('gate');
   g.style.transition = 'opacity .3s'; g.style.opacity = '0';
   setTimeout(()=>g.remove(), 320);
@@ -2505,6 +2607,7 @@ document.addEventListener('keydown', e=>{
 
 loadAll().then(()=>{
   syncBarHeight(); syncSpeedIcon(); syncMusicIcon();
+  polishNativeShell();
   if(settings.music){
     const kick = ()=>{ startMusic(); document.removeEventListener('pointerdown', kick); };
     document.addEventListener('pointerdown', kick, {once:true});
