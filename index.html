@@ -2787,13 +2787,25 @@ if('serviceWorker' in navigator){
 }
 
 /* ---------- Header buttons ---------- */
+/* single source of truth for --barh: guarded so it only ever touches the
+   DOM when the measured height actually changed, instead of writing (and
+   thereby re-triggering the ResizeObserver below) on every single resize
+   tick regardless of whether anything moved. */
+let lastBarH = null;
 function syncBarHeight(){
   const bar = document.querySelector('.topbar');
-  if(bar) document.documentElement.style.setProperty('--barh', Math.round(bar.getBoundingClientRect().height)+'px');
+  if(!bar) return;
+  const h = Math.round(bar.getBoundingClientRect().height);
+  if(h === lastBarH) return;
+  lastBarH = h;
+  document.documentElement.style.setProperty('--barh', h+'px');
 }
 window.addEventListener('resize', syncBarHeight);
 window.addEventListener('orientationchange', ()=>setTimeout(syncBarHeight,120));
 if(window.visualViewport) window.visualViewport.addEventListener('resize', syncBarHeight);
+if(window.ResizeObserver){
+  try{ new ResizeObserver(syncBarHeight).observe(document.querySelector('.topbar')); }catch(e){}
+}
 
 function syncSpeedIcon(){
   document.getElementById('speedBtn').textContent = settings.rate<=0.6 ? '🐢' : settings.rate>=1 ? '⚡' : '🐇';
@@ -2928,16 +2940,9 @@ document.addEventListener('touchend', e=>{
 }, {passive:false});
 
 /* ---------- responsive helpers ---------- */
-function measureBar(){
-  const bar = document.querySelector('.topbar');
-  if(bar) document.documentElement.style.setProperty('--barh', bar.offsetHeight+'px');
-}
-window.addEventListener('resize', ()=>{ measureBar(); if(view==='bubbles') render(); });
-window.addEventListener('orientationchange', ()=> setTimeout(()=>{ measureBar(); render(); }, 250));
-if(window.ResizeObserver){
-  try{ new ResizeObserver(measureBar).observe(document.querySelector('.topbar')); }catch(e){}
-}
-measureBar();
+window.addEventListener('resize', ()=>{ if(view==='bubbles') render(); });
+window.addEventListener('orientationchange', ()=> setTimeout(render, 250));
+syncBarHeight();
 
 /* keyboard support (desktop): arrows move flashcards, space/enter speaks, Esc goes home */
 document.addEventListener('keydown', e=>{
