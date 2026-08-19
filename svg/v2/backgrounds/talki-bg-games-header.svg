@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400">
+<defs>
+  <linearGradient id="starGrad" x1="0" y1="0" x2="0.9" y2="1">
+    <stop offset="0%" stop-color="#FFE38B"/><stop offset="52%" stop-color="#FFD66B"/><stop offset="100%" stop-color="#F5A63A"/>
+  </linearGradient>
+  <linearGradient id="purpleGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#7C4CD6"/><stop offset="100%" stop-color="#6D3BA6"/>
+  </linearGradient>
+  <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#DDF7FB"/><stop offset="100%" stop-color="#FFF5DE"/>
+  </linearGradient>
+  <linearGradient id="pinkSky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#FBE7F0"/><stop offset="100%" stop-color="#FFF7E8"/>
+  </linearGradient>
+  <linearGradient id="mintGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#B7E7D8"/><stop offset="100%" stop-color="#73C5AC"/>
+  </linearGradient>
+  <radialGradient id="shine" cx="35%" cy="25%" r="70%">
+    <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".72"/><stop offset="55%" stop-color="#FFFFFF" stop-opacity=".12"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+    <feOffset dy="10"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".22"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="smallShadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="5"/><feOffset dy="5"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".18"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs><rect width="1200" height="400" fill="#FFF7ED"/><rect width="1200" height="400" fill="url(#skyGrad)"/><g opacity=".9"><circle cx="190" cy="92" r="42" fill="white"/><circle cx="235" cy="80" r="58" fill="white"/><circle cx="290" cy="95" r="38" fill="white"/><rect x="155" y="95" width="175" height="42" rx="21" fill="white"/></g><g opacity=".7"><circle cx="820" cy="80" r="30" fill="white"/><circle cx="855" cy="70" r="42" fill="white"/><circle cx="895" cy="82" r="28" fill="white"/><rect x="795" y="84" width="130" height="34" rx="17" fill="white"/></g><path d="M0 295 Q220 220 420 290 T820 270 T1200 290 V400 H0 Z" fill="#BCE5B6"/><path d="M0 335 Q260 275 520 332 T920 315 T1200 340 V400 H0 Z" fill="#8ED09A"/><path d="M60 385 Q54 350 60 323" stroke="#63A66D" stroke-width="7"/><circle cx="60" cy="313" r="13" fill="#F4AFC4"/><circle cx="48" cy="323" r="13" fill="#F4AFC4"/><circle cx="72" cy="323" r="13" fill="#F4AFC4"/><path d="M115 385 Q109 350 115 323" stroke="#63A66D" stroke-width="7"/><circle cx="115" cy="313" r="13" fill="#FFD75A"/><circle cx="103" cy="323" r="13" fill="#FFD75A"/><circle cx="127" cy="323" r="13" fill="#FFD75A"/><path d="M175 385 Q169 350 175 323" stroke="#63A66D" stroke-width="7"/><circle cx="175" cy="313" r="13" fill="#8FD3C1"/><circle cx="163" cy="323" r="13" fill="#8FD3C1"/><circle cx="187" cy="323" r="13" fill="#8FD3C1"/><path d="M1020 385 Q1014 350 1020 323" stroke="#63A66D" stroke-width="7"/><circle cx="1020" cy="313" r="13" fill="#F28D6A"/><circle cx="1008" cy="323" r="13" fill="#F28D6A"/><circle cx="1032" cy="323" r="13" fill="#F28D6A"/><path d="M1080 385 Q1074 350 1080 323" stroke="#63A66D" stroke-width="7"/><circle cx="1080" cy="313" r="13" fill="#7C4CD6"/><circle cx="1068" cy="323" r="13" fill="#7C4CD6"/><circle cx="1092" cy="323" r="13" fill="#7C4CD6"/><path d="M1140 385 Q1134 350 1140 323" stroke="#63A66D" stroke-width="7"/><circle cx="1140" cy="313" r="13" fill="#F4AFC4"/><circle cx="1128" cy="323" r="13" fill="#F4AFC4"/><circle cx="1152" cy="323" r="13" fill="#F4AFC4"/><rect x="110" y="110" width="54" height="210" rx="16" fill="#8E603C"/><circle cx="135" cy="90" r="95" fill="#6BB96B"/><rect x="185" y="155" width="140" height="105" rx="12" fill="#B77A3B"/><path d="M165 160 L255 95 L345 160 Z" fill="#8B5D33"/><rect x="240" y="195" width="45" height="65" fill="#6E4E32"/><rect x="1018" y="105" width="58" height="215" rx="16" fill="#8E603C"/><circle cx="1045" cy="88" r="100" fill="#65AE64"/><path d="M350 45 l32 0 l-16 35 z" fill="#FFD75A"/><path d="M470 45 l32 0 l-16 35 z" fill="#F4AFC4"/><path d="M590 45 l32 0 l-16 35 z" fill="#7C4CD6"/><path d="M710 45 l32 0 l-16 35 z" fill="#8FD3C1"/><path d="M830 45 l32 0 l-16 35 z" fill="#FFD75A"/><path d="M950 45 l32 0 l-16 35 z" fill="#F4AFC4"/></svg>

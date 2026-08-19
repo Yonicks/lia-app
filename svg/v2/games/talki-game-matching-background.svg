@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<defs>
+  <linearGradient id="starGrad" x1="0" y1="0" x2="0.9" y2="1">
+    <stop offset="0%" stop-color="#FFE38B"/><stop offset="52%" stop-color="#FFD66B"/><stop offset="100%" stop-color="#F5A63A"/>
+  </linearGradient>
+  <linearGradient id="purpleGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#7C4CD6"/><stop offset="100%" stop-color="#6D3BA6"/>
+  </linearGradient>
+  <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#DDF7FB"/><stop offset="100%" stop-color="#FFF5DE"/>
+  </linearGradient>
+  <linearGradient id="pinkSky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#FBE7F0"/><stop offset="100%" stop-color="#FFF7E8"/>
+  </linearGradient>
+  <linearGradient id="mintGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#B7E7D8"/><stop offset="100%" stop-color="#73C5AC"/>
+  </linearGradient>
+  <radialGradient id="shine" cx="35%" cy="25%" r="70%">
+    <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".72"/><stop offset="55%" stop-color="#FFFFFF" stop-opacity=".12"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+    <feOffset dy="10"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".22"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="smallShadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="5"/><feOffset dy="5"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".18"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs><rect width="1200" height="675" fill="#FFF7ED"/><rect width="1200" height="675" fill="#DDF7FB"/><rect y="360" width="1200" height="315" fill="#F7D59B"/><path d="M0 315 Q250 355 500 315 T1000 320 T1200 300 V430 H0 Z" fill="#7DD0E8"/><rect x="130" y="150" width="36" height="220" fill="#9A673F"/><path d="M148 150 Q60 180 30 270 Q130 235 148 150 Z" fill="#63B86B"/><path d="M148 150 Q235 185 270 270 Q175 235 148 150 Z" fill="#6FC274"/></svg>

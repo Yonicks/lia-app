@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#FFF6E4">
+<meta name="theme-color" content="#FFF8EA">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -26,13 +26,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#F7F0DF; --paper:#FFFDF8; --ink:#3A2E4D; --ink-soft:#6E6178;
-    --berry:#D9705C; --berry-dark:#B8543F; --sun:#E0A83E; --sun-dark:#C08726;
-    --leaf:#7FA363; --leaf-dark:#5C7A46; --sky:#7FA8C9; --sky-dark:#5580A3;
-    --grape:#5B4A8C; --grape-dark:#443368; --clay:#D97B4F; --clay-dark:#B85F38;
-    --teal:#4C8577; --teal-dark:#386258;
-    --wood:#9C6B41; --wood-dark:#6E4626;
-    --line:#E8D9A8; --shadow:0 6px 0 rgba(58,46,77,.14);
+    /* ---- Talki V2 design tokens ---- */
+    --cream:#FFF8EA; --paper:#FFFFFF; --ink:#3A2A52; --ink-soft:#7B6E8C;
+    --berry:#FF8FA8; --berry-dark:#E85E85; --sun:#FFD75A; --sun-dark:#E8B93A;
+    --leaf:#8FD3C1; --leaf-dark:#4FA893; --sky:#6FA3DE; --sky-dark:#3D78B5;
+    --grape:#7C4CD6; --grape-dark:#6D3BA6; --clay:#FFCDA1; --clay-dark:#F0A868;
+    --teal:#6FC2B4; --teal-dark:#3D8F82;
+    --wood:#8B5FC9; --wood-dark:#6D3BA6;
+    --line:#F1E4CE; --shadow:0 10px 24px rgba(109,59,166,.12),0 2px 6px rgba(58,42,82,.06);
+    /* V2 palette (referenced directly by new components) */
+    --v2-purple:#6D3BA6; --v2-purple-bright:#7C4CD6; --v2-mint:#8FD3C1;
+    --v2-peach:#FFCDA1; --v2-gold:#FFD75A; --v2-pink:#FFD9E6; --v2-pink-dark:#F2A8C4;
+    --v2-radius-card:18px; --v2-radius-btn:16px; --v2-radius-hero:24px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;overscroll-behavior:none}
@@ -79,8 +84,7 @@
     .progress-pill small{display:none}
   }
   .bar-right{display:flex;align-items:center;gap:7px}
-  .progress-pill{display:flex;align-items:center;gap:7px;background:var(--cream);border:2px solid var(--line);
-    border-radius:999px;padding:5px 11px 5px 7px}
+  .progress-pill{display:none}
   .progress-ring{width:28px;height:28px}
   .progress-pill b{font-size:.82rem}
   .progress-pill small{display:block;font-size:.6rem;color:var(--ink-soft);font-weight:600}
@@ -142,23 +146,28 @@
 
   /* ---- per-screen scenic backdrops (illustrated game environments) ---- */
   body[data-view]{background-repeat:no-repeat;background-position:top center;background-size:cover;
-    background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%)}
-  body[data-view="quiz"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/quiz/talki-game-quiz-background.png')}
-  body[data-view="memory"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/memory/talki-game-memory-background.png')}
-  body[data-view="missing"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/missing-item/talki-game-missing-item-background.png')}
-  body[data-view="match"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/matching/talki-game-matching-background.png')}
-  body[data-view="cards"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/flashcards/talki-game-flashcards-background.png')}
-  body[data-view="bubbles"]{background-image:linear-gradient(180deg,rgba(247,240,223,.5),rgba(247,240,223,.93) 55%),url('assets/games/bubbles/talki-game-bubbles-background.png')}
-  body[data-view="sounds"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/animal-sounds/talki-game-animal-sounds-background.png')}
-  body[data-view="count"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/counting/talki-game-counting-background.png')}
-  body[data-view="sort"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/games/sorting/talki-game-sorting-background.png')}
-  body[data-view="focus"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-focus-word.png')}
-  body[data-view="receptive"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-show-me.png')}
-  body[data-view="cloze"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-fill-sentence.png')}
-  body[data-view="temptation"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-repetition-jar.png')}
-  body[data-view="pairs"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-minimal-pairs.png')}
-  body[data-view="combine"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-two-word.png')}
-  body[data-view="speech"]{background-image:linear-gradient(180deg,rgba(247,240,223,.55),rgba(247,240,223,.95) 55%),url('assets/speech/talki-speech-background-show-me.png')}
+    background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.96) 45%)}
+  body[data-view="home"]{background-image:linear-gradient(180deg,rgba(255,248,234,.35),rgba(255,248,234,.97) 40%),url('assets/v2/backgrounds/talki-bg-home-hero.png')}
+  body[data-view="category"]{background-image:linear-gradient(180deg,rgba(255,248,234,.4),rgba(255,248,234,.97) 38%),url('assets/v2/backgrounds/talki-bg-category-header.png')}
+  body[data-view="practice"]{background-image:linear-gradient(180deg,rgba(255,248,234,.4),rgba(255,248,234,.97) 38%),url('assets/v2/backgrounds/talki-bg-practice-header.png')}
+  body[data-view="games"]{background-image:linear-gradient(180deg,rgba(255,248,234,.4),rgba(255,248,234,.97) 38%),url('assets/v2/backgrounds/talki-bg-games-header.png')}
+  body[data-view="stickers"]{background-image:linear-gradient(180deg,rgba(255,248,234,.4),rgba(255,248,234,.97) 38%),url('assets/v2/backgrounds/talki-bg-stickers-header.png')}
+  body[data-view="quiz"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/games/talki-game-quiz-background.png')}
+  body[data-view="memory"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/games/talki-game-memory-background.png')}
+  body[data-view="missing"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/games/talki-game-missing-item-background.png')}
+  body[data-view="match"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/games/talki-game-matching-background.png')}
+  body[data-view="cards"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/games/talki-game-flashcards-background.png')}
+  body[data-view="bubbles"]{background-image:linear-gradient(180deg,rgba(255,248,234,.55),rgba(255,248,234,.93) 55%),url('assets/v2/games/talki-game-matching-background.png')}
+  body[data-view="sounds"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/games/talki-game-animal-sounds-background.png')}
+  body[data-view="count"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/games/talki-game-counting-background.png')}
+  body[data-view="sort"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/games/talki-game-sorting-background.png')}
+  body[data-view="focus"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/speech/talki-speech-background-focus-word.png')}
+  body[data-view="receptive"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/speech/talki-speech-background-show-me.png')}
+  body[data-view="cloze"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/speech/talki-speech-background-fill-sentence.png')}
+  body[data-view="temptation"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/speech/talki-speech-background-repetition-jar.png')}
+  body[data-view="pairs"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/speech/talki-speech-background-minimal-pairs.png')}
+  body[data-view="combine"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/speech/talki-speech-background-two-word.png')}
+  body[data-view="speech"]{background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.95) 55%),url('assets/v2/speech/talki-speech-background-show-me.png')}
 
   .cat-header{position:sticky;top:var(--barh,68px);z-index:20;background:var(--cream);padding:8px 2px 14px;
     display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
@@ -179,7 +188,7 @@
   .tile .art{width:clamp(72px,10vw,112px);height:clamp(72px,10vw,112px);object-fit:contain}
   img.art{object-fit:contain;border:none;border-radius:0;background:transparent;display:block;margin:0 auto}
   .tile .word{font-weight:800;font-size:clamp(.95rem,1.6vw,1.25rem);text-align:center;line-height:1.25}
-  .tile .speaker{position:absolute;top:8px;left:8px;opacity:.35;font-size:.8rem}
+  .tile .speaker{position:absolute;top:8px;left:8px;opacity:.45;width:18px;height:18px}
   .tile.learned{border-color:var(--sun)}
   .tile .sticker{position:absolute;top:-8px;right:-8px;font-size:1.3rem;filter:drop-shadow(0 2px 0 rgba(0,0,0,.1))}
   .tile.pop{transform:scale(1.08) rotate(-2deg);border-color:var(--berry)}
@@ -286,7 +295,7 @@
     font-size:1.3rem;font-weight:900;box-shadow:var(--shadow)}
 
   .banner{background:#FFE7E7;color:#B23A3A;padding:11px 15px;border-radius:14px;font-weight:700;text-align:center;margin:10px 0}
-  .note{background:#FFF6E4;border:2px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:600;
+  .note{background:#FFF8EA;border:2px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:600;
     font-size:.82rem;color:var(--ink-soft);margin-top:10px}
 
   .empty{text-align:center;padding:36px 16px;color:var(--ink-soft);font-weight:700}
@@ -347,9 +356,9 @@
   .mod.sel{border-color:var(--grape);background:#F3EDFC}
   .phrase-out{font-size:1.6rem;font-weight:900;font-family:'Rubik',sans-serif;text-align:center;margin:14px 0;min-height:2rem;color:var(--grape-dark)}
   /* start gate: also the gesture that unlocks audio on iOS */
-  .gate{position:fixed;inset:0;z-index:90;background:var(--cream) center/cover no-repeat url('assets/world/backgrounds/talki-world-day-field-background.png');
+  .gate{position:fixed;inset:0;z-index:90;background:var(--cream) center/cover no-repeat url('assets/v2/backgrounds/talki-bg-home-hero.png');
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center}
-  .gate::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(247,240,223,.35),rgba(247,240,223,.82) 75%)}
+  .gate::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,248,234,.4),rgba(255,248,234,.88) 75%)}
   .gate>*{position:relative}
   .gate h2{font-size:clamp(1.5rem,5vw,2.4rem);margin:0;color:var(--grape-dark);font-weight:900}
   .gate p{margin:0;color:var(--ink-soft);font-weight:700;max-width:22rem}
@@ -565,13 +574,158 @@
   @media (prefers-reduced-motion: reduce){
     *{transition:none!important;animation:none!important}
   }
+
+  /* ================================================================
+     TALKI V2 — bottom navigation, header banners, home/practice/games/
+     stickers component system. Additive layer on top of the tokens
+     above; existing screens (games, parent) inherit the new palette
+     automatically through the redefined CSS variables.
+  ================================================================ */
+  main{padding-bottom:calc(78px + env(safe-area-inset-bottom) + var(--ad-h,0px))}
+  @media(min-width:768px){ main{padding-bottom:calc(86px + var(--ad-h,0px))} }
+
+  .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;
+    padding:0 max(10px,env(safe-area-inset-left)) env(safe-area-inset-bottom) max(10px,env(safe-area-inset-right));
+    pointer-events:none}
+  .bottom-nav .bn-inner{pointer-events:auto;width:100%;max-width:640px;background:var(--paper);
+    border-top:1px solid var(--line);box-shadow:0 -8px 20px rgba(109,59,166,.10);
+    border-radius:22px 22px 0 0;display:flex;align-items:stretch;justify-content:space-around;
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:2px}
+  .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    border:none;background:transparent;padding:6px 4px 5px;border-radius:14px;color:var(--ink-soft);
+    font-size:.68rem;font-weight:800;min-height:52px}
+  .bn-item img{width:24px;height:24px;object-fit:contain;opacity:.55;filter:grayscale(1)}
+  .bn-item.active{color:var(--v2-purple)}
+  .bn-item.active img{opacity:1;filter:none}
+  .bn-item.active{background:linear-gradient(180deg,rgba(124,76,214,.10),rgba(124,76,214,.03))}
+  .bn-item:active{transform:translateY(1px)}
+  @media(min-width:768px){ .bn-item img{width:27px;height:27px} .bn-item{font-size:.74rem} }
+
+  /* ---- V2 illustrated header banner (home/category/practice/games/stickers) ---- */
+  .v2-header{position:relative;border-radius:0 0 26px 26px;overflow:hidden;margin:-18px -14px 16px;
+    background:linear-gradient(180deg,rgba(109,59,166,.08),rgba(255,248,234,0)) ;color:#fff}
+  .v2-header .v2h-bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0}
+  .v2-header .v2h-scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(58,42,82,.18),rgba(58,42,82,.46));z-index:1}
+  .v2-header .v2h-content{position:relative;z-index:2;padding:14px 16px 18px}
+  .v2-header .v2h-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .v2-header .v2h-title{font-family:'Rubik',sans-serif;font-weight:900;font-size:1.3rem;margin:0;
+    text-shadow:0 2px 8px rgba(58,42,82,.35);display:flex;align-items:center;gap:8px}
+  .v2-header .v2h-sub{margin:2px 0 0;font-weight:700;font-size:.82rem;opacity:.95}
+  .v2h-back{width:38px;height:38px;border-radius:12px;border:none;background:rgba(255,255,255,.28);
+    backdrop-filter:blur(2px);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+  .v2h-back:active{transform:translateY(2px)}
+  @media(min-width:768px){ .v2-header{margin:-24px -22px 20px} .v2-header .v2h-title{font-size:1.7rem} .v2-header .v2h-sub{font-size:.95rem} }
+  @media(min-width:1100px){ .v2-header{border-radius:0 0 32px 32px} }
+
+  /* ---- Home screen ---- */
+  .v2-greet{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+  .v2-greet .g-txt h2{margin:0;font-size:1.3rem;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(58,42,82,.35)}
+  .v2-greet .g-txt p{margin:2px 0 0;font-size:.82rem;font-weight:700;color:#fff;opacity:.95}
+  .v2-star-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.94);color:var(--v2-purple);
+    border-radius:999px;padding:6px 12px 6px 8px;font-weight:900;font-size:.9rem;box-shadow:0 4px 10px rgba(58,42,82,.16)}
+  .v2-star-pill img{width:20px;height:20px}
+  .v2-gift-btn{width:40px;height:40px;border-radius:12px;border:none;background:rgba(255,255,255,.94);
+    display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(58,42,82,.16);flex:none}
+  .v2-gift-btn img{width:22px;height:22px}
+  .v2-cta{display:block;width:100%;border:none;border-radius:999px;padding:15px 20px;font-weight:900;font-size:1.02rem;
+    color:#fff;background:linear-gradient(135deg,var(--v2-purple-bright),var(--v2-purple));
+    box-shadow:0 8px 18px rgba(109,59,166,.32);margin:14px 0}
+  .v2-cta:active{transform:translateY(2px);box-shadow:0 4px 10px rgba(109,59,166,.28)}
+
+  .v2-continue{background:var(--paper);border:1px solid var(--line);border-radius:var(--v2-radius-card);
+    padding:14px 16px;box-shadow:var(--shadow);margin:0 0 18px;display:flex;align-items:center;gap:12px}
+  .v2-continue .v2c-art{width:52px;height:52px;border-radius:14px;background:var(--v2-pink);flex:none;
+    display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .v2-continue .v2c-art img{width:80%;height:80%;object-fit:contain}
+  .v2-continue .v2c-txt{flex:1;min-width:0}
+  .v2-continue .v2c-txt b{display:block;font-size:.72rem;color:var(--ink-soft);font-weight:800}
+  .v2-continue .v2c-txt span{display:block;font-size:.98rem;font-weight:900;margin-top:1px}
+  .v2-continue .v2c-pct{font-size:.82rem;font-weight:900;color:var(--v2-purple);flex:none}
+  .v2-continue .v2c-chev{flex:none;color:var(--ink-soft)}
+
+  .v2-cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(min-width:600px){ .v2-cat-grid{grid-template-columns:repeat(3,1fr)} }
+  @media(min-width:1100px){ .v2-cat-grid{grid-template-columns:repeat(4,1fr)} }
+  .v2-cat-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--v2-radius-card);
+    padding:12px;text-align:right;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+  .v2-cat-card:active{transform:translateY(2px)}
+  .v2-cat-card .v2cc-top{display:flex;align-items:center;justify-content:space-between}
+  .v2-cat-card .v2cc-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+  .v2-cat-card .v2cc-icon img{width:78%;height:78%;object-fit:contain}
+  .v2-cat-card .v2cc-badge{font-size:.66rem;font-weight:800;color:var(--ink-soft);background:var(--cream);
+    border-radius:999px;padding:3px 8px}
+  .v2-cat-card .v2cc-name{font-weight:900;font-size:.98rem;margin:0}
+  @media(min-width:768px){ .v2-cat-card{padding:16px;gap:10px} .v2-cat-card .v2cc-icon{width:52px;height:52px} .v2-cat-card .v2cc-name{font-size:1.15rem} }
+
+  /* ---- Practice menu (Screen 3) ---- */
+  .v2-practice-list{display:flex;flex-direction:column;gap:12px;max-width:640px;margin:0 auto}
+  .v2-practice-card{display:flex;align-items:center;gap:12px;border:none;border-radius:var(--v2-radius-card);
+    padding:16px;text-align:right;box-shadow:var(--shadow);width:100%}
+  .v2-practice-card:active{transform:translateY(2px)}
+  .v2-practice-card .pc-icon{width:52px;height:52px;border-radius:16px;flex:none;display:flex;align-items:center;
+    justify-content:center;font-size:24px;background:rgba(255,255,255,.7)}
+  .v2-practice-card .pc-txt{flex:1;min-width:0}
+  .v2-practice-card .pc-txt b{display:block;font-size:1.02rem;font-weight:900}
+  .v2-practice-card .pc-txt small{display:block;font-size:.78rem;font-weight:700;opacity:.85;margin-top:2px}
+  .v2-practice-card .pc-chev{flex:none;font-size:1.1rem;opacity:.55}
+  .pc-1{background:var(--v2-pink)} .pc-2{background:#E3D9FA} .pc-3{background:var(--v2-peach)}
+  .pc-4{background:var(--v2-mint)} .pc-5{background:#CFE7FA} .pc-6{background:#FFE9AE}
+
+  /* ---- Games menu (Screen 4) ---- */
+  .v2-games-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(min-width:600px){ .v2-games-grid{grid-template-columns:repeat(3,1fr)} }
+  @media(min-width:1100px){ .v2-games-grid{grid-template-columns:repeat(4,1fr)} }
+  .v2-game-card{position:relative;border:none;border-radius:var(--v2-radius-card);overflow:hidden;
+    box-shadow:var(--shadow);aspect-ratio:3/2;background:var(--paper)}
+  .v2-game-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .v2-game-card .vg-label{position:absolute;inset-inline:0;bottom:0;padding:8px 10px 9px;
+    background:linear-gradient(0deg,rgba(58,42,82,.78),rgba(58,42,82,0));color:#fff;text-align:right}
+  .v2-game-card .vg-label b{display:block;font-size:.88rem;font-weight:900}
+  .v2-game-card:active{transform:translateY(2px)}
+  .v2-game-card.wide{grid-column:1 / -1;aspect-ratio:auto;display:flex;align-items:center;gap:12px;
+    padding:14px 16px;text-align:right;background:linear-gradient(135deg,#E3D9FA,#CFE7FA)}
+  .v2-game-card.wide .vg-icon{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.75);
+    display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+  .v2-game-card.wide .vg-txt b{display:block;font-size:.98rem;font-weight:900;color:var(--ink)}
+  .v2-game-card.wide .vg-txt small{display:block;font-size:.78rem;font-weight:700;color:var(--ink-soft);margin-top:2px}
+  .v2-game-card.plain{display:flex;align-items:center;gap:10px;padding:14px;text-align:right;
+    background:var(--paper);aspect-ratio:auto}
+  .v2-game-card.plain .vg-icon{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;
+    justify-content:center;font-size:22px;flex:none;background:var(--cream)}
+  .v2-game-card.plain b{font-size:.92rem}
+  .v2-game-card.plain small{display:block;font-size:.74rem;color:var(--ink-soft);font-weight:700}
+
+  /* ---- Stickers screen (Screen 5) ---- */
+  .v2-star-total{display:flex;flex-direction:column;align-items:center;gap:2px;margin:-8px 0 6px}
+  .v2-star-total .vst-pill{background:rgba(255,255,255,.95);color:var(--v2-purple);border-radius:999px;
+    padding:8px 20px;font-weight:900;font-size:1.15rem;display:flex;align-items:center;gap:8px;
+    box-shadow:0 6px 16px rgba(58,42,82,.2)}
+  .v2-star-total .vst-pill img{width:26px;height:26px}
+  .v2-filter-row{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;margin-bottom:14px;-webkit-overflow-scrolling:touch}
+  .v2-filter-row::-webkit-scrollbar{display:none}
+  .v2-chip{flex:none;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;
+    padding:8px 16px;font-weight:800;font-size:.82rem}
+  .v2-chip.on{background:var(--v2-purple);border-color:var(--v2-purple);color:#fff}
+  .v2-sticker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:640px;margin:0 auto}
+  @media(min-width:600px){ .v2-sticker-grid{grid-template-columns:repeat(5,1fr)} }
+  @media(min-width:1100px){ .v2-sticker-grid{grid-template-columns:repeat(6,1fr)} }
+  .v2-sticker{aspect-ratio:1;border-radius:18px;background:var(--paper);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);position:relative;padding:10px}
+  .v2-sticker img{width:78%;height:78%;object-fit:contain}
+  .v2-sticker.locked{background:var(--cream)}
+  .v2-sticker.locked img{filter:grayscale(1) brightness(.7);opacity:.45}
+  .v2-sticker.locked::after{content:"🔒";position:absolute;font-size:1.1rem;opacity:.55}
+  .v2-podium{display:block;max-width:min(320px,70vw);margin:0 auto 8px;width:100%;height:auto}
+
+  /* ---- V2 mascot sizing guard: never stretch, keep intrinsic aspect ---- */
+  .mascot-wrap img{width:100%;height:100%;object-fit:contain}
 </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="brand">
-    <div class="brand-mark">✨</div>
+    <div class="brand-mark"><img src="assets/v2/brand/talki-star-mark.png" alt="" style="width:78%;height:78%;object-fit:contain"></div>
     <div class="brand-text">
       <h1>Talki</h1>
       <span>לוחצים, שומעים ולומדים לדבר</span>
@@ -580,8 +734,8 @@
   <div class="bar-right">
     <div class="progress-pill">
       <svg class="progress-ring" viewBox="0 0 36 36" aria-hidden="true">
-        <circle cx="18" cy="18" r="15.5" fill="none" stroke="#F0DDA8" stroke-width="4"/>
-        <circle id="ringFill" cx="18" cy="18" r="15.5" fill="none" stroke="#E8447A" stroke-width="4"
+        <circle cx="18" cy="18" r="15.5" fill="none" stroke="#F1E4CE" stroke-width="4"/>
+        <circle id="ringFill" cx="18" cy="18" r="15.5" fill="none" stroke="#7C4CD6" stroke-width="4"
                 stroke-linecap="round" stroke-dasharray="97.4" stroke-dashoffset="97.4" transform="rotate(-90 18 18)"/>
       </svg>
       <div><b id="progressCount">0/0</b><small>מדבקות</small></div>
@@ -603,13 +757,38 @@
 <div id="confettiHost" class="confetti"></div>
 <div id="toast" class="toast"></div>
 
+<nav class="bottom-nav" id="bottomNav">
+  <div class="bn-inner">
+    <button class="bn-item" data-nav="home"><img src="assets/v2/icons/talki-ui-icon-home.png" alt=""><span>בית</span></button>
+    <button class="bn-item" data-nav="games"><img src="assets/v2/icons/talki-ui-icon-games.png" alt=""><span>משחקים</span></button>
+    <button class="bn-item" data-nav="stickers"><img src="assets/v2/icons/talki-ui-icon-star.png" alt=""><span>מדבקות</span></button>
+    <button class="bn-item" data-nav="parent"><img src="assets/v2/icons/talki-ui-icon-settings.png" alt=""><span>הורה</span></button>
+  </div>
+</nav>
+
 <script>
 /* ---- generated art: mascot + category patterns (see make_art.py) ---- */
-const MASCOT_IMG = {idle:"assets/mascot/talki-mascot-waving.png",cheer:"assets/mascot/talki-mascot-celebrating.png",listen:"assets/mascot/talki-mascot-listening.png",think:"assets/mascot/talki-mascot-thinking.png",sleep:"assets/mascot/talki-mascot-neutral.png",point:"assets/mascot/talki-mascot-pointing.png",speak:"assets/mascot/talki-mascot-speaking.png",encourage:"assets/mascot/talki-mascot-encouraging.png",star:"assets/mascot/talki-mascot-holding-star.png",happy:"assets/mascot/talki-mascot-happy.png"};
+const MASCOT_IMG = {
+  idle:"assets/v2/mascot/talki-star-idle.png", wave:"assets/v2/mascot/talki-star-waving.png",
+  cheer:"assets/v2/mascot/talki-star-cheer.png", celebrate:"assets/v2/mascot/talki-star-celebration.png",
+  listen:"assets/v2/mascot/talki-star-listen.png", think:"assets/v2/mascot/talki-star-think.png",
+  sleep:"assets/v2/mascot/talki-star-idle.png", point:"assets/v2/mascot/talki-star-point.png",
+  speak:"assets/v2/mascot/talki-star-speak.png", encourage:"assets/v2/mascot/talki-star-encouraging.png",
+  star:"assets/v2/mascot/talki-star-happy.png", happy:"assets/v2/mascot/talki-star-happy.png",
+  mic:"assets/v2/mascot/talki-star-microphone.png", superhero:"assets/v2/mascot/talki-star-superhero.png"
+};
 const CAT_ART = {"animals": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Ccircle%20cx%3D%2218%22%20cy%3D%2222%22%20r%3D%224%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.30%29%22/%3E%3Ccircle%20cx%3D%2228%22%20cy%3D%2216%22%20r%3D%224%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.30%29%22/%3E%3Ccircle%20cx%3D%2238%22%20cy%3D%2222%22%20r%3D%224%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.30%29%22/%3E%3Cellipse%20cx%3D%2228%22%20cy%3D%2234%22%20rx%3D%229%22%20ry%3D%227%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.30%29%22/%3E%3C/svg%3E')", "food": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2215%22%20r%3D%225%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.28%29%22/%3E%3Ccircle%20cx%3D%2245%22%20cy%3D%2235%22%20r%3D%227%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.28%29%22/%3E%3Ccircle%20cx%3D%2228%22%20cy%3D%2246%22%20r%3D%223.5%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.28%29%22/%3E%3C/svg%3E')", "colors": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Crect%20x%3D%2210%22%20y%3D%2210%22%20width%3D%2214%22%20height%3D%2214%22%20rx%3D%223%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3Ccircle%20cx%3D%2242%22%20cy%3D%2220%22%20r%3D%227%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3Cpath%20d%3D%22M20%2C50%20L30%2C34%20L40%2C50%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')", "home": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M14%2C34%20L26%2C22%20L38%2C34%20V46%20H14%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3Crect%20x%3D%2242%22%20y%3D%2230%22%20width%3D%2212%22%20height%3D%2216%22%20rx%3D%222%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')", "family": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M28%2C44%20C10%2C30%2014%2C16%2024%2C16%20C28%2C16%2028%2C20%2028%2C20%20C28%2C20%2028%2C16%2032%2C16%20C42%2C16%2046%2C30%2028%2C44%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')", "body": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%2214%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.27%29%22%20stroke-width%3D%224%22/%3E%3Ccircle%20cx%3D%2225%22%20cy%3D%2226%22%20r%3D%222.5%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3Ccircle%20cx%3D%2235%22%20cy%3D%2226%22%20r%3D%222.5%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3Cpath%20d%3D%22M24%2C35%20Q30%2C40%2036%2C35%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.27%29%22%20stroke-width%3D%223%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E')", "actions": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M0%2C30%20Q15%2C18%2030%2C30%20T60%2C30%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.32%29%22%20stroke-width%3D%225%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E')", "numbers": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Crect%20x%3D%2212%22%20y%3D%2214%22%20width%3D%226%22%20height%3D%2220%22%20rx%3D%223%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.28%29%22/%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2224%22%20r%3D%2210%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.28%29%22%20stroke-width%3D%225%22/%3E%3C/svg%3E')", "outside": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M14%2C46%20C14%2C26%2030%2C14%2046%2C14%20C46%2C34%2030%2C46%2014%2C46%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')", "emotions": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M30%2C12%20L34%2C26%20L48%2C30%20L34%2C34%20L30%2C48%20L26%2C34%20L12%2C30%20L26%2C26%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')", "mine": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M28%2C44%20C10%2C30%2014%2C16%2024%2C16%20C28%2C16%2028%2C20%2028%2C20%20C28%2C20%2028%2C16%2032%2C16%20C42%2C16%2046%2C30%2028%2C44%20Z%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.27%29%22/%3E%3C/svg%3E')"};
 function mascot(mood, size){
   const src = MASCOT_IMG[mood] || MASCOT_IMG.idle;
   return `<span class="mascot-wrap mascot-${mood}" style="width:${size||96}px;height:${size||96}px"><img src="${src}" alt="" draggable="false"></span>`;
+}
+function micIcon(state, size){
+  const file = state==='listening' || state===true ? 'talki-speech-microphone-listening.png'
+    : state==='success' ? 'talki-speech-microphone-success.png'
+    : state==='processing' ? 'talki-speech-microphone-processing.png'
+    : state==='recording' ? 'talki-speech-microphone-recording.png'
+    : 'talki-speech-microphone-normal.png';
+  return `<img src="assets/v2/speech/${file}" alt="" style="width:${size||22}px;height:${size||22}px;object-fit:contain;vertical-align:middle">`;
 }
 
 /* ============================================================
@@ -1165,7 +1344,7 @@ function render(){
   const app = document.getElementById('app');
   const views = {
     home:renderHome, category:renderCategory, cards:renderCards,
-    games:renderGamesMenu, quiz:renderQuiz, memory:renderMemory,
+    games:renderGamesMenu, practice:renderPractice, stickers:renderStickers, quiz:renderQuiz, memory:renderMemory,
     missing:renderMissing, match:renderMatch, speech:renderSpeech, parent:renderParent,
     bubbles:renderBubbles, sounds:renderSounds, count:renderCount, sort:renderSort,
     focus:renderFocus, cloze:renderCloze, temptation:renderTemptation,
@@ -1178,7 +1357,15 @@ function render(){
   app.innerHTML = (views[view]||renderHome)();
   bind();
   syncBarHeight();
+  syncBottomNav();
   window.scrollTo({top:0,behavior:'instant'});
+}
+function syncBottomNav(){
+  const nav = document.getElementById('bottomNav');
+  if(!nav) return;
+  const active = view==='home' ? 'home' : view==='games' ? 'games' : view==='stickers' ? 'stickers'
+    : view==='parent' ? 'parent' : null;
+  nav.querySelectorAll('.bn-item').forEach(el=>el.classList.toggle('active', el.dataset.nav===active));
 }
 
 const REP_IMG = {
@@ -1187,55 +1374,93 @@ const REP_IMG = {
   actions:art('actions','jumping'), numbers:art('numbers','five'), outside:art('outside','sun'),
   emotions:art('emotions','happy')
 };
+const CAT_GRAD = {
+  animals:['var(--leaf)','var(--leaf-dark)'], food:['var(--berry)','var(--berry-dark)'],
+  colors:['var(--grape)','var(--grape-dark)'], home:['var(--sky)','var(--sky-dark)'],
+  family:['var(--clay)','var(--clay-dark)'], body:['#D8567F','#A83560'],
+  actions:['var(--teal)','var(--teal-dark)'], numbers:['var(--sun)','var(--sun-dark)'],
+  outside:['#4FA3D1','#2E6E96'], emotions:['var(--wood)','var(--wood-dark)'],
+  mine:['var(--grape)','var(--grape-dark)']
+};
+function catGrad(id){ const g = CAT_GRAD[id]||CAT_GRAD.animals; return `linear-gradient(155deg,${g[0]},${g[1]})`; }
+function catIcon(id){ return id==='mine' ? 'assets/v2/brand/talki-star-mark.png' : `assets/v2/categories/talki-cat-icon-${id}.png`; }
+function currentCategory(){
+  const cats = allCats().filter(c=>c.items.length);
+  if(!cats.length) return null;
+  const inProgress = cats.filter(c=>{ const d=catLearned(c); return d>0 && d<c.items.length; });
+  if(inProgress.length) return inProgress.sort((a,b)=>(catLearned(b)/b.items.length)-(catLearned(a)/a.items.length))[0];
+  return cats.find(c=>catLearned(c)===0) || cats[0];
+}
+
+const PRACTICE_LIST = [
+  ['focus','🎯','מילה במיקוד','מילה אחת, שמונה משפטים קצרים','pc-1'],
+  ['receptive','👉','תראי לי','מזהים בלי צורך לדבר','pc-2'],
+  ['cloze','⏸️','משלימים ביחד','עוצרים מילה לפני הסוף ומחכים','pc-3'],
+  ['temptation','🫙','הצנצנת','משמיעים קול כדי לפתוח','pc-4'],
+  ['pairs','👂','דומה אבל לא','עֵץ או עֵז? מבחינים בין צלילים','pc-5'],
+  ['combine','➕','שתי מילים','מחברים "עוד" + מילה','pc-6']
+];
+
 function renderHome(){
+  const cur = currentCategory();
+  const curDone = cur ? catLearned(cur) : 0, curTot = cur ? cur.items.length : 0;
+  const curPct = curTot ? Math.round(curDone/curTot*100) : 0;
+
   const cards = allCats().map(cat=>{
     const done = catLearned(cat), tot = cat.items.length;
     const pct = tot ? Math.round(done/tot*100) : 0;
-    const rep = REP_IMG[cat.id];
-    return `<button class="cat-card ${cat.cls}" data-cat="${cat.id}">
-      <div class="stickers">⭐ ${done}/${tot}</div>
-      <div class="hero-chip">${rep?`<img src="${rep}" alt="">`:`<span class="glyph" style="font-size:34px">${cat.icon}</span>`}</div>
-      <div class="name">${display(cat.title)}</div>
+    return `<button class="v2-cat-card" data-cat="${cat.id}">
+      <div class="v2cc-top">
+        <div class="v2cc-icon" style="background:${catGrad(cat.id)}"><img src="${catIcon(cat.id)}" alt=""></div>
+        <span class="v2cc-badge">⭐ ${done}/${tot}</span>
+      </div>
+      <div class="v2cc-name">${display(cat.title)}</div>
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-      <div class="cap"><span>${tot? 'לוחצים ולומדים':'עוד אין מילים'}</span><span>${pct}%</span></div>
     </button>`;
   }).join('');
-  const clinical = [
-    ['focus','🎯','מילה במיקוד','מילה אחת, שמונה משפטים קצרים'],
-    ['receptive','👉','תראי לי','מזהים בלי צורך לדבר'],
-    ['cloze','⏸️','משלימים ביחד','עוצרים מילה לפני הסוף ומחכים'],
-    ['temptation','🫙','הצנצנת','משמיעים קול כדי לפתוח'],
-    ['pairs','👂','דומה אבל לא','עֵץ או עֵז? מבחינים בין צלילים'],
-    ['combine','➕','שתי מילים','מחברים "עוד" + מילה']
-  ].map(([g,ic,t,sub])=>`<button class="game-card" data-game="${g}">
-      <span class="gi">${ic}</span><span><b>${t}</b><small>${sub}</small></span></button>`).join('');
-  const games = [
-    ['quiz','🎧','איפה ה...?','שומעים מילה, בוחרים תמונה'],
-    ['memory','🃏','משחק זיכרון','מוצאים זוגות תמונה ומילה'],
-    ['missing','🙈','מה נעלם?','זוכרים מה היה שם'],
-    ['match','🔗','חיבורים','מחברים מילה לתמונה'],
-    ['speech','🎤','תגידי את זה','אומרים את המילה בקול'],
-    ['cards','🖼️','כרטיסיות','מחליקים ולומדים מילה־מילה'],
-    ['bubbles','🫧','בועות מילים','פוצצים בועות ושומעים'],
-    ['sounds','🐮','מי אמר את זה?','שומעים קול חיה ומוצאים אותה'],
-    ['count','🔢','כמה יש?','סופרים ובוחרים מספר'],
-    ['sort','📦','לאיזו קופסה?','ממיינים לפי קטגוריה']
-  ].map(([g,ic,t,s])=>`<button class="game-card" data-game="${g}">
-      <span class="gi">${ic}</span><span><b>${t}</b><small>${s}</small></span></button>`).join('');
 
   return `
-    <div class="hero">
-      <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:6px">
-        ${mascot(learned.size > 0 ? 'cheer' : 'idle', 78)}
-        <div style="text-align:right"><h2 style="margin:0">היי! מה נלמד היום?</h2>
-          <p>בוחרים קופסה, לוחצים על תמונה ושומעים את המילה</p></div>
-      </div></div>
+    <div class="v2-header" data-view-inner="home">
+      <div class="v2h-bg" style="background-image:url('assets/v2/backgrounds/talki-bg-home-hero.png')"></div>
+      <div class="v2h-scrim"></div>
+      <div class="v2h-content">
+        <div class="v2h-top">
+          ${mascot('wave', 46)}
+          <div class="v2-star-pill"><img src="assets/v2/icons/talki-ui-icon-star.png" alt="">${learned.size}</div>
+          <button class="v2-gift-btn" data-nav="stickers" aria-label="מדבקות ופרסים"><img src="assets/v2/icons/talki-ui-icon-gift.png" alt=""></button>
+        </div>
+        <div class="v2-greet" style="margin-top:10px">
+          <div class="g-txt"><h2>היי! בואו נדבר</h2>
+            <p>לומדים מילים, מתרגלים ודוברים בביטחון</p></div>
+        </div>
+        ${cur ? `<button class="v2-cta" data-cat="${cur.id}">▶ המשך ללמוד</button>` : ''}
+      </div>
+    </div>
     ${speechOk?'':'<div class="banner">הדפדפן לא תומך בהקראת קול. אפשר להקליט קול אמיתי במסך ההורים, או לנסות בכרום.</div>'}
-    <div class="grid-home">${cards}</div>
-    <div class="section-label">🗣️ תרגול דיבור</div>
-    <div class="games-row">${clinical}</div>
-    <div class="section-label">🎮 משחקים</div>
-    <div class="games-row">${games}</div>`;
+    ${cur ? `<button class="v2-continue" data-cat="${cur.id}">
+      <div class="v2c-art" style="background:${catGrad(cur.id)}"><img src="${catIcon(cur.id)}" alt=""></div>
+      <div class="v2c-txt"><b>ממשיכים מאיפה שעצרנו</b><span>${display(cur.title)}</span></div>
+      <div class="v2c-pct">${curPct}%</div>
+      <div class="v2c-chev">◀</div>
+    </button>` : ''}
+    <div class="section-label">🗂️ קטגוריות</div>
+    <div class="v2-cat-grid">${cards}</div>
+    <div class="section-label">🗣️ תרגול דיבור<button class="pill-btn" data-nav="practice" style="font-size:.74rem;padding:6px 12px">הכל ◀</button></div>
+    <div class="v2-practice-list">${PRACTICE_LIST.slice(0,3).map(([g,ic,t,sub,cls])=>`
+      <button class="v2-practice-card ${cls}" data-game="${g}">
+        <span class="pc-icon">${ic}</span>
+        <span class="pc-txt"><b>${t}</b><small>${sub}</small></span>
+        <span class="pc-chev">◀</span>
+      </button>`).join('')}</div>
+    <div class="section-label">🎮 משחקים<button class="pill-btn" data-nav="games" style="font-size:.74rem;padding:6px 12px">הכל ◀</button></div>
+    <div class="v2-games-grid">${[
+      ['quiz','talki-game-card-where-is.png','איפה ה...?'],
+      ['memory','talki-game-card-memory.png','משחק זיכרון'],
+      ['missing','talki-game-card-missing.png','מה נעלם?']
+    ].map(([g,img,t])=>`<button class="v2-game-card" data-game="${g}">
+        <img src="assets/v2/game-menu/${img}" alt="">
+        <span class="vg-label"><b>${t}</b></span>
+      </button>`).join('')}</div>`;
 }
 
 function catPicker(current){
@@ -1245,38 +1470,39 @@ function catPicker(current){
 
 function renderCategory(){
   const cat = getCat(activeCat);
-  if(!cat.items.length){
-    return header(cat) + `<div class="empty"><span class="e-em">💜</span>
+  const done = catLearned(cat), tot = cat.items.length;
+  const pct = tot ? Math.round(done/tot*100) : 0;
+  const head = `<div class="v2-header">
+      <div class="v2h-bg" style="background-image:url('assets/v2/backgrounds/talki-bg-category-header.png')"></div>
+      <div class="v2h-scrim"></div>
+      <div class="v2h-content">
+        <div class="v2h-top">
+          <button class="v2h-back" data-nav="home" aria-label="חזרה">▶</button>
+          <p class="v2h-title">${mascot(done>=tot&&tot?'cheer':'idle',34)} ${display(cat.title)}</p>
+          <span style="width:38px"></span>
+        </div>
+        <p class="v2h-sub">${tot ? `${done} מתוך ${tot} מילים כבר מוכרות` : 'עוד אין כאן מילים'}</p>
+        ${tot ? `<div class="bar-track" style="margin-top:10px;background:rgba(255,255,255,.35);border-color:transparent"><div class="bar-fill" style="width:${pct}%"></div></div>` : ''}
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <button class="pill-btn" data-cards="${cat.id}" style="background:rgba(255,255,255,.92)">🖼️ כרטיסיות</button>
+          <button class="pill-btn" data-play="${cat.id}" style="background:rgba(255,255,255,.92)">🎮 משחק</button>
+          <button class="pill-btn" data-practice="${cat.id}" style="background:rgba(255,255,255,.92)">🗣️ תרגול</button>
+        </div>
+      </div></div>`;
+  if(!tot){
+    return head + `<div class="empty"><span class="e-em">💜</span>
       עוד אין כאן מילים.<br>אפשר להוסיף מילים אישיות עם תמונה והקלטה במסך ההורים.</div>`;
   }
   const tiles = cat.items.map((it, i)=>{
     const isL = learned.has(key(cat.id,it.word));
     return `<button class="tile ${isL?'learned':''}" data-word="${esc(it.word)}"
               style="animation-delay:${Math.min(i*22,400)}ms">
-      <span class="speaker">🔊</span>${isL?'<span class="sticker">⭐</span>':''}
+      <span class="speaker"><img src="assets/v2/icons/talki-ui-icon-speaker.png" alt="" style="width:100%;height:100%;object-fit:contain"></span>${isL?'<span class="sticker">⭐</span>':''}
       ${media(it,'tile')}
       <span class="word">${display(it.word)}</span></button>`;
   }).join('');
-  return header(cat) + catBanner(cat) + `<div class="word-grid">${tiles}</div>`;
+  return head + `<div class="word-grid">${tiles}</div>`;
 }
-function catBanner(cat){
-  const done = catLearned(cat), tot = cat.items.length;
-  return `<div class="cat-banner ${cat.cls}" style="--art:${CAT_ART[cat.id]||CAT_ART.mine}">
-    <span class="cb-mascot">${mascot(done>=tot&&tot ? 'cheer' : 'idle', 58)}</span>
-    <span class="cb-text"><b>${cat.icon} ${display(cat.title)}</b>
-      <small>${tot ? `${done} מתוך ${tot} מילים כבר מוכרות` : 'עוד אין כאן מילים'}</small></span>
-  </div>`;
-}
-function header(cat){
-  return `<div class="cat-header">
-    <button class="pill-btn" data-nav="home">🏠 חזרה</button>
-    <div class="cat-title">${cat.icon} ${display(cat.title)}</div>
-    <div style="display:flex;gap:8px">
-      <button class="pill-btn blue" data-cards="${cat.id}">🖼️ כרטיסיות</button>
-      <button class="pill-btn accent" data-play="${cat.id}">🎮 משחק</button>
-    </div></div>`;
-}
-
 /* ---------- Flashcards ---------- */
 function renderCards(){
   const cat = getCat(activeCat) || allCats()[0];
@@ -1302,8 +1528,124 @@ function renderCards(){
     </div>`;
 }
 
-/* ---------- Games ---------- */
-function renderGamesMenu(){ view='home'; return renderHome(); }
+/* ---------- Games menu (Screen 4) ---------- */
+function renderGamesMenu(){
+  const grid = [
+    ['quiz','talki-game-card-where-is.png','איפה ה...?'],
+    ['memory','talki-game-card-memory.png','משחק זיכרון'],
+    ['missing','talki-game-card-missing.png','מה נעלם?'],
+    ['cards','talki-game-card-flashcards.png','כרטיסיות'],
+    ['sounds','talki-game-card-animal-sounds.png','מי אמר את זה?'],
+    ['count','talki-game-card-counting.png','כמה יש?']
+  ].map(([g,img,t])=>`<button class="v2-game-card" data-game="${g}">
+      <img src="assets/v2/game-menu/${img}" alt="">
+      <span class="vg-label"><b>${t}</b></span>
+    </button>`).join('');
+  const wide = `<button class="v2-game-card wide" data-game="match">
+      <span class="vg-icon">🔗</span>
+      <span class="vg-txt"><b>חיבורים</b><small>מחברים מילה לתמונה</small></span>
+    </button>`;
+  const extras = [
+    ['bubbles','🫧','בועות מילים','פוצצים בועות ושומעים'],
+    ['sort','📦','לאיזו קופסה?','ממיינים לפי קטגוריה'],
+    ['speech','🎤','תגידי את זה','אומרים את המילה בקול']
+  ].map(([g,ic,t,s])=>`<button class="v2-game-card plain" data-game="${g}">
+      <span class="vg-icon">${ic}</span><span><b>${t}</b><small>${s}</small></span>
+    </button>`).join('');
+  return `<div class="v2-header">
+      <div class="v2h-bg" style="background-image:url('assets/v2/backgrounds/talki-bg-games-header.png')"></div>
+      <div class="v2h-scrim"></div>
+      <div class="v2h-content">
+        <div class="v2h-top">
+          <span style="width:38px"></span>
+          <p class="v2h-title">${mascot('superhero',40)} משחקים</p>
+          <span style="width:38px"></span>
+        </div>
+        <p class="v2h-sub">משחקים קצרים שמתרגלים כל מילה</p>
+      </div></div>
+    <div class="v2-games-grid">${grid}${wide}${extras}</div>`;
+}
+
+/* ---------- Practice menu (Screen 3) ---------- */
+function renderPractice(){
+  const list = PRACTICE_LIST.map(([g,ic,t,sub,cls])=>`
+    <button class="v2-practice-card ${cls}" data-game="${g}">
+      <span class="pc-icon">${ic}</span>
+      <span class="pc-txt"><b>${t}</b><small>${sub}</small></span>
+      <span class="pc-chev">◀</span>
+    </button>`).join('');
+  return `<div class="v2-header">
+      <div class="v2h-bg" style="background-image:url('assets/v2/backgrounds/talki-bg-practice-header.png')"></div>
+      <div class="v2h-scrim"></div>
+      <div class="v2h-content">
+        <div class="v2h-top">
+          <button class="v2h-back" data-nav="home" aria-label="חזרה">▶</button>
+          <p class="v2h-title">${mascot('mic',40)} תרגול דיבור</p>
+          <span style="width:38px"></span>
+        </div>
+        <p class="v2h-sub">שיטות מבוססות-מחקר לתרגול הפקת מילים</p>
+      </div></div>
+    <div class="v2-practice-list">${list}</div>`;
+}
+
+/* ---------- Stickers / rewards (Screen 5) ---------- */
+const STICKERS = [
+  {img:'talki-sticker-dog.png', cat:'animals', word:'כֶּלֶב'},
+  {img:'talki-sticker-cat.png', cat:'animals', word:'חָתוּל'},
+  {img:'talki-sticker-elephant.png', cat:'animals', word:'פִּיל'},
+  {img:'talki-sticker-rabbit.png', cat:'animals', word:'אַרְנָב'},
+  {img:'talki-sticker-bird.png', cat:'animals', word:'צִפּוֹר'},
+  {img:'talki-sticker-butterfly.png', cat:'animals', word:'פַּרְפַּר'},
+  {img:'talki-sticker-apple.png', cat:'food', word:'תַּפּוּחַ'},
+  {img:'talki-sticker-cake.png', cat:'food', word:'עוּגָה'},
+  {img:'talki-sticker-icecream.png', cat:'food', word:'גְּלִידָה'},
+  {img:'talki-sticker-car.png', cat:'outside', word:'מְכוֹנִית'},
+  {img:'talki-sticker-house.png', cat:'outside', word:'בַּיִת'},
+  {img:'talki-sticker-sun.png', cat:'outside', word:'שֶׁמֶשׁ'},
+  {img:'talki-sticker-tree.png', cat:'outside', word:'עֵץ'},
+  {img:'talki-sticker-balloon.png', cat:'colors', word:'בָּלוֹן'},
+  {img:'talki-sticker-heart.png', cat:'colors', word:'לֵב'},
+  {img:'talki-sticker-flower.png', cat:'colors', word:'פֶּרַח'},
+  {img:'talki-sticker-rainbow.png', cat:'colors', word:'צִבְעוֹנִי'},
+  {img:'talki-sticker-ball.png', cat:'home', word:'כַּדּוּר'},
+  {img:'talki-sticker-kid-boy.png', cat:'family', word:'אָח'},
+  {img:'talki-sticker-kid-girl.png', cat:'family', word:'יַלְדָּה'},
+  {img:'talki-sticker-numbers.png', cat:'numbers', complete:true},
+  {img:'talki-sticker-star.png', cat:null, milestone:1},
+  {img:'talki-sticker-sparkle.png', cat:null, milestone:25},
+  {img:'talki-sticker-gift.png', cat:null, milestone:75}
+];
+function stickerUnlocked(s){
+  if(s.milestone!=null) return learned.size >= s.milestone;
+  if(s.complete){ const c=getCat(s.cat); return !!c && c.items.length>0 && catLearned(c)>=c.items.length; }
+  return learned.has(key(s.cat, s.word));
+}
+let stickerFilter = 'all';
+function renderStickers(){
+  const cats = [...new Set(STICKERS.map(s=>s.cat).filter(Boolean))];
+  const chipsHtml = ['all',...cats].map(c=>{
+    const label = c==='all' ? 'הכל' : plain(getCat(c).title);
+    return `<button class="v2-chip ${stickerFilter===c?'on':''}" data-stickerfilter="${c}">${label}</button>`;
+  }).join('');
+  const list = STICKERS.filter(s=>stickerFilter==='all' || s.cat===stickerFilter);
+  const grid = list.map(s=>{
+    const on = stickerUnlocked(s);
+    return `<div class="v2-sticker ${on?'':'locked'}"><img src="assets/v2/stickers/${s.img}" alt=""></div>`;
+  }).join('');
+  const unlockedCount = STICKERS.filter(stickerUnlocked).length;
+  return `<div class="v2-header">
+      <div class="v2h-bg" style="background-image:url('assets/v2/backgrounds/talki-bg-stickers-header.png')"></div>
+      <div class="v2h-scrim"></div>
+      <div class="v2h-content" style="text-align:center">
+        <p class="v2h-title" style="justify-content:center">${mascot('celebrate',44)} המדבקות שלי</p>
+        <p class="v2h-sub">כל מילה חדשה — עוד מדבקה!</p>
+        <img class="v2-podium" src="assets/v2/decorations/talki-sticker-podium.png" alt="">
+      </div></div>
+    <div class="v2-star-total"><span class="vst-pill"><img src="assets/v2/icons/talki-ui-icon-star.png" alt="">${learned.size}</span></div>
+    <div class="v2-filter-row">${chipsHtml}</div>
+    <p class="note" style="text-align:center;margin:0 0 12px">${unlockedCount} מתוך ${STICKERS.length} מדבקות נאספו</p>
+    <div class="v2-sticker-grid">${grid}</div>`;
+}
 
 function gameHeader(title, chips, noPicker){
   const picker = noPicker ? '<span></span>'
@@ -1478,7 +1820,7 @@ function renderSpeech(){
       <p>${game.feedback || 'לוחצים על המיקרופון ואומרים את המילה'}</p>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         <button class="big-btn b-sky" data-say="1">🔊 לשמוע</button>
-        <button class="big-btn b-berry" data-mic="1">${game.listening?'<span class="rec-dot"></span> מקשיבים...':'🎤 להגיד'}</button>
+        <button class="big-btn b-berry" data-mic="1" style="display:inline-flex;align-items:center;gap:6px">${micIcon(game.listening?'listening':(game.feedback||'').includes('מעולה')?'success':'normal')}${game.listening?'מקשיבים...':'להגיד'}</button>
         <button class="pill-btn" data-skip="1">דלג ◀</button>
       </div></div>`;
 }
@@ -1590,7 +1932,7 @@ let clozeTimer = null;
 function renderFocus(){
   if(!game || game.type!=='focus'){ if(!startGame('focus', activeCat)) return renderHome(); }
   if(game.done) return gameHeader('🎯 מילה במיקוד') +
-    `<div class="done-card">${mascot('cheer', 96)}<div class="big"><img class="reward-star" src="assets/rewards/talki-reward-star-gold.png" alt=""></div><h3>סיימנו את ${display(game.it.word)}</h3>
+    `<div class="done-card">${mascot('cheer', 96)}<div class="big"><img class="reward-star" src="assets/v2/icons/talki-ui-icon-star.png" alt=""></div><h3>סיימנו את ${display(game.it.word)}</h3>
       <p>המילה נשמעה ${game.total} פעמים במשפטים שונים</p>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         <button class="big-btn b-grape" data-nextword="1">מילה הבאה</button>
@@ -1663,7 +2005,7 @@ function renderTemptation(){
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
         ${game.opened
           ? `<button class="big-btn b-grape" data-temptnext="1">הצנצנת הבאה ◀</button>`
-          : `<button class="big-btn b-berry" data-temptmic="1">${game.listening?'<span class="rec-dot"></span> מקשיבים...':'🎤 להקשיב'}</button>
+          : `<button class="big-btn b-berry" data-temptmic="1" style="display:inline-flex;align-items:center;gap:6px">${micIcon(game.listening)}${game.listening?'מקשיבים...':'להקשיב'}</button>
              <button class="pill-btn" data-temptopen="1">👐 לפתוח</button>`}
       </div>
       <p class="hint">כל ניסיון פותח: מילה, הברה, קול או הצבעה</p></div>`;
@@ -1729,7 +2071,7 @@ function doneCard(score, total, best, extra){
   const ratio = total ? score/total : 0;
   const filled = ratio>=0.85?3:ratio>=0.5?2:1;
   const stars = [0,1,2].map(i=>
-    `<img class="reward-star" src="assets/rewards/talki-reward-star-${i<filled?'gold':'empty'}.png" alt="">`).join('');
+    `<img class="reward-star" src="assets/v2/icons/talki-ui-icon-star.png" alt="" style="${i<filled?'':'opacity:.3;filter:grayscale(1)'}">`).join('');
   return `<div class="done-card">${mascot('cheer', 96)}<div class="big">${stars}</div>
     <h3>כל הכבוד!</h3>
     <p>${score} מתוך ${total}${best?` • רצף הכי טוב: ${best}`:''}${extra?` • ${extra}`:''}</p>
@@ -1905,10 +2247,17 @@ function on(sel, fn){ document.querySelectorAll(sel).forEach(el=>el.addEventList
 const alive = t => !!game && game.type===t && view===t && !game.done;
 
 function bind(){
-  on('[data-nav="home"]', ()=>{ view='home'; game=null; render(); });
+  on('[data-nav]', el=>{
+    const v = el.dataset.nav;
+    game = null;
+    if(v==='parent'){ view='parent'; render(); preloadRecs(activeCat||'animals').then(()=>{ if(view==='parent') render(); }); return; }
+    view = v; render();
+  });
   on('[data-cat]', el=>{ activeCat=el.dataset.cat; view='category'; render(); });
   on('[data-cards]', el=>{ activeCat=el.dataset.cards; cardIdx=0; view='cards'; render(); });
   on('[data-play]', el=>{ launch('quiz', el.dataset.play); });
+  on('[data-practice]', el=>{ activeCat=el.dataset.practice; view='practice'; render(); });
+  on('[data-stickerfilter]', el=>{ stickerFilter=el.dataset.stickerfilter; render(); });
   on('[data-game]', el=>{
     const g = el.dataset.game;
     const fallback = (allCats().find(c=>c.items.length>=4) || allCats()[0]).id;
@@ -2544,14 +2893,14 @@ async function polishNativeShell(){
   const plugins = Cap.Plugins || {};
   try{
     if(plugins.StatusBar && plugins.StatusBar.setStyle) await plugins.StatusBar.setStyle({style:'DARK'});
-    if(plugins.StatusBar && plugins.StatusBar.setBackgroundColor) await plugins.StatusBar.setBackgroundColor({color:'#FFF6E4'});
+    if(plugins.StatusBar && plugins.StatusBar.setBackgroundColor) await plugins.StatusBar.setBackgroundColor({color:'#FFF8EA'});
   }catch(e){}
   try{
     if(plugins.SplashScreen && plugins.SplashScreen.hide) await plugins.SplashScreen.hide();
   }catch(e){}
 }
 
-document.getElementById('gateMascot').innerHTML = mascot('idle', 190);
+document.getElementById('gateMascot').innerHTML = mascot('wave', 190);
 document.getElementById('gateBtn').addEventListener('click', ()=>{
   unlockAudio();
   keepAwake();

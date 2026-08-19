@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs>
+  <linearGradient id="starGrad" x1="0" y1="0" x2="0.9" y2="1">
+    <stop offset="0%" stop-color="#FFE38B"/><stop offset="52%" stop-color="#FFD66B"/><stop offset="100%" stop-color="#F5A63A"/>
+  </linearGradient>
+  <linearGradient id="purpleGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#7C4CD6"/><stop offset="100%" stop-color="#6D3BA6"/>
+  </linearGradient>
+  <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#DDF7FB"/><stop offset="100%" stop-color="#FFF5DE"/>
+  </linearGradient>
+  <linearGradient id="pinkSky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#FBE7F0"/><stop offset="100%" stop-color="#FFF7E8"/>
+  </linearGradient>
+  <linearGradient id="mintGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#B7E7D8"/><stop offset="100%" stop-color="#73C5AC"/>
+  </linearGradient>
+  <radialGradient id="shine" cx="35%" cy="25%" r="70%">
+    <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".72"/><stop offset="55%" stop-color="#FFFFFF" stop-opacity=".12"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+    <feOffset dy="10"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".22"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="smallShadow" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="5"/><feOffset dy="5"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".18"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs><path d="M430 650 Q400 735 385 760" stroke="#F5A63A" stroke-width="72" stroke-linecap="round"/><path d="M594 650 Q625 735 640 760" stroke="#F5A63A" stroke-width="72" stroke-linecap="round"/><path d="M365 485 Q 285 499 220 510" stroke="#F5A63A" stroke-width="70" stroke-linecap="round"/><path d="M659 485 Q 791 480 899 475" stroke="#F5A63A" stroke-width="70" stroke-linecap="round"/><polygon points="512.0,180.0 597.2,362.7 797.3,387.3 649.9,524.8 688.3,722.7 512.0,625.0 335.7,722.7 374.1,524.8 226.7,387.3 426.8,362.7" fill="url(#starGrad)" stroke="#F6B747" stroke-width="30" stroke-linejoin="round" filter="url(#shadow)"/><ellipse cx="440" cy="365" rx="145" ry="120" fill="url(#shine)" opacity=".62"/><ellipse cx="411.2" cy="460.5" rx="24.150000000000002" ry="14.700000000000001" fill="#F58FA6" opacity=".68"/><ellipse cx="612.8000000000001" cy="460.5" rx="24.150000000000002" ry="14.700000000000001" fill="#F58FA6" opacity=".68"/><ellipse cx="446.9" cy="414.3" rx="16.8" ry="23.1" fill="#2E2436"/><circle cx="441.65" cy="405.90000000000003" r="5.25" fill="white"/><ellipse cx="577.1" cy="414.3" rx="16.8" ry="23.1" fill="#2E2436"/><circle cx="571.85" cy="405.90000000000003" r="5.25" fill="white"/><path d="M 474.2 487.8 Q 512 531.9 549.8 487.8 Q 512 552.9 474.2 487.8" fill="#2E2436"/><ellipse cx="512" cy="521.4" rx="18.900000000000002" ry="10.5" fill="#F26C7C"/><circle cx="905" cy="475" r="32" fill="#F5A63A"/><circle cx="950" cy="465" r="22" fill="#F5A63A"/></svg>

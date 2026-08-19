@@ -52,6 +52,10 @@ def home(page):
     page.evaluate("()=>{view='home';game=null;render();}")
     page.wait_for_timeout(200)
 
+def goto_view(page, v):
+    page.evaluate(f"()=>{{view='{v}';game=null;render();}}")
+    page.wait_for_timeout(200)
+
 
 # ---------------------------------------------------------------- 1. layout
 def test_layout(b):
@@ -95,15 +99,36 @@ def test_all_screens(b):
         home(page)
     ok("all categories render tiles")
 
-    for g in page.eval_on_selector_all("[data-game]", "e=>e.map(x=>x.dataset.game)"):
-        jc(page, f'[data-game="{g}"]'); page.wait_for_timeout(900)
+    # games/practice entries are spread across Home, the dedicated Games screen
+    # (bottom nav) and the dedicated Practice screen — collect the union of all
+    # data-game targets exposed anywhere in the V2 navigation.
+    all_games = set(page.eval_on_selector_all("[data-game]", "e=>e.map(x=>x.dataset.game)"))
+    goto_view(page, "games")
+    all_games |= set(page.eval_on_selector_all("[data-game]", "e=>e.map(x=>x.dataset.game)"))
+    goto_view(page, "practice")
+    all_games |= set(page.eval_on_selector_all("[data-game]", "e=>e.map(x=>x.dataset.game)"))
+    home(page)
+
+    for g in all_games:
+        clicked = jc(page, f'[data-game="{g}"]')
+        if not clicked:
+            goto_view(page, "games")
+            clicked = jc(page, f'[data-game="{g}"]')
+        if not clicked:
+            goto_view(page, "practice")
+            clicked = jc(page, f'[data-game="{g}"]')
+        if not clicked:
+            fail("games", f"{g} has no clickable entry point in the UI")
+            home(page)
+            continue
+        page.wait_for_timeout(900)
         html = page.inner_html("#app")
         if len(html.strip()) < 120:
             fail("games", f"{g} rendered an empty screen")
         if page.evaluate("()=>view") == "home":
             fail("games", f"{g} bounced back to home")
         home(page)
-    ok("all games open and stay open")
+    ok(f"all {len(all_games)} games open and stay open")
 
     if errors:
         fail("screens", f"JS errors: {errors[:3]}")
@@ -157,7 +182,8 @@ def test_gameplay(b):
         ok("cloze advanced past the spoken phrase")
     home(page)
 
-    # bubbles: clickable while animating
+    # bubbles: clickable while animating (lives on the dedicated Games screen)
+    goto_view(page, "games")
     jc(page, '[data-game="bubbles"]'); page.wait_for_timeout(2500)
     jc(page, ".bubble"); page.wait_for_timeout(500)
     ok("bubble popped") if page.evaluate("()=>game && game.popped") else fail("bubbles", "pop did not register")

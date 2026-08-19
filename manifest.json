@@ -10,8 +10,8 @@
   "display": "standalone",
   "display_override": ["standalone", "fullscreen"],
   "orientation": "portrait",
-  "background_color": "#FFF6E4",
-  "theme_color": "#FFF6E4",
+  "background_color": "#FFF8EA",
+  "theme_color": "#FFF8EA",
   "categories": ["education", "kids"],
   "prefer_related_applications": false,
   "icons": [
