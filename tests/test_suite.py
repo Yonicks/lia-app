@@ -13,6 +13,9 @@ from playwright.sync_api import sync_playwright
 
 BASE = os.environ.get("BASE_URL", "http://localhost:8000").rstrip("/")
 URL = BASE + "/index.html"
+# Sandboxes that ship a prebuilt Chromium (no `playwright install`) can point
+# the suite at it instead of the managed download.
+CHROMIUM_PATH = os.environ.get("CHROMIUM_PATH") or None
 DL = tempfile.mkdtemp(prefix="lia-dl-")
 SHOTS = os.environ.get("SHOT_DIR", tempfile.mkdtemp(prefix="lia-shots-"))
 
@@ -312,7 +315,7 @@ def test_pwa(b):
 def main():
     print(f"Testing {URL}")
     with sync_playwright() as p:
-        b = p.chromium.launch()
+        b = p.chromium.launch(**({"executable_path": CHROMIUM_PATH} if CHROMIUM_PATH else {}))
         for t in (test_layout, test_all_screens, test_gameplay, test_storage, test_pwa):
             try:
                 t(b)

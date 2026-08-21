@@ -719,6 +719,7 @@
 
   /* ---- V2 mascot sizing guard: never stretch, keep intrinsic aspect ---- */
   .mascot-wrap img{width:100%;height:100%;object-fit:contain}
+
 </style>
 </head>
 <body>
@@ -2216,17 +2217,25 @@ function parentReport(){
 /* ============================================================
    7. EVENTS
 ============================================================ */
-function on(sel, fn){ document.querySelectorAll(sel).forEach(el=>el.addEventListener('click', ()=>fn(el))); }
+/* bind() re-runs after every render. #app is the only subtree that is thrown
+   away and rebuilt, so scope every lookup to it — querying the whole document
+   would stack a fresh listener on the persistent chrome (the bottom nav) on
+   every single render, and each tap would then replay every stacked handler. */
+function on(sel, fn){
+  const root = document.getElementById('app') || document;
+  root.querySelectorAll(sel).forEach(el=>el.addEventListener('click', ()=>fn(el)));
+}
 
 const alive = t => !!game && game.type===t && view===t && !game.done;
 
+function navTo(v){
+  game = null;
+  if(v==='parent'){ view='parent'; render(); preloadRecs(activeCat||'animals').then(()=>{ if(view==='parent') render(); }); return; }
+  view = v; render();
+}
+
 function bind(){
-  on('[data-nav]', el=>{
-    const v = el.dataset.nav;
-    game = null;
-    if(v==='parent'){ view='parent'; render(); preloadRecs(activeCat||'animals').then(()=>{ if(view==='parent') render(); }); return; }
-    view = v; render();
-  });
+  on('[data-nav]', el=> navTo(el.dataset.nav));
   on('[data-cat]', el=>{ activeCat=el.dataset.cat; view='category'; render(); });
   on('[data-cards]', el=>{ activeCat=el.dataset.cards; cardIdx=0; view='cards'; render(); });
   on('[data-play]', el=>{ launch('quiz', el.dataset.play); });
@@ -2802,6 +2811,11 @@ if(window.visualViewport) window.visualViewport.addEventListener('resize', syncB
 if(window.ResizeObserver){
   try{ new ResizeObserver(syncBarHeight).observe(document.querySelector('.topbar')); }catch(e){}
 }
+
+/* The bottom nav lives outside #app and survives every render, so it is bound
+   exactly once here rather than from bind(). */
+document.querySelectorAll('#bottomNav [data-nav]')
+  .forEach(el=>el.addEventListener('click', ()=>navTo(el.dataset.nav)));
 
 function syncSpeedIcon(){
   document.getElementById('speedBtn').textContent = settings.rate<=0.6 ? '🐢' : settings.rate>=1 ? '⚡' : '🐇';
