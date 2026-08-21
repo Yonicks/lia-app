@@ -721,6 +721,89 @@
   .mascot-wrap img{width:100%;height:100%;object-fit:contain}
 
   /* ================================================================
+     MATCH & DROP PUZZLE — 🧩 שִׂימִי בַּמָּקוֹם
+     Silhouettes on a warm board above, illustrated pieces on a tray
+     below. Same cream/purple/mint/peach palette, same rounded surfaces
+     and soft shadows as the rest of Talki.
+  ================================================================ */
+  .pz-board{max-width:min(680px,96vw);margin:0 auto;display:flex;flex-direction:column;
+    justify-content:center;min-height:min(58vh,520px)}
+  .pz-slots{display:grid;grid-template-columns:repeat(var(--pz-cols,3),1fr);
+    gap:clamp(10px,2vw,16px);padding:clamp(12px,2.4vw,20px);
+    background:linear-gradient(165deg,rgba(255,255,255,.92),rgba(255,241,220,.92));
+    border:3px solid var(--line);border-radius:var(--v2-radius-hero);box-shadow:var(--shadow)}
+  .pz-slot{position:relative;aspect-ratio:1;min-height:76px;display:flex;
+    align-items:center;justify-content:center;flex-direction:column;gap:2px;
+    background:rgba(124,76,214,.05);border:3px dashed rgba(109,59,166,.30);
+    border-radius:20px;padding:8px;touch-action:none;
+    transition:border-color .18s ease,background .18s ease,transform .18s ease}
+  .pz-slot .pz-shadow{display:flex;align-items:center;justify-content:center;
+    width:100%;height:100%;opacity:.22;filter:brightness(0) saturate(0)}
+  .pz-slot .pz-shadow img{width:100%;height:100%;object-fit:contain}
+  .pz-slot .pz-shadow .em,.pz-slot .pz-shadow .emoji{font-size:clamp(2rem,9vw,3.2rem);line-height:1}
+  .pz-slot .pz-fill{position:absolute;inset:8px;display:flex;align-items:center;justify-content:center;
+    animation:pzSnap .34s cubic-bezier(.3,1.5,.5,1)}
+  .pz-slot .pz-fill img{width:100%;height:100%;object-fit:contain}
+  .pz-slot .pz-fill .em,.pz-slot .pz-fill .emoji{font-size:clamp(2rem,9vw,3.2rem);line-height:1}
+  .pz-slot .pz-word{position:absolute;bottom:-2px;left:0;right:0;text-align:center;
+    font-weight:800;font-size:clamp(.72rem,2.4vw,.95rem);color:var(--v2-purple);
+    text-shadow:0 1px 0 rgba(255,255,255,.9)}
+  .pz-slot.filled{background:linear-gradient(160deg,#F3ECFF,#EAFBF2);
+    border-style:solid;border-color:var(--v2-mint)}
+  .pz-slot.filled .pz-shadow{opacity:0}
+  /* second miss on a piece: quietly show the child where it goes */
+  .pz-slot.hint{border-color:var(--sun-dark);background:rgba(255,215,90,.22);
+    animation:pzHint 1.3s ease-in-out infinite}
+
+  .pz-guide{text-align:center;color:var(--ink-soft);font-weight:700;
+    font-size:clamp(.8rem,2.6vw,.95rem);margin:12px 4px 10px}
+
+  .pz-tray{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(10px,2.4vw,18px)}
+  .pz-piece{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;
+    width:clamp(76px,23vw,116px);min-height:88px;padding:8px 6px 6px;
+    background:var(--paper);border:3px solid var(--line);border-radius:20px;
+    box-shadow:var(--shadow);touch-action:none;
+    transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+  .pz-piece img{width:100%;aspect-ratio:1;object-fit:contain;pointer-events:none}
+  .pz-piece .em,.pz-piece .emoji{font-size:clamp(2rem,8vw,3rem);line-height:1;pointer-events:none}
+  .pz-piece .pz-w{font-weight:800;font-size:clamp(.72rem,2.4vw,.92rem);
+    line-height:1.15;text-align:center;pointer-events:none}
+  .pz-piece.sel{border-color:var(--v2-purple-bright);
+    box-shadow:0 0 0 4px rgba(124,76,214,.22),var(--shadow);transform:translateY(-3px)}
+  /* animation:none matters — a keyframed transform would win over the inline
+     transform the drag writes, and the piece would never leave the tray */
+  .pz-piece.pz-dragging{z-index:70;border-color:var(--v2-purple-bright);
+    box-shadow:0 14px 26px rgba(109,59,166,.28);transition:none;animation:none;cursor:grabbing}
+  .pz-piece.pz-return{transition:transform .3s cubic-bezier(.3,1.2,.5,1)}
+  .pz-piece.placed{visibility:hidden;pointer-events:none}
+  /* before the first piece lands, one piece breathes to show what to grab —
+     a demonstration for a child who cannot read the line above */
+  .pz-piece.nudge{animation:pzNudge 2.2s ease-in-out infinite}
+  .pz-together{color:var(--v2-purple);font-weight:800;margin:6px 0 12px}
+
+  @keyframes pzSnap{0%{transform:scale(.7)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+  @keyframes pzHint{0%,100%{box-shadow:0 0 0 0 rgba(232,185,58,.0)}
+                    50%{box-shadow:0 0 0 7px rgba(232,185,58,.30)}}
+  @keyframes pzNudge{0%,72%,100%{transform:translateY(0) rotate(0)}
+                     80%{transform:translateY(-7px) rotate(-3deg)}
+                     90%{transform:translateY(-4px) rotate(2deg)}}
+
+  /* Landscape is wide and short: spread the shadows and the tray into single
+     rows instead of stacking, so a six-piece board still fits above the nav. */
+  @media (orientation:landscape) and (max-height:560px){
+    .pz-slots{grid-template-columns:repeat(var(--pz-n,3),1fr)}
+    .pz-slot{height:clamp(48px,14vh,80px)}
+    .pz-tray{flex-wrap:nowrap}
+    .pz-piece{width:clamp(60px,11vw,88px)}
+    /* the guide line is written for the parent, and landscape has no height to
+       spare — the nudging piece and the shadows carry the affordance alone */
+    .pz-guide{display:none}
+    body[data-view="puzzle"] main{padding-top:4px}
+    body[data-view="puzzle"] .cat-header{padding:2px 2px 6px}
+    body[data-view="puzzle"] .quiz-stats{margin-bottom:4px}
+  }
+
+  /* ================================================================
      TODDLER TOUCH LAYER
      Platform guidance puts the floor at ~48dp; Talki's users are two-
      and three-year-olds pressing with the flat of a finger, so every
@@ -766,6 +849,15 @@
     .opt img.art{width:clamp(60px,13vh,130px);height:clamp(60px,13vh,130px)}
     .opt-grid{gap:10px}
     .prompt-box img.art{width:92px;height:92px}
+    /* a board dealt on a taller screen must still fit after a rotation, so
+       the slots stop being square and take a share of the height instead */
+    .pz-board{min-height:0}
+    .pz-slots{padding:9px;gap:8px}
+    .pz-slot{aspect-ratio:auto;height:clamp(56px,11vh,96px);min-height:56px;padding:5px}
+    .pz-guide{margin:7px 4px 6px;font-size:.76rem}
+    .pz-piece{width:clamp(64px,19vw,92px);min-height:64px;padding:5px 4px 4px}
+    .pz-piece img{aspect-ratio:auto;height:clamp(32px,6.5vh,56px)}
+    .pz-slot .pz-word{font-size:.68rem}
   }
   @media (max-height:560px){
     .prompt-box{padding:6px 8px;margin-bottom:7px}
@@ -1202,13 +1294,32 @@ function getCat(id){ return allCats().find(c=>c.id===id); }
 function key(catId,word){ return catId+':'+word; }
 function totalWords(){ return allCats().reduce((s,c)=>s+c.items.length,0); }
 function catLearned(cat){ return cat.items.filter(i=>learned.has(key(cat.id,i.word))).length; }
-function shuffle(a){ const x=[...a]; for(let i=x.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [x[i],x[j]]=[x[j],x[i]]; } return x; }
+function shuffle(a){ const x=[...a]; for(let i=x.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [x[i],x[j]]=[x[j],x[i]]; } return x; }
+
+/* Deterministic mode for the automated suites. `?seed=7` (or window.__talkiSeed)
+   makes every random pick reproducible so a test never fails just because a
+   different word came up. Production never sets it, so rounds stay varied. */
+let rngState = null;
+function seedRandom(s){ rngState = (s >>> 0) || 1; }
+function rnd(){
+  if(rngState === null) return Math.random();
+  rngState = (rngState + 0x6D2B79F5) >>> 0;
+  let t = rngState;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+}
+try{
+  const q = new URLSearchParams(location.search).get('seed');
+  if(q) seedRandom(parseInt(q, 10));
+  else if(typeof window.__talkiSeed === 'number') seedRandom(window.__talkiSeed);
+}catch(e){}
 
 /* SRS-lite: words answered wrong (or never seen) get picked first */
 function weightedPick(items, catId, n){
   const scored = items.map(it=>{
     const s = stats[key(catId,it.word)] || {seen:0,wrong:0};
-    const weight = 1 + s.wrong*3 - Math.min(s.seen,4)*0.4 + Math.random()*1.2;
+    const weight = 1 + s.wrong*3 - Math.min(s.seen,4)*0.4 + rnd()*1.2;
     return {it, weight};
   });
   scored.sort((a,b)=>b.weight-a.weight);
@@ -1296,7 +1407,8 @@ function chime(good, opts){
 const GAME_MUSIC_PROFILE = {
   quiz:'gameplay_curious', memory:'gameplay_bouncy', missing:'gameplay_gentle',
   match:'gameplay_curious', cards:'gameplay_gentle', bubbles:'gameplay_bouncy',
-  sounds:'gameplay_curious', count:'gameplay_gentle', sort:'gameplay_curious'
+  sounds:'gameplay_curious', count:'gameplay_gentle', sort:'gameplay_curious',
+  puzzle:'gameplay_gentle'
 };
 const SPEECH_VIEWS = new Set(['speech','focus','cloze','temptation','receptive','pairs','combine']);
 function resolveMusicState(){
@@ -1373,7 +1485,8 @@ function render(){
     missing:renderMissing, match:renderMatch, speech:renderSpeech, parent:renderParent,
     bubbles:renderBubbles, sounds:renderSounds, count:renderCount, sort:renderSort,
     focus:renderFocus, cloze:renderCloze, temptation:renderTemptation,
-    receptive:renderReceptive, pairs:renderPairs, combine:renderCombine
+    receptive:renderReceptive, pairs:renderPairs, combine:renderCombine,
+    puzzle:renderPuzzle
   };
   clearTimeout(clozeTimer);
   if(view!=='cloze' && speechOk) window.speechSynthesis.cancel();
@@ -1562,7 +1675,8 @@ function renderGamesMenu(){
     ['missing','talki-game-card-missing.png','מה נעלם?'],
     ['cards','talki-game-card-flashcards.png','כרטיסיות'],
     ['sounds','talki-game-card-animal-sounds.png','מי אמר את זה?'],
-    ['count','talki-game-card-counting.png','כמה יש?']
+    ['count','talki-game-card-counting.png','כמה יש?'],
+    ['puzzle','talki-game-card-challenge.png','שימי במקום']
   ].map(([g,img,t])=>`<button class="v2-game-card" data-game="${g}">
       <img src="assets/v2/game-menu/${img}" alt="">
       <span class="vg-label"><b>${t}</b></span>
@@ -1684,7 +1798,7 @@ function gameHeader(title, chips, noPicker){
 }
 function chips(arr){ return `<div class="quiz-stats">${arr.map(c=>`<div class="stat-chip">${c}</div>`).join('')}</div>`; }
 
-const MIN_ITEMS = {quiz:4,memory:4,match:4,missing:4,sort:4,receptive:4,sounds:4,
+const MIN_ITEMS = {quiz:4,memory:4,match:4,missing:4,sort:4,receptive:4,sounds:4,puzzle:2,
                    count:1,focus:1,temptation:1,bubbles:1,speech:2,combine:3,pairs:2,cloze:1};
 function startGame(type, catId){
   const need = MIN_ITEMS[type] || 4;
@@ -1740,6 +1854,10 @@ function startGame(type, catId){
   } else if(type==='sort'){
     game = {type,catId:cat.id,round:0,score:0,locked:false,done:false};
     setupSortRound();
+  } else if(type==='puzzle'){
+    const boards = (game && game.type==='puzzle') ? (game.boards|0) : 0;
+    game = {type,catId:cat.id,boards,done:false};
+    setupPuzzleBoard();
   }
   return true;
 }
@@ -1952,6 +2070,300 @@ function renderSort(){
       <div class="prompt-word">${display(game.it.word)}</div>
       <p>לאיזו קופסה זה שייך?</p></div>
      <div class="box-row">${boxes}</div>`;
+}
+
+/* ============================================================
+   MATCH & DROP PUZZLE — 🧩 שִׂימִי בַּמָּקוֹם
+
+   A physical shape-puzzle translated to a touchscreen: illustrated
+   vocabulary pieces below, their silhouettes above. Drag a piece onto its
+   shadow (or tap the piece, then tap the shadow — the same path keyboard
+   Enter takes) and Talki speaks the word.
+
+   There is no game over, no lives and no timer. A piece that lands in the
+   wrong place floats back; the second miss lights up where it belongs; from
+   the third the magnet gets stronger, so the board always ends up finished.
+============================================================ */
+const PUZZLE_STEPS = [2, 3, 4, 5, 6];
+const PUZZLE_TOGETHER = [
+  'אֶפְשָׁר לְהַגִּיד אֶת זֶה יַחַד?',
+  'אֵיפֹה יֵשׁ אֶצְלֵנוּ בַּבַּיִת אֶחָד כָּזֶה?',
+  'מִי רוֹצֶה לְסַפֵּר לְאַבָּא אוֹ לְאִמָּא מָה בָּנִינוּ?'
+];
+
+/* 5-6 pieces only when the screen comfortably has room for them — a crowded
+   board is the fastest way to lose a two-year-old. */
+function puzzleCapacity(){
+  const h = window.innerHeight, w = window.innerWidth;
+  if(h < 620 || w < 360) return 3;
+  if(h < 780) return 4;
+  return 6;
+}
+function puzzleLevel(){
+  const lv = parseInt(settings.puzzleLevel, 10);
+  return Math.min(Math.max(isNaN(lv) ? 1 : lv, 1), PUZZLE_STEPS.length);
+}
+function puzzleSize(){
+  return Math.max(2, Math.min(PUZZLE_STEPS[puzzleLevel() - 1], puzzleCapacity()));
+}
+
+/* Mostly words the child can already manage, with a little challenge mixed in
+   — never a board made entirely of their hardest words. Picks are also kept
+   visually distinct so the first rounds are not four near-identical shapes. */
+function puzzlePick(cat, n){
+  const pool = weightedPick(cat.items, cat.id, Math.min(cat.items.length, n * 3));
+  const chosen = [], initials = new Set();
+  for(const it of pool){
+    if(chosen.length >= n) break;
+    const first = plain(it.word)[0];
+    if(initials.has(first) && pool.length - chosen.length > n) continue;
+    initials.add(first);
+    chosen.push(it);
+  }
+  for(const it of pool){
+    if(chosen.length >= n) break;
+    if(!chosen.includes(it)) chosen.push(it);
+  }
+  return chosen.slice(0, n);
+}
+
+function setupPuzzleBoard(){
+  const cat = getCat(game.catId);
+  const picks = puzzlePick(cat, puzzleSize());
+  game.pieces = picks.map((it, i) => ({ id: 'p' + i, it, placed: false, misses: 0 }));
+  game.slots = shuffle(game.pieces);
+  game.tray = shuffle(game.pieces);
+  game.sel = null;
+  game.hint = null;
+  game.placed = 0;
+  game.misses = 0;
+  game.tolerance = 0.9;
+}
+
+function renderPuzzle(){
+  if(!game || game.type!=='puzzle'){ if(!startGame('puzzle', activeCat)) return renderHome(); }
+  if(game.done) return gameHeader('🧩 שִׂימִי בַּמָּקוֹם', '', true) + puzzleDoneCard();
+
+  const slots = game.slots.map(p=>{
+    const cls = ['pz-slot', p.placed ? 'filled' : '', game.hint===p.id ? 'hint' : ''].join(' ').trim();
+    const label = p.placed ? plain(p.it.word) : 'המקום של ' + plain(p.it.word);
+    return `<button class="${cls}" data-pz-slot="${p.id}" aria-label="${esc(label)}">
+        <span class="pz-shadow">${media(p.it)}</span>
+        ${p.placed ? `<span class="pz-fill">${media(p.it)}</span>
+                      <span class="pz-word">${display(p.it.word)}</span>` : ''}
+      </button>`;
+  }).join('');
+
+  /* until the first piece lands, the first one in the tray breathes so a child
+     who cannot read sees what to pick up */
+  const demo = game.placed===0 && game.misses===0 && !game.sel
+    ? game.tray.find(p=>!p.placed) : null;
+  const tray = game.tray.map(p=>`
+    <button class="pz-piece ${p.placed?'placed':''} ${game.sel===p.id?'sel':''} ${demo===p?'nudge':''}"
+            data-pz-piece="${p.id}" ${p.placed?'disabled':''}
+            aria-label="${esc(plain(p.it.word))}">
+      ${media(p.it)}<span class="pz-w">${display(p.it.word)}</span>
+    </button>`).join('');
+
+  const guide = game.sel
+    ? 'עַכְשָׁיו לוֹחֲצִים עַל הַצֵּל'
+    : 'גּוֹרְרִים כָּל תְּמוּנָה אֶל הַצֵּל שֶׁלָּהּ';
+
+  return gameHeader('🧩 שִׂימִי בַּמָּקוֹם', chips([`🧩 ${game.placed}/${game.pieces.length}`]), true) +
+    `<div class="pz-board" id="pzBoard">
+       <div class="pz-slots" style="--pz-cols:${Math.min(game.pieces.length,3)};--pz-n:${game.pieces.length}">${slots}</div>
+       <p class="pz-guide">${guide}</p>
+       <div class="pz-tray">${tray}</div>
+     </div>`;
+}
+
+function puzzleDoneCard(){
+  const words = game.pieces.map(p=>display(p.it.word)).join(' · ');
+  const clean = game.misses <= 1;
+  const stars = [0,1,2].map(i=>
+    `<img class="reward-star" src="assets/v2/icons/talki-ui-icon-star.png" alt=""
+       style="${i < (clean?3:game.misses<=4?2:1) ? '' : 'opacity:.3;filter:grayscale(1)'}">`).join('');
+  /* A quiet nudge to play together, not on every single board. */
+  const together = (game.boards|0) % 3 === 2
+    ? `<p class="pz-together">${PUZZLE_TOGETHER[(game.boards|0) % PUZZLE_TOGETHER.length]}</p>` : '';
+  return `<div class="done-card">${mascot('celebrate', 96)}
+    <div class="big">${stars}</div>
+    <h3>הַפָּאזֶל שָׁלֵם!</h3>
+    <p>${words}</p>${together}
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="big-btn b-grape" data-again="1">עוד פעם</button>
+      <button class="pill-btn" data-nav="home">🏠 הביתה</button></div></div>`;
+}
+
+function puzzleSelect(id){
+  if(!game || game.type!=='puzzle' || game.done) return;
+  const p = game.pieces.find(x=>x.id===id);
+  if(!p || p.placed) return;
+  game.sel = game.sel===id ? null : id;
+  AudioManager.playSfx('ui.secondaryTap');
+  render();
+}
+
+/* Forgiving hit testing: a toddler never lands a piece squarely on its
+   silhouette, so the nearest empty slot within a slot-and-a-bit of the piece
+   counts — and the reach grows every time this piece has been missed. */
+function puzzleSlotUnder(el){
+  const r = el.getBoundingClientRect();
+  const cx = r.left + r.width/2, cy = r.top + r.height/2;
+  let best = null, bestD = Infinity;
+  document.querySelectorAll('.pz-slot').forEach(s=>{
+    if(s.classList.contains('filled')) return;
+    const q = s.getBoundingClientRect();
+    const d = Math.hypot(cx - (q.left + q.width/2), cy - (q.top + q.height/2));
+    const reach = Math.max(q.width, q.height) * game.tolerance;
+    const overlaps = r.right > q.left && r.left < q.right && r.bottom > q.top && r.top < q.bottom;
+    if((d <= reach || overlaps) && d < bestD){ bestD = d; best = s.dataset.pzSlot; }
+  });
+  return best;
+}
+
+function puzzleDrop(pieceId, slotId, el){
+  if(!game || game.type!=='puzzle' || game.done) return;
+  const piece = game.pieces.find(p=>p.id===pieceId);
+  if(!piece || piece.placed) return;
+
+  if(pieceId === slotId){
+    piece.placed = true;
+    game.placed++;
+    game.sel = null;
+    game.hint = null;
+    const complete = game.placed >= game.pieces.length;
+    AudioManager.playSfx(complete ? 'interaction.dragDrop' : 'interaction.correctMatch');
+    const k = key(game.catId, piece.it.word);
+    if(!learned.has(k)){ learned.add(k); saveProgress(); }
+    markSeen(game.catId, piece.it.word, false);
+    render();
+    /* the recorded family voice when there is one, otherwise Hebrew TTS */
+    say(game.catId, piece.it.word);
+    if(complete) puzzleFinish();
+    return;
+  }
+
+  /* A miss is support, never punishment: the piece floats home, the sound is
+     the soft "not there" cue, and Talki starts helping. */
+  piece.misses++;
+  game.misses++;
+  AudioManager.playSfx('interaction.invalidMove');
+  const wantHint = piece.misses >= 2;
+  if(piece.misses >= 3) game.tolerance = Math.min(2.2, game.tolerance + 0.4);
+  if(el){
+    el.classList.add('pz-return');
+    setTimeout(()=>el.classList.remove('pz-return'), 320);
+  }
+  if(wantHint && game.hint !== pieceId){
+    game.hint = pieceId;
+    setTimeout(()=>{ if(game && game.type==='puzzle' && !game.done) render(); }, 340);
+    say(game.catId, piece.it.word);
+  }
+}
+
+function puzzleFinish(){
+  game.finishing = true;
+  setTimeout(()=>{
+    if(!game || game.type!=='puzzle' || !game.finishing) return;
+    game.finishing = false;
+    game.done = true;
+    game.boards = (game.boards|0) + 1;
+    puzzleAdvance();
+    AudioManager.playSfx('game.levelComplete');
+    if(settings.effects) confetti(24);
+    render();
+  }, 1100);
+}
+
+/* Difficulty follows the child, in one step at a time, and never below two
+   pieces — a board they can finish is always available. */
+function puzzleAdvance(){
+  const lv = puzzleLevel();
+  const next = game.misses <= 1 ? Math.min(lv + 1, PUZZLE_STEPS.length)
+             : game.misses >= 5 ? Math.max(lv - 1, 1)
+             : lv;
+  if(next !== lv){ settings.puzzleLevel = next; saveSettings(); }
+}
+
+/* Pointer-events drag. Pointer capture keeps the drag alive when a small
+   finger wanders off the piece, and pointercancel (a system gesture, an
+   incoming call, the browser taking the gesture for a scroll) puts the piece
+   back instead of leaving it stranded mid-air. */
+function puzzleAttachDrag(el){
+  let id = null, sx = 0, sy = 0, dx = 0, dy = 0, moved = false, raf = 0;
+
+  const paint = ()=>{ raf = 0; el.style.transform = `translate3d(${dx}px,${dy}px,0)`; };
+
+  const release = ()=>{
+    if(raf){ cancelAnimationFrame(raf); raf = 0; }
+    if(id !== null){ try{ el.releasePointerCapture(id); }catch(e){} }
+    id = null;
+    el.classList.remove('pz-dragging');
+    el.style.transform = '';
+  };
+
+  el.addEventListener('pointerdown', e=>{
+    if(id !== null || !game || game.type!=='puzzle' || game.done) return;
+    if(el.classList.contains('placed')) return;
+    id = e.pointerId; sx = e.clientX; sy = e.clientY; dx = dy = 0; moved = false;
+    try{ el.setPointerCapture(id); }catch(err){}
+    el.classList.remove('nudge');
+    el.classList.add('pz-dragging');
+    AudioManager.playSfx('interaction.dragPickup');
+  });
+
+  el.addEventListener('pointermove', e=>{
+    if(e.pointerId !== id) return;
+    dx = e.clientX - sx; dy = e.clientY - sy;
+    if(!moved && Math.hypot(dx, dy) > 8) moved = true;
+    if(!raf) raf = requestAnimationFrame(paint);   // never touch layout per move
+  });
+
+  el.addEventListener('pointerup', e=>{
+    if(e.pointerId !== id) return;
+    const slot = moved ? puzzleSlotUnder(el) : null;
+    const wasMoved = moved;
+    release();
+    if(!wasMoved) return;               // a tap — the click handler selects
+    el.dataset.pzDragged = '1';         // and must not also count as a tap
+    setTimeout(()=>{ delete el.dataset.pzDragged; }, 0);
+    if(slot) puzzleDrop(el.dataset.pzPiece, slot, el);
+    else {                              // dropped on empty board: just float back
+      el.classList.add('pz-return');
+      setTimeout(()=>el.classList.remove('pz-return'), 320);
+    }
+  });
+
+  ['pointercancel','lostpointercapture'].forEach(ev=>
+    el.addEventListener(ev, e=>{
+      if(e.pointerId !== id) return;
+      release();
+      el.classList.add('pz-return');
+      setTimeout(()=>el.classList.remove('pz-return'), 320);
+    }));
+}
+
+function bindPuzzle(){
+  const board = document.getElementById('pzBoard');
+  if(!board || !game || game.type!=='puzzle' || game.done) return;
+  board.querySelectorAll('.pz-piece').forEach(el=>{
+    if(el.classList.contains('placed')) return;
+    puzzleAttachDrag(el);
+    /* tap -> tap, which is also what keyboard Enter/Space does on a <button>:
+       an alternative to dragging for small hands and for anyone who cannot
+       drag at all */
+    el.addEventListener('click', ()=>{
+      if(el.dataset.pzDragged) return;
+      puzzleSelect(el.dataset.pzPiece);
+    });
+  });
+  board.querySelectorAll('.pz-slot').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      if(!game.sel) return;
+      puzzleDrop(game.sel, el.dataset.pzSlot, null);
+    });
+  });
 }
 
 /* ============ evidence-based practice modes ============ */
@@ -2446,6 +2858,17 @@ function bind(){
       setTimeout(()=>el.classList.remove('wrong'),420);
     }
   });
+
+  /* match & drop puzzle: pointer drag + tap-to-tap, bound to this render */
+  if(view==='puzzle'){
+    bindPuzzle();
+    /* one short spoken instruction per board — a toddler cannot read the line
+       under the shadows, and this is how the other Talki games open too */
+    if(game && !game.done && !game.told){
+      game.told = true;
+      setTimeout(()=>{ if(alive('puzzle')) speakTTS('שִׂימִי כָּל תְּמוּנָה בַּמָּקוֹם שֶׁלָּהּ', {}); }, 400);
+    }
+  }
 
   /* speech recognition */
   on('[data-mic]', ()=>startListening());

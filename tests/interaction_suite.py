@@ -365,12 +365,444 @@ def test_rapid_taps(b):
     ctx.close()
 
 
+# ------------------------------------- 6. every game finishes and restarts
+# One "move" per game, expressed as the thing a child would actually do.
+def _jclick(page, sel):
+    return page.evaluate("(s)=>{const e=document.querySelector(s); if(!e) return false; e.click(); return true;}", sel)
+
+def _move_quiz(pg):
+    w = pg.evaluate("()=>game.target && game.target.word")
+    return bool(w) and _jclick(pg, f'[data-opt="{w}"]') and (pg.wait_for_timeout(900) or True)
+def _move_memory(pg):
+    pair = pg.evaluate("""()=>{const c=game.cards.filter(x=>!x.matched); if(!c.length) return null;
+      const f=c[0]; const m=c.find(x=>x.pair===f.pair&&x.idx!==f.idx); return m?[f.idx,m.idx]:null;}""")
+    if not pair: return False
+    for i in pair:
+        _jclick(pg, f'[data-mem="{i}"]'); pg.wait_for_timeout(300)
+    pg.wait_for_timeout(300); return True
+def _move_missing(pg):
+    pg.wait_for_timeout(2800)
+    w = pg.evaluate("()=>game.missing && game.missing.word")
+    if not w or not pg.query_selector(f'[data-guess="{w}"]'): return False
+    return _jclick(pg, f'[data-guess="{w}"]') and (pg.wait_for_timeout(1100) or True)
+def _move_match(pg):
+    w = pg.evaluate("()=>{const r=game.left.find(x=>!game.matched.includes(x.word)); return r&&r.word;}")
+    if not w: return False
+    _jclick(pg, f'[data-mleft="{w}"]'); pg.wait_for_timeout(200)
+    return _jclick(pg, f'[data-mright="{w}"]') and (pg.wait_for_timeout(400) or True)
+def _move_sounds(pg):
+    w = pg.evaluate("()=>game.target && game.target.word")
+    return bool(w) and _jclick(pg, f'[data-sopt="{w}"]') and (pg.wait_for_timeout(1300) or True)
+def _move_count(pg):
+    n = pg.evaluate("()=>game.n")
+    return n is not None and _jclick(pg, f'[data-count="{n}"]') and (pg.wait_for_timeout(1500) or True)
+def _move_sort(pg):
+    rid = pg.evaluate("()=>game.right && game.right.id")
+    return bool(rid) and _jclick(pg, f'[data-box="{rid}"]') and (pg.wait_for_timeout(1300) or True)
+def _move_bubbles(pg):
+    pg.wait_for_timeout(700)
+    return pg.evaluate("()=>{document.querySelectorAll('.bubble').forEach(x=>x.click()); return true;}")
+def _move_speech(pg):
+    return _jclick(pg, '[data-skip]') and (pg.wait_for_timeout(300) or True)
+def _move_focus(pg):
+    return _jclick(pg, '#focusCard') and (pg.wait_for_timeout(300) or True)
+def _move_cloze(pg):
+    pg.wait_for_timeout(500)
+    if pg.query_selector('[data-clozenext]'):
+        return _jclick(pg, '[data-clozenext]') and (pg.wait_for_timeout(400) or True)
+    pg.wait_for_timeout(1500); return True
+def _move_tempt(pg):
+    for sel in ('[data-temptnext]', '[data-temptopen]'):
+        if pg.query_selector(sel):
+            return _jclick(pg, sel) and (pg.wait_for_timeout(500) or True)
+    return False
+def _move_receptive(pg):
+    w = pg.evaluate("()=>game.target && game.target.word")
+    return bool(w) and _jclick(pg, f'[data-recept="{w}"]') and (pg.wait_for_timeout(1300) or True)
+def _move_pairs(pg):
+    w = pg.evaluate("()=>game.target && game.target.word")
+    return bool(w) and _jclick(pg, f'[data-pair="{w}"]') and (pg.wait_for_timeout(1400) or True)
+def _move_combine(pg):
+    return _jclick(pg, '[data-combine]') and (pg.wait_for_timeout(3000) or True)
+def _move_puzzle(pg):
+    r = pg.evaluate("""()=>{
+      const p = game.pieces.find(x=>!x.placed);
+      if(!p) return 'finishing';            // last piece is in, the board is celebrating
+      const el = document.querySelector(`[data-pz-piece='${p.id}']`);
+      const slot = document.querySelector(`[data-pz-slot='${p.id}']`);
+      if(!el || !slot) return 'stuck';
+      el.click(); slot.click(); return 'placed';
+    }""")
+    if r == 'stuck':
+        return False
+    pg.wait_for_timeout(1400 if r == 'finishing' else 700)
+    return True
+
+PLAYTHROUGH = [
+    ("quiz", _move_quiz, 20), ("memory", _move_memory, 20), ("missing", _move_missing, 10),
+    ("match", _move_match, 12), ("sounds", _move_sounds, 12), ("count", _move_count, 10),
+    ("sort", _move_sort, 12), ("bubbles", _move_bubbles, 40), ("speech", _move_speech, 12),
+    ("focus", _move_focus, 14), ("cloze", _move_cloze, 60), ("temptation", _move_tempt, 20),
+    ("receptive", _move_receptive, 16), ("pairs", _move_pairs, 12), ("combine", _move_combine, 12),
+    ("puzzle", _move_puzzle, 14),
+]
+
+def test_every_game_completes(b):
+    print("\n6. Every game can be played to its end, replayed, and left")
+    ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
+    page, errors = open_app(ctx)
+
+    for name, move, budget in PLAYTHROUGH:
+        if not has_game(page, name):
+            fail("complete", f"{name} is not a known game type")
+            continue
+        play(page, name)
+        page.wait_for_timeout(200)
+        finished = False
+        for _ in range(budget):
+            if page.evaluate("()=>!!(game && game.done)"):
+                finished = True
+                break
+            if not move(page):
+                break
+        if not page.evaluate("()=>!!(game && game.done)"):
+            fail("complete", f"{name} could not be finished in {budget} moves")
+            show(page, "home")
+            continue
+        page.wait_for_timeout(700)   # the done card can be one animation frame out
+
+        # the finished board must offer the child a choice, not autoplay on
+        again = page.locator('[data-again],[data-nextword],[data-pzagain]').first
+        if not again.count():
+            fail("complete", f"{name}: the finished board offers no way to play again")
+        else:
+            again.scroll_into_view_if_needed()
+            again.click(timeout=5000)
+            page.wait_for_timeout(600)
+            if page.evaluate("()=>!!(game && game.done)"):
+                fail("complete", f"{name}: 'play again' did not start a fresh round")
+
+        show(page, name if False else "home")
+        if page.evaluate("()=>view") != "home":
+            fail("complete", f"{name}: could not return home")
+    ok(f"all {len(PLAYTHROUGH)} games finish, offer a replay, and let the child leave")
+    if errors:
+        fail("complete", f"JS errors during playthrough: {errors[:3]}")
+    ctx.close()
+
+
+# ------------------------------------------- 7. the Match & Drop puzzle
+def _centre(loc):
+    box = loc.bounding_box()
+    return box["x"] + box["width"] / 2, box["y"] + box["height"] / 2
+
+def pointer_drag(page, src, dst, steps=14, release=True, offset=(0, 0)):
+    """A real pointer drag, moved in small steps like a finger, not a teleport."""
+    dst.scroll_into_view_if_needed()
+    src.scroll_into_view_if_needed()
+    x0, y0 = _centre(src)
+    x1, y1 = _centre(dst)
+    x1 += offset[0]; y1 += offset[1]
+    page.mouse.move(x0, y0)
+    page.mouse.down()
+    for i in range(1, steps + 1):
+        page.mouse.move(x0 + (x1 - x0) * i / steps, y0 + (y1 - y0) * i / steps)
+    if release:
+        page.mouse.up()
+
+def open_puzzle(page, level=None):
+    if level is None:
+        page.evaluate("()=>launch('puzzle','animals')")
+    else:
+        page.evaluate("(l)=>{settings.puzzleLevel=l;launch('puzzle','animals');}", level)
+    page.wait_for_timeout(600)
+    return page.evaluate("()=>game.pieces.map(p=>p.id)")
+
+def piece(page, pid):
+    return page.locator(f'[data-pz-piece="{pid}"]')
+def slot(page, pid):
+    return page.locator(f'[data-pz-slot="{pid}"]')
+
+
+def test_puzzle(b):
+    print("\n7. Match & Drop puzzle — 🧩 שימי במקום")
+    ctx = b.new_context(viewport={"width": 390, "height": 844})
+    page, errors = open_app(ctx)
+
+    # -- opens from the Games screen under a real tap
+    show(page, "games")
+    card = page.locator('[data-game="puzzle"]').first
+    if not card.count():
+        fail("puzzle", "no puzzle card on the Games screen")
+        ctx.close()
+        return
+    card.scroll_into_view_if_needed()
+    card.click(timeout=5000)
+    page.wait_for_timeout(600)
+    if page.evaluate("()=>view") != "puzzle":
+        fail("puzzle", "tapping the puzzle card did not open the puzzle")
+    else:
+        ok("opens from the Games screen under a real tap")
+
+    # -- starts easy
+    ids = open_puzzle(page, level=1)
+    if len(ids) != 2:
+        fail("puzzle", f"the first level should be 2 pieces, got {len(ids)}")
+    else:
+        ok("level 1 is a 2-piece board")
+
+    # -- a wrong drop is safe, and help escalates instead of punishing
+    ids = open_puzzle(page, level=3)
+    pointer_drag(page, piece(page, ids[0]), slot(page, ids[1]))
+    page.wait_for_timeout(500)
+    st = page.evaluate("()=>({placed:game.placed,misses:game.misses,hint:game.hint,tol:game.tolerance})")
+    if st["placed"] != 0 or st["misses"] != 1:
+        fail("puzzle", f"a wrong drop did not return the piece safely: {st}")
+    elif st["hint"]:
+        fail("puzzle", "the first miss already gave away the answer — it should just float back")
+    else:
+        ok("a wrong drop floats the piece back, no hint yet")
+
+    pointer_drag(page, piece(page, ids[0]), slot(page, ids[1]))
+    page.wait_for_timeout(600)
+    if page.evaluate("()=>game.hint") != ids[0] or not page.locator(".pz-slot.hint").count():
+        fail("puzzle", "the second miss did not light up the correct place")
+    else:
+        ok("the second miss quietly shows where the piece belongs")
+
+    tol_before = page.evaluate("()=>game.tolerance")
+    pointer_drag(page, piece(page, ids[0]), slot(page, ids[1]))
+    page.wait_for_timeout(500)
+    if page.evaluate("()=>game.tolerance") <= tol_before:
+        fail("puzzle", "the magnet did not get stronger after a third miss")
+    else:
+        ok("a third miss widens the snap so the child can still succeed")
+
+    # -- a correct drag locks the piece and reveals the word
+    ids = open_puzzle(page, level=3)
+    pointer_drag(page, piece(page, ids[0]), slot(page, ids[0]))
+    page.wait_for_timeout(700)
+    if page.evaluate("()=>game.placed") != 1:
+        fail("puzzle", "a correct drag did not place the piece")
+    elif not page.locator(f'[data-pz-slot="{ids[0]}"].filled').count():
+        fail("puzzle", "the filled slot does not show as completed")
+    else:
+        ok("a correct drag snaps in, locks, and completes its slot")
+
+    # -- forgiving: a drop well off-centre still counts
+    ids = open_puzzle(page, level=3)
+    target = slot(page, ids[0])
+    box = target.bounding_box()
+    off = (box["width"] * 0.45, box["height"] * 0.45)
+    pointer_drag(page, piece(page, ids[0]), target, offset=off)
+    page.wait_for_timeout(600)
+    if page.evaluate("()=>game.placed") != 1:
+        fail("puzzle", "a drop landing near — not on — the shadow was rejected")
+    else:
+        ok("a sloppy drop near the shadow still counts")
+
+    # -- pointercancel leaves a safe board
+    ids = open_puzzle(page, level=3)
+    pointer_drag(page, piece(page, ids[0]), slot(page, ids[0]), release=False)
+    page.evaluate("""(id)=>{
+      const el = document.querySelector(`[data-pz-piece='${id}']`);
+      el.dispatchEvent(new PointerEvent('pointercancel', {pointerId:1, bubbles:true}));
+    }""", ids[0])
+    page.wait_for_timeout(400)
+    page.mouse.up()
+    page.wait_for_timeout(300)
+    st = page.evaluate("""(id)=>{
+      const el = document.querySelector(`[data-pz-piece='${id}']`);
+      return {placed:game.placed, dragging:el.classList.contains('pz-dragging'), tf:el.style.transform};
+    }""", ids[0])
+    if st["dragging"] or st["tf"]:
+        fail("puzzle", f"pointercancel left the piece stranded mid-drag: {st}")
+    else:
+        ok("pointercancel puts the piece back and clears the drag")
+
+    # -- rapid input cannot place a piece twice
+    ids = open_puzzle(page, level=3)
+    page.evaluate("""(id)=>{
+      const el=document.querySelector(`[data-pz-piece='${id}']`);
+      const sl=document.querySelector(`[data-pz-slot='${id}']`);
+      el.click(); for(let i=0;i<5;i++) sl.click();
+    }""", ids[0])
+    page.wait_for_timeout(500)
+    if page.evaluate("()=>game.placed") != 1:
+        fail("puzzle", f"5 rapid taps placed {page.evaluate('()=>game.placed')} pieces from one piece")
+    else:
+        ok("rapid taps place one piece once")
+
+    # -- tap -> tap finishes the whole board without any dragging
+    ids = open_puzzle(page, level=3)
+    for pid in ids:
+        piece(page, pid).click(timeout=5000)
+        page.wait_for_timeout(150)
+        slot(page, pid).click(timeout=5000)
+        page.wait_for_timeout(500)
+    page.wait_for_timeout(1400)
+    if not page.evaluate("()=>game.done"):
+        fail("puzzle", "tap-then-tap could not finish the board")
+    else:
+        ok("the whole board can be finished by tapping, no drag needed")
+
+    # -- keyboard reaches the same path (buttons + Enter)
+    ids = open_puzzle(page, level=3)
+    page.focus(f'[data-pz-piece="{ids[0]}"]')
+    page.keyboard.press("Enter")
+    page.wait_for_timeout(300)
+    page.focus(f'[data-pz-slot="{ids[0]}"]')
+    page.keyboard.press("Enter")
+    page.wait_for_timeout(500)
+    if page.evaluate("()=>game.placed") != 1:
+        fail("puzzle", "a piece cannot be placed with the keyboard")
+    else:
+        ok("keyboard Enter drives the same tap-then-tap path")
+
+    # -- finishing offers a choice and does not autoplay another round
+    if page.evaluate("()=>game.done"):
+        fail("puzzle", "board reported done too early")
+    ids = open_puzzle(page, level=1)
+    for pid in ids:
+        piece(page, pid).click(); page.wait_for_timeout(120)
+        slot(page, pid).click(); page.wait_for_timeout(450)
+    page.wait_for_timeout(1500)
+    again = page.locator('[data-again]')
+    home = page.locator('.done-card [data-nav="home"]')
+    if not (again.count() and home.count()):
+        fail("puzzle", "the finished board does not offer both 'עוד פעם' and 'הביתה'")
+    else:
+        ok("the finished board offers a replay and a way home, and stops there")
+    again.first.click(timeout=5000)
+    page.wait_for_timeout(700)
+    if page.evaluate("()=>game.done") or page.evaluate("()=>game.placed") != 0:
+        fail("puzzle", "'עוד פעם' did not deal a fresh board")
+    else:
+        ok("'עוד פעם' deals a fresh board")
+
+    # -- a seed makes the board reproducible for tests, and only then
+    words_a = page.evaluate("()=>{seedRandom(42);launch('puzzle','animals');return game.pieces.map(p=>p.it.word);}")
+    words_b = page.evaluate("()=>{seedRandom(42);launch('puzzle','animals');return game.pieces.map(p=>p.it.word);}")
+    if words_a != words_b:
+        fail("puzzle", f"seeded rounds are not reproducible: {words_a} vs {words_b}")
+    else:
+        ok("a seeded board is reproducible, so tests never flake on word choice")
+
+    # -- a board dealt on a big screen must survive a rotation onto a small one
+    fits = """()=>{
+      const nav = document.querySelector('.bn-inner').getBoundingClientRect();
+      const low = [...document.querySelectorAll('.pz-piece,.pz-slot')]
+        .map(e=>e.getBoundingClientRect().bottom);
+      return {navTop: Math.round(nav.top), lowest: Math.round(Math.max(...low))};
+    }"""
+    for w, h, label in [(320, 568, "small portrait"), (844, 390, "landscape")]:
+        for level in (3, 5):
+            ids = open_puzzle(page, level=level)
+            page.set_viewport_size({"width": w, "height": h})
+            page.wait_for_timeout(400)
+            bad = page.evaluate(REACHABILITY)
+            box = page.evaluate(fits)
+            if bad:
+                fail("puzzle", f"{label}: unreachable board parts after resize {bad[:2]}")
+            elif box["lowest"] > box["navTop"]:
+                fail("puzzle", f"{label} level {level}: the board runs under the nav "
+                               f"after a resize ({box['lowest']} > {box['navTop']})")
+            else:
+                pointer_drag(page, piece(page, ids[0]), slot(page, ids[0]))
+                page.wait_for_timeout(600)
+                if page.evaluate("()=>game.placed") < 1:
+                    fail("puzzle", f"{label} level {level}: board stopped accepting pieces after a resize")
+            page.set_viewport_size({"width": 390, "height": 844})
+            page.wait_for_timeout(200)
+    ok("a board survives being resized onto a small phone or into landscape")
+
+    # -- leaving mid-drag does not wedge the app
+    ids = open_puzzle(page, level=3)
+    pointer_drag(page, piece(page, ids[0]), slot(page, ids[1]), release=False)
+    page.evaluate("()=>{view='home';game=null;render();}")
+    page.wait_for_timeout(200)
+    page.mouse.up()
+    page.wait_for_timeout(300)
+    if page.evaluate("()=>view") != "home":
+        fail("puzzle", "leaving the puzzle mid-drag did not land on home")
+    else:
+        ok("navigating away mid-drag lands safely on home")
+
+    if errors:
+        fail("puzzle", f"JS errors: {errors[:3]}")
+    ctx.close()
+
+
+def test_puzzle_on_every_screen(b):
+    print("\n8. The puzzle board fits every supported screen")
+    for w, h, name in DEVICES:
+        ctx = b.new_context(viewport={"width": w, "height": h},
+                            has_touch=w < 900, is_mobile=w < 900)
+        page, errors = open_app(ctx)
+        for level in (1, 3, 5):
+            ids = open_puzzle(page, level=level)
+            n = len(ids)
+            if n < 2:
+                fail(name, f"level {level} dealt only {n} piece(s)")
+                continue
+            bad = page.evaluate(REACHABILITY)
+            if bad:
+                fail(name, f"level {level}: unreachable board parts {bad[:2]}")
+                continue
+            small = [x for x in page.evaluate(TOUCH_SIZES, ".pz-piece,.pz-slot")
+                     if min(x["w"], x["h"]) < MIN_TOUCH]
+            if small:
+                fail(name, f"level {level}: pieces/slots under {MIN_TOUCH}px: {small[:2]}")
+                continue
+            # and it can actually be finished here
+            for pid in ids:
+                piece(page, pid).scroll_into_view_if_needed()
+                piece(page, pid).click(timeout=5000)
+                page.wait_for_timeout(100)
+                slot(page, pid).scroll_into_view_if_needed()
+                slot(page, pid).click(timeout=5000)
+                page.wait_for_timeout(350)
+            page.wait_for_timeout(1400)
+            if not page.evaluate("()=>game.done"):
+                fail(name, f"level {level} board could not be finished")
+        if errors:
+            fail(name, f"JS errors on the puzzle: {errors[:2]}")
+        else:
+            ok(f"{name} ({w}x{h}): puzzle usable and completable at every level")
+        ctx.close()
+
+
+def test_puzzle_reduced_motion(b):
+    print("\n9. The puzzle is fully playable with reduced motion")
+    ctx = b.new_context(viewport={"width": 390, "height": 844},
+                        reduced_motion="reduce")
+    page, errors = open_app(ctx)
+    ids = open_puzzle(page, level=3)
+    pointer_drag(page, piece(page, ids[0]), slot(page, ids[0]))
+    page.wait_for_timeout(600)
+    if page.evaluate("()=>game.placed") != 1:
+        fail("reduced-motion", "a piece cannot be dragged into place with reduced motion")
+    for pid in ids[1:]:
+        piece(page, pid).click(); page.wait_for_timeout(120)
+        slot(page, pid).click(); page.wait_for_timeout(400)
+    page.wait_for_timeout(1500)
+    if not page.evaluate("()=>game.done"):
+        fail("reduced-motion", "the board cannot be finished with reduced motion")
+    else:
+        ok("reduced motion: the board still drags, taps and completes")
+    if errors:
+        fail("reduced-motion", f"JS errors: {errors[:2]}")
+    ctx.close()
+
+
 def main():
     print(f"Real-interaction suite against {URL}")
     with sync_playwright() as p:
         b = p.chromium.launch(**({"executable_path": CHROMIUM_PATH} if CHROMIUM_PATH else {}))
         tests = [test_reachable_everywhere, test_touch_target_sizes,
-                 test_real_tap_navigation, test_no_listener_growth, test_rapid_taps]
+                 test_real_tap_navigation, test_no_listener_growth, test_rapid_taps,
+                 test_every_game_completes, test_puzzle, test_puzzle_on_every_screen,
+                 test_puzzle_reduced_motion]
         for t in tests:
             try:
                 t(b)
