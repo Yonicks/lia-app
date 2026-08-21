@@ -813,6 +813,18 @@ def test_puzzle_on_every_screen(b):
             if small:
                 fail(name, f"level {level}: pieces/slots under {MIN_TOUCH}px: {small[:2]}")
                 continue
+            # the whole board belongs on one screen — a toddler will not scroll
+            # to find the tray
+            box = page.evaluate("""()=>{
+              const nav = document.querySelector('.bn-inner').getBoundingClientRect();
+              const low = [...document.querySelectorAll('.pz-piece,.pz-slot')]
+                .map(e=>e.getBoundingClientRect().bottom);
+              return {navTop: Math.round(nav.top), lowest: Math.round(Math.max(...low))};
+            }""")
+            if box["lowest"] > box["navTop"]:
+                fail(name, f"level {level}: the board runs under the nav "
+                           f"({box['lowest']} > {box['navTop']}) — the tray needs scrolling")
+                continue
             # and it can actually be finished here
             for pid in ids:
                 piece(page, pid).scroll_into_view_if_needed()
@@ -889,6 +901,142 @@ def test_degraded_audio_apis(b):
     ctx.close()
 
 
+# ------------------ 12. a child who cannot read is told what to do
+# Installed before the app loads so nothing is missed, and installed once so
+# one utterance is counted once.
+SPEECH_SPY = """(()=>{
+  window.__spoken = [];
+  const install = () => {
+    const s = window.speechSynthesis;
+    if(!s || s.__talkiSpy) return;
+    s.__talkiSpy = true;
+    const orig = s.speak.bind(s);
+    s.speak = u => { window.__spoken.push(u.text); return orig(u); };
+  };
+  install();
+  document.addEventListener('DOMContentLoaded', install);
+})()"""
+
+# Games whose opening screen means nothing without a spoken prompt: the child
+# is being asked a question, not just shown a board.
+SPOKEN_ON_ENTRY = [
+    ("quiz", 1500), ("missing", 3500), ("count", 1500), ("sort", 1500),
+    ("receptive", 1500), ("pairs", 1500), ("sounds", 1500), ("focus", 1500),
+    ("puzzle", 1500),
+]
+
+def test_spoken_prompt_on_entry(b):
+    print("\n12. Games that ask a question say it out loud, once")
+    ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
+    ctx.add_init_script(SPEECH_SPY)
+    page, errors = open_app(ctx)
+
+    for name, wait in SPOKEN_ON_ENTRY:
+        page.evaluate("()=>{window.__spoken.length=0;}")
+        play(page, name)
+        page.wait_for_timeout(wait)
+        spoken = page.evaluate("()=>window.__spoken.slice()")
+        if not spoken:
+            fail("prompt", f"{name} opens in silence — a child who cannot read has nothing to go on")
+        elif len(spoken) > 1:
+            fail("prompt", f"{name} queued {len(spoken)} utterances on entry: {spoken}")
+        show(page, "home")
+    ok(f"all {len(SPOKEN_ON_ENTRY)} question games speak exactly one prompt on entry")
+
+    # and the quiz keeps speaking a fresh word every round, never twice
+    page.evaluate("()=>{window.__spoken.length=0;}")
+    play(page, "quiz")
+    page.wait_for_timeout(1200)
+    for _ in range(3):
+        w = page.evaluate("()=>game.target.word")
+        page.evaluate("(w)=>document.querySelector(`[data-opt='${w}']`).click()", w)
+        page.wait_for_timeout(1200)
+    spoken = page.evaluate("()=>window.__spoken.slice()")
+    if len(spoken) != 4:
+        fail("prompt", f"4 quiz rounds spoke {len(spoken)} times: {spoken}")
+    else:
+        ok("each quiz round speaks its word exactly once")
+
+    if errors:
+        fail("prompt", f"JS errors: {errors[:2]}")
+    ctx.close()
+
+
+# ------------------------------------------ 13. the parent gate holds
+def test_parent_gate(b):
+    print("\n13. Parent settings stay behind the gate")
+    ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
+    page, errors = open_app(ctx)
+
+    page.click('#bottomNav [data-nav="parent"]', timeout=5000)
+    page.wait_for_timeout(500)
+    if not page.locator(".lock-wrap").count():
+        fail("gate", "tapping הורה in the bottom nav opened parent settings ungated")
+    elif page.locator("#exportBtn, [data-reset], #importReplace").count():
+        fail("gate", "the lock screen exposes settings controls behind it")
+    else:
+        ok("tapping הורה lands on the gate, not on settings")
+
+    # a wrong answer must not open it
+    page.evaluate("()=>{lockInput='1';render();}")
+    page.locator('[data-key="ok"]').first.click(timeout=5000)
+    page.wait_for_timeout(400)
+    if page.evaluate("()=>unlocked"):
+        fail("gate", "a wrong answer unlocked the parent screen")
+    else:
+        ok("a wrong answer keeps it locked")
+
+    # the right answer opens it
+    page.evaluate("()=>{lockInput=String(lockAnswer.sum);render();}")
+    page.locator('[data-key="ok"]').first.click(timeout=5000)
+    page.wait_for_timeout(500)
+    if not page.locator("#exportBtn").count():
+        fail("gate", "the correct answer did not open parent settings")
+    else:
+        ok("the correct answer opens parent settings")
+
+    # and it closes behind them
+    page.click('#bottomNav [data-nav="home"]', timeout=5000)
+    page.wait_for_timeout(400)
+    page.click('#bottomNav [data-nav="parent"]', timeout=5000)
+    page.wait_for_timeout(500)
+    if not page.locator(".lock-wrap").count() or page.locator("#exportBtn").count():
+        fail("gate", "the parent screen stayed unlocked after leaving it — "
+                     "a toddler tapping הורה would land straight in settings")
+    else:
+        ok("leaving the parent screen re-locks it")
+
+    # moving between parent tabs must not re-lock in the parent's face
+    page.evaluate("()=>{lockInput=String(lockAnswer.sum);render();}")
+    page.locator('[data-key="ok"]').first.click(timeout=5000)
+    page.wait_for_timeout(400)
+    page.locator('[data-ptab="report"]').first.click(timeout=5000)
+    page.wait_for_timeout(400)
+    if not page.evaluate("()=>unlocked"):
+        fail("gate", "switching parent tabs threw the parent back out to the gate")
+    else:
+        ok("switching parent tabs keeps the screen open")
+
+    # destructive actions still ask before doing anything
+    page.evaluate("()=>{parentTab='settings';render();}")
+    page.wait_for_timeout(400)
+    asked = []
+    page.on("dialog", lambda d: (asked.append(d.message), d.dismiss()))
+    learned_before = page.evaluate("()=>learned.size")
+    page.locator("[data-reset]").first.click(timeout=5000)
+    page.wait_for_timeout(500)
+    if not asked:
+        fail("gate", "'reset progress' wiped data without confirming")
+    elif page.evaluate("()=>learned.size") != learned_before:
+        fail("gate", "'reset progress' wiped data even though the confirm was dismissed")
+    else:
+        ok("resetting progress confirms first and respects a cancel")
+
+    if errors:
+        fail("gate", f"JS errors: {errors[:2]}")
+    ctx.close()
+
+
 def test_offline(b):
     print("\n11. Talki still runs after the network goes away")
     ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
@@ -952,7 +1100,8 @@ def main():
                  test_real_tap_navigation, test_no_listener_growth, test_rapid_taps,
                  test_back_button,
                  test_every_game_completes, test_puzzle, test_puzzle_on_every_screen,
-                 test_puzzle_reduced_motion, test_degraded_audio_apis, test_offline]
+                 test_puzzle_reduced_motion, test_spoken_prompt_on_entry,
+                 test_parent_gate, test_degraded_audio_apis, test_offline]
         for t in tests:
             try:
                 t(b)

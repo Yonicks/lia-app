@@ -726,19 +726,27 @@
      below. Same cream/purple/mint/peach palette, same rounded surfaces
      and soft shadows as the rest of Talki.
   ================================================================ */
-  .pz-board{max-width:min(680px,96vw);margin:0 auto;display:flex;flex-direction:column;
+  .pz-board{max-width:min(760px,96vw);margin:0 auto;display:flex;flex-direction:column;
     justify-content:center;min-height:min(58vh,520px)}
-  .pz-slots{display:grid;grid-template-columns:repeat(var(--pz-cols,3),1fr);
+  /* Wrapping by size rather than by a column count: the shadows are always the
+     same comfortable square whatever the board holds, they centre themselves
+     on the last row, and a six-piece board can never grow tall enough to push
+     the tray under the bottom nav. */
+  .pz-slots{display:flex;flex-wrap:wrap;justify-content:center;align-content:center;
     gap:clamp(10px,2vw,16px);padding:clamp(12px,2.4vw,20px);
     background:linear-gradient(165deg,rgba(255,255,255,.92),rgba(255,241,220,.92));
     border:3px solid var(--line);border-radius:var(--v2-radius-hero);box-shadow:var(--shadow)}
-  .pz-slot{position:relative;aspect-ratio:1;min-height:76px;display:flex;
+  .pz-slot{position:relative;flex:0 0 auto;
+    width:clamp(84px,24vw,170px);height:clamp(84px,24vw,170px);display:flex;
     align-items:center;justify-content:center;flex-direction:column;gap:2px;
     background:rgba(124,76,214,.05);border:3px dashed rgba(109,59,166,.30);
     border-radius:20px;padding:8px;touch-action:none;
     transition:border-color .18s ease,background .18s ease,transform .18s ease}
+  /* A flat black blob makes a duck and a penguin the same shadow. Keeping the
+     internal detail — grayscale and faded rather than filled in — still reads
+     as a shadow but stays identifiable to a two-year-old. */
   .pz-slot .pz-shadow{display:flex;align-items:center;justify-content:center;
-    width:100%;height:100%;opacity:.22;filter:brightness(0) saturate(0)}
+    width:100%;height:100%;opacity:.34;filter:grayscale(1) contrast(.72) brightness(.92)}
   .pz-slot .pz-shadow img{width:100%;height:100%;object-fit:contain}
   .pz-slot .pz-shadow .em,.pz-slot .pz-shadow .emoji{font-size:clamp(2rem,9vw,3.2rem);line-height:1}
   .pz-slot .pz-fill{position:absolute;inset:8px;display:flex;align-items:center;justify-content:center;
@@ -760,7 +768,7 @@
 
   .pz-tray{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(10px,2.4vw,18px)}
   .pz-piece{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;
-    width:clamp(76px,23vw,116px);min-height:88px;padding:8px 6px 6px;
+    width:clamp(76px,23vw,104px);min-height:88px;padding:8px 6px 6px;
     background:var(--paper);border:3px solid var(--line);border-radius:20px;
     box-shadow:var(--shadow);touch-action:none;
     transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
@@ -791,8 +799,8 @@
   /* Landscape is wide and short: spread the shadows and the tray into single
      rows instead of stacking, so a six-piece board still fits above the nav. */
   @media (orientation:landscape) and (max-height:560px){
-    .pz-slots{grid-template-columns:repeat(var(--pz-n,3),1fr)}
-    .pz-slot{height:clamp(48px,14vh,80px)}
+    .pz-slots{flex-wrap:nowrap}
+    .pz-slot{width:clamp(56px,9vw,88px);height:clamp(48px,14vh,80px)}
     .pz-tray{flex-wrap:nowrap}
     .pz-piece{width:clamp(60px,11vw,88px)}
     /* the guide line is written for the parent, and landscape has no height to
@@ -853,7 +861,7 @@
        the slots stop being square and take a share of the height instead */
     .pz-board{min-height:0}
     .pz-slots{padding:9px;gap:8px}
-    .pz-slot{aspect-ratio:auto;height:clamp(56px,11vh,96px);min-height:56px;padding:5px}
+    .pz-slot{width:clamp(64px,20vw,110px);height:clamp(56px,11vh,96px);padding:5px}
     .pz-guide{margin:7px 4px 6px;font-size:.76rem}
     .pz-piece{width:clamp(64px,19vw,92px);min-height:64px;padding:5px 4px 4px}
     .pz-piece img{aspect-ratio:auto;height:clamp(32px,6.5vh,56px)}
@@ -1113,7 +1121,7 @@ let settings = { rate:0.85, niqqud:true, sounds:true, effects:true, music:true, 
 
 let bubbleTimer = null;
 let view = 'home', activeCat = null, game = null, cardIdx = 0, parentTab = 'settings';
-let unlocked = false, lockAnswer = null, lockInput = '';
+let unlocked = false, lockAnswer = null, lockInput = '', lastRenderedView = null;
 
 /* ---------------------------------------------------------------
    Storage layer. One small async key/value interface, three
@@ -1488,6 +1496,14 @@ function render(){
     receptive:renderReceptive, pairs:renderPairs, combine:renderCombine,
     puzzle:renderPuzzle
   };
+  /* The parent gate used to open once per session: after a parent solved the
+     sum, "הורה" in the bottom nav went straight into settings, backup and
+     reset for the rest of the session — one tap away from a toddler. Leaving
+     the parent screen re-locks it, so every entry is gated. */
+  if(lastRenderedView === 'parent' && view !== 'parent'){
+    unlocked = false; lockAnswer = null; lockInput = '';
+  }
+  lastRenderedView = view;
   clearTimeout(clozeTimer);
   if(view!=='cloze' && speechOk) window.speechSynthesis.cancel();
   if(view!=='bubbles' && bubbleTimer){ clearInterval(bubbleTimer); bubbleTimer=null; }
@@ -1907,11 +1923,11 @@ function setupQuizRound(){
   game.target = target;
   game.options = shuffle([target,...others]);
   game.locked = false;
+  game.asked = false;   // bind() speaks the word for this round
 }
 function nextQuiz(){
   setupQuizRound();
   view='quiz'; render();
-  if(!game.done) setTimeout(()=>{ if(alive('quiz')) say(game.catId, game.target.word); }, 300);
 }
 function renderQuiz(){
   if(!game || game.type!=='quiz'){ if(!startGame('quiz', activeCat)) return renderHome(); }
@@ -1947,6 +1963,7 @@ function setupMissingRound(){
   game.missing = game.set[Math.floor(Math.random()*game.set.length)];
   game.phase = 'show';
   game.locked = false;
+  game.asked = false;   // bind() asks out loud once the picture is gone
   game.askOrder = shuffle(game.set);
   setTimeout(()=>{ if(game && game.type==='missing' && game.phase==='show'){ game.phase='ask'; render(); } }, 2600);
 }
@@ -2071,7 +2088,7 @@ function setupCountRound(){
   const n = 1 + Math.floor(Math.random()*5);
   const opts = new Set([n]);
   while(opts.size<3) opts.add(1+Math.floor(Math.random()*5));
-  game.it = it; game.n = n; game.options = shuffle([...opts]); game.locked = false;
+  game.it = it; game.n = n; game.options = shuffle([...opts]); game.locked = false; game.asked = false;
 }
 function renderCount(){
   if(!game || game.type!=='count'){ if(!startGame('count', activeCat)) return renderHome(); }
@@ -2090,7 +2107,7 @@ function setupSortRound(){
   const pool = Object.values(CATEGORIES).filter(c=>c.items.length>=4);
   const [a,b] = shuffle(pool).slice(0,2);
   const it = a.items[Math.floor(Math.random()*a.items.length)];
-  game.it = it; game.right = a; game.boxes = shuffle([a,b]); game.locked = false;
+  game.it = it; game.right = a; game.boxes = shuffle([a,b]); game.locked = false; game.asked = false;
 }
 function renderSort(){
   if(!game || game.type!=='sort'){ if(!startGame('sort', activeCat)) return renderHome(); }
@@ -2203,7 +2220,7 @@ function renderPuzzle(){
 
   return gameHeader('🧩 שִׂימִי בַּמָּקוֹם', chips([`🧩 ${game.placed}/${game.pieces.length}`]), true) +
     `<div class="pz-board" id="pzBoard">
-       <div class="pz-slots" style="--pz-cols:${Math.min(game.pieces.length,3)};--pz-n:${game.pieces.length}">${slots}</div>
+       <div class="pz-slots">${slots}</div>
        <p class="pz-guide">${guide}</p>
        <div class="pz-tray">${tray}</div>
      </div>`;
@@ -2811,7 +2828,13 @@ function bind(){
   });
   on('[data-again]', ()=> launch(game.type, game.catId));
 
-  /* quiz */
+  /* quiz — "איפה ה...?" has no question until the word is spoken, and the
+     first round used to open in silence: only nextQuiz() spoke, so a child
+     starting the game had nothing to go on but a guess. */
+  if(view==='quiz' && game && !game.done && !game.asked){
+    game.asked = true;
+    setTimeout(()=>{ if(alive('quiz')) say(game.catId, game.target.word); }, 350);
+  }
   on('[data-opt]', el=>{
     if(game.locked) return;
     const word = el.dataset.opt, ok = word===game.target.word;
@@ -2852,7 +2875,12 @@ function bind(){
     }
   });
 
-  /* what's missing */
+  /* what's missing — ask out loud when the picture disappears, so a child
+     who cannot read the line above still knows what just happened */
+  if(view==='missing' && game && !game.done && game.phase==='ask' && !game.asked){
+    game.asked = true;
+    setTimeout(()=>{ if(alive('missing')) speakTTS('מָה נֶעֱלַם?', {}); }, 250);
+  }
   on('[data-guess]', el=>{
     /* the board stays on screen for up to 900ms after an answer, so without
        this a child patting the picture scores and advances once per pat */
@@ -2935,7 +2963,11 @@ function bind(){
     }else{ el.classList.add('wrong'); chime(false); setTimeout(()=>el.classList.remove('wrong'),420); }
   });
 
-  /* counting */
+  /* counting — say the question, which also models the word being counted */
+  if(view==='count' && game && !game.done && !game.asked){
+    game.asked = true;
+    setTimeout(()=>{ if(alive('count')) speakTTS('כַּמָּה ' + plain(game.it.word) + ' יֵשׁ?', {}); }, 350);
+  }
   on('[data-count]', el=>{
     if(game.locked) return;
     const ok = +el.dataset.count === game.n;
@@ -2946,7 +2978,12 @@ function bind(){
     }else{ el.classList.add('wrong'); chime(false); setTimeout(()=>el.classList.remove('wrong'),420); }
   });
 
-  /* sorting */
+  /* sorting — name the thing being sorted, in the family voice when there
+     is a recording for it */
+  if(view==='sort' && game && !game.done && !game.asked){
+    game.asked = true;
+    setTimeout(()=>{ if(alive('sort')) say(game.right.id, game.it.word); }, 350);
+  }
   on('[data-box]', el=>{
     if(game.locked) return;
     const ok = el.dataset.box === game.right.id;
