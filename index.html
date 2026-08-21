@@ -720,6 +720,60 @@
   /* ---- V2 mascot sizing guard: never stretch, keep intrinsic aspect ---- */
   .mascot-wrap img{width:100%;height:100%;object-fit:contain}
 
+  /* ================================================================
+     TODDLER TOUCH LAYER
+     Platform guidance puts the floor at ~48dp; Talki's users are two-
+     and three-year-olds pressing with the flat of a finger, so every
+     control a child is expected to hit gets a 56px minimum box. Where
+     the visible pill has to stay small for layout reasons the box is
+     grown with an invisible ::before so the art does not change size.
+  ================================================================ */
+  .pill-btn{min-height:56px;padding:10px 18px}
+  .big-btn{min-height:56px;padding:12px 26px}
+  .v2-chip{min-height:44px;padding:10px 18px}
+  .v2h-back,.v2-gift-btn{position:relative}
+  .v2h-back::before,.v2-gift-btn::before{content:"";position:absolute;
+    top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%}
+  #gameCat{min-height:56px}
+  .icon-btn{min-width:48px;min-height:48px}
+  .bn-item{min-height:56px}
+  /* Neighbouring answers need a visible gutter so a sloppy tap that lands
+     between two pictures does not register on the wrong one. */
+  .opt-grid{gap:clamp(12px,2vw,18px)}
+
+  /* ================================================================
+     SHORT VIEWPORTS — keep one whole round on one screen
+     On a 320x568 phone (and on any phone held in landscape) the answer
+     grid used to run underneath the fixed bottom nav: the child saw two
+     of the four pictures, and a tap aimed at the bottom row landed on
+     the nav and threw them out of the game. Below 700px of height the
+     game chrome compacts so the whole board fits without scrolling.
+  ================================================================ */
+  @media (max-height:700px){
+    main{padding-top:10px}
+    .cat-header{padding:4px 2px 8px;gap:6px;flex-wrap:nowrap}
+    .cat-title{font-size:1rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .pill-btn{min-height:48px;padding:8px 12px;font-size:.82rem}
+    .big-btn{min-height:48px;padding:9px 18px;font-size:.86rem}
+    #gameCat{min-height:48px;max-width:96px;padding:6px 8px!important;font-size:.75rem!important}
+    .quiz-stats{gap:6px;margin-bottom:7px}
+    .stat-chip{padding:3px 10px;font-size:.72rem;border-width:1px}
+    .prompt-box{padding:8px 10px;margin-bottom:10px;border-width:2px}
+    .prompt-box p{font-size:.8rem;margin-bottom:7px}
+    .prompt-word{font-size:1.5rem;margin-bottom:6px}
+    .opt{padding:7px 6px;border-width:2px}
+    .opt img{width:clamp(56px,11vh,110px);height:clamp(56px,11vh,110px)}
+    .opt img.art{width:clamp(60px,13vh,130px);height:clamp(60px,13vh,130px)}
+    .opt-grid{gap:10px}
+    .prompt-box img.art{width:92px;height:92px}
+  }
+  @media (max-height:560px){
+    .prompt-box{padding:6px 8px;margin-bottom:7px}
+    .opt img{width:clamp(48px,15vh,96px);height:clamp(48px,15vh,96px)}
+    .opt img.art{width:clamp(52px,17vh,104px);height:clamp(52px,17vh,104px)}
+    .prompt-box img.art{width:74px;height:74px}
+    .quiz-stats{margin-bottom:5px}
+  }
 </style>
 </head>
 <body>
