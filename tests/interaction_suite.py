@@ -176,7 +176,7 @@ def test_touch_target_sizes(b):
     # The child-facing surface. Parent-only screens are adult UI and are held
     # to normal web sizing.
     sel = ".pill-btn,.big-btn,.bn-item,.v2-chip,.v2h-back,.opt,.tile,.mem,.box,.mod," \
-          ".v2-game-card,.v2-cat-card,.v2-practice-card,.match-item,#gameCat,.icon-btn"
+          ".v2-game-card,.v2-cat-card,.v2-practice-card,.match-item,.icon-btn"
     small = []
     for v in CHILD_VIEWS:
         show(page, v)
@@ -962,6 +962,69 @@ def test_spoken_prompt_on_entry(b):
     ctx.close()
 
 
+# -------------------- 12b. no adult controls inside a child's game
+def test_no_adult_controls_in_games(b):
+    print("\n12b. Category choice lives on the menus, not inside a round")
+    ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
+    page, errors = open_app(ctx)
+
+    # A native <select> opens an OS dropdown a toddler cannot dismiss, and the
+    # old one silently restarted whatever round they were in.
+    offenders = []
+    for name, _, _ in PLAYTHROUGH:
+        play(page, name)
+        page.wait_for_timeout(250)
+        if page.eval_on_selector_all("#app select", "e=>e.length"):
+            offenders.append(name)
+    if offenders:
+        fail("adult-controls", f"game screens still carry a native dropdown: {offenders}")
+    else:
+        ok(f"none of the {len(PLAYTHROUGH)} game screens contains a dropdown")
+
+    # and the chooser that replaced it works, on both menus, by real tap
+    for screen in ("games", "practice"):
+        show(page, screen)
+        chips = page.locator("[data-gamecat]")
+        if chips.count() < 2:
+            fail("adult-controls", f"the {screen} screen has no category chooser")
+            continue
+        target = page.locator('[data-gamecat="food"]').first
+        target.scroll_into_view_if_needed()
+        target.click(timeout=5000)
+        page.wait_for_timeout(300)
+        if page.evaluate("()=>activeCat") != "food":
+            fail("adult-controls", f"{screen}: tapping a category chip did not select it")
+        elif page.eval_on_selector_all(".v2-chip.on[data-gamecat]",
+                                       "e=>e.map(x=>x.dataset.gamecat)") != ["food"]:
+            fail("adult-controls", f"{screen}: the chosen category is not shown as chosen")
+    ok("both menus offer a working category chooser")
+
+    # the choice has to actually reach the game that opens next
+    show(page, "games")
+    page.locator('[data-gamecat="food"]').first.click(timeout=5000)
+    page.wait_for_timeout(250)
+    page.locator('[data-game="quiz"]').first.click(timeout=5000)
+    page.wait_for_timeout(600)
+    if page.evaluate("()=>game.catId") != "food":
+        fail("adult-controls", f"the chosen category did not reach the game "
+                               f"(got {page.evaluate('()=>game.catId')})")
+    else:
+        ok("the category chosen on the menu is the one the game is built from")
+
+    # the chips are child-sized like every other control
+    show(page, "games")
+    small = [x for x in page.evaluate(TOUCH_SIZES, "[data-gamecat]")
+             if min(x["w"], x["h"]) < MIN_TOUCH]
+    if small:
+        fail("adult-controls", f"category chips under {MIN_TOUCH}px: {small[:3]}")
+    else:
+        ok(f"every category chip is at least {MIN_TOUCH}px")
+
+    if errors:
+        fail("adult-controls", f"JS errors: {errors[:2]}")
+    ctx.close()
+
+
 # ------------------------------------------ 13. the parent gate holds
 def test_parent_gate(b):
     print("\n13. Parent settings stay behind the gate")
@@ -1101,7 +1164,8 @@ def main():
                  test_back_button,
                  test_every_game_completes, test_puzzle, test_puzzle_on_every_screen,
                  test_puzzle_reduced_motion, test_spoken_prompt_on_entry,
-                 test_parent_gate, test_degraded_audio_apis, test_offline]
+                 test_no_adult_controls_in_games, test_parent_gate,
+                 test_degraded_audio_apis, test_offline]
         for t in tests:
             try:
                 t(b)

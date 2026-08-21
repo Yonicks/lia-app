@@ -177,6 +177,8 @@
   .pill-btn.accent{background:linear-gradient(155deg,var(--sun),var(--sun-dark));color:#fff;border:none}
   .pill-btn.blue{background:linear-gradient(155deg,var(--sky),var(--sky-dark));color:#fff;border:none}
   .cat-title{display:flex;align-items:center;gap:8px;font-weight:900;font-size:1.15rem}
+  /* balances the back pill so the title stays centred */
+  .ch-spacer{flex:0 0 auto;width:56px}
 
   .word-grid{display:grid;gap:clamp(9px,1.3vw,16px);
     grid-template-columns:repeat(auto-fill,minmax(clamp(130px,40vw,190px),1fr))}
@@ -706,6 +708,7 @@
   .v2-chip{flex:none;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;
     padding:8px 16px;font-weight:800;font-size:.82rem}
   .v2-chip.on{background:var(--v2-purple);border-color:var(--v2-purple);color:#fff}
+  .v2-pick-label{margin:2px 4px 6px;font-weight:800;font-size:.86rem;color:var(--ink-soft)}
   .v2-sticker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:640px;margin:0 auto}
   @media(min-width:600px){ .v2-sticker-grid{grid-template-columns:repeat(5,1fr)} }
   @media(min-width:1100px){ .v2-sticker-grid{grid-template-columns:repeat(6,1fr)} }
@@ -825,7 +828,6 @@
   .v2h-back,.v2-gift-btn{position:relative}
   .v2h-back::before,.v2-gift-btn::before{content:"";position:absolute;
     top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%}
-  #gameCat{min-height:56px}
   .icon-btn{min-width:48px;min-height:48px}
   .bn-item{min-height:56px}
   /* Neighbouring answers need a visible gutter so a sloppy tap that lands
@@ -846,7 +848,6 @@
     .cat-title{font-size:1rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .pill-btn{min-height:48px;padding:8px 12px;font-size:.82rem}
     .big-btn{min-height:48px;padding:9px 18px;font-size:.86rem}
-    #gameCat{min-height:48px;max-width:96px;padding:6px 8px!important;font-size:.75rem!important}
     .quiz-stats{gap:6px;margin-bottom:7px}
     .stat-chip{padding:3px 10px;font-size:.72rem;border-width:1px}
     .prompt-box{padding:8px 10px;margin-bottom:10px;border-width:2px}
@@ -1650,9 +1651,25 @@ function renderHome(){
       </button>`).join('')}</div>`;
 }
 
+/* still used by the parent recording screen, which is adult UI */
 function catPicker(current){
   return allCats().filter(c=>c.items.length>=4).map(c=>
     `<option value="${c.id}" ${c.id===current?'selected':''}>${plain(c.title)}</option>`).join('');
+}
+
+/* Which words the next game is built from. This lives on the menus, not in a
+   game, so choosing never interrupts a round — and it is a row of Talki chips
+   rather than a native dropdown, so a stray toddler tap costs nothing worse
+   than a different set of animals. */
+function gameCatChips(){
+  const cats = allCats().filter(c=>c.items.length>=4);
+  if(!cats.length) return '';
+  const cur = cats.some(c=>c.id===activeCat) ? activeCat : cats[0].id;
+  const chips = cats.map(c=>
+    `<button class="v2-chip ${c.id===cur?'on':''}" data-gamecat="${c.id}">${c.icon} ${plain(c.title)}</button>`
+  ).join('');
+  return `<p class="v2-pick-label">עם אילו מילים?</p>
+    <div class="v2-filter-row">${chips}</div>`;
 }
 
 function renderCategory(){
@@ -1751,6 +1768,7 @@ function renderGamesMenu(){
         </div>
         <p class="v2h-sub">משחקים קצרים שמתרגלים כל מילה</p>
       </div></div>
+    ${gameCatChips()}
     <div class="v2-games-grid">${grid}${wide}${extras}</div>`;
 }
 
@@ -1773,6 +1791,7 @@ function renderPractice(){
         </div>
         <p class="v2h-sub">שיטות מבוססות-מחקר לתרגול הפקת מילים</p>
       </div></div>
+    ${gameCatChips()}
     <div class="v2-practice-list">${list}</div>`;
 }
 
@@ -1835,13 +1854,16 @@ function renderStickers(){
     <div class="v2-sticker-grid">${grid}</div>`;
 }
 
-function gameHeader(title, chips, noPicker){
-  const picker = noPicker ? '<span></span>'
-    : `<select id="gameCat" style="width:auto;padding:8px 12px;font-size:.85rem">${catPicker(game?game.catId:activeCat)}</select>`;
+/* No category control here on purpose. This header used to carry a native
+   <select> — an adult control sitting exactly where a toddler's hand is. It
+   opens an OS dropdown a child cannot dismiss, and picking anything silently
+   threw away the round they were in. Choosing a category happens on the Games
+   and Practice menus instead, before anyone is mid-game. */
+function gameHeader(title, chips){
   return `<div class="cat-header">
     <button class="pill-btn" data-nav="home">🏠 חזרה</button>
     <div class="cat-title">${title}</div>
-    ${picker}
+    <span class="ch-spacer"></span>
   </div>${chips||''}`;
 }
 function chips(arr){ return `<div class="quiz-stats">${arr.map(c=>`<div class="stat-chip">${c}</div>`).join('')}</div>`; }
@@ -2070,9 +2092,9 @@ function setupSoundsRound(){
 }
 function renderSounds(){
   if(!game || game.type!=='sounds'){ if(!startGame('sounds','animals')) return renderHome(); }
-  if(game.done) return gameHeader('🐮 מי אמר את זה?', '', true) + doneCard(game.score, game.pool.length, 0);
+  if(game.done) return gameHeader('🐮 מי אמר את זה?', '') + doneCard(game.score, game.pool.length, 0);
   const opts = game.options.map(o=>`<button class="opt" data-sopt="${esc(o.word)}">${media(o)}</button>`).join('');
-  return gameHeader('🐮 מי אמר את זה?', chips([`שאלה ${game.i+1}/${game.pool.length}`,`✅ ${game.score}`]), true) +
+  return gameHeader('🐮 מי אמר את זה?', chips([`שאלה ${game.i+1}/${game.pool.length}`,`✅ ${game.score}`])) +
     `<div class="prompt-box"><p>איזו חיה עושה את הקול הזה?</p>
       <button class="big-btn b-sky" data-playsound="1">🔊 לשמוע שוב</button></div>
      <div class="opt-grid" style="grid-template-columns:repeat(3,1fr)">${opts}</div>`;
@@ -2111,10 +2133,10 @@ function setupSortRound(){
 }
 function renderSort(){
   if(!game || game.type!=='sort'){ if(!startGame('sort', activeCat)) return renderHome(); }
-  if(game.done) return gameHeader('📦 לאיזו קופסה?', '', true) + doneCard(game.score, 6, 0);
+  if(game.done) return gameHeader('📦 לאיזו קופסה?', '') + doneCard(game.score, 6, 0);
   const boxes = game.boxes.map(c=>`<button class="box" data-box="${c.id}">
       <span class="bi">${c.icon}</span>${display(c.title)}</button>`).join('');
-  return gameHeader('📦 לאיזו קופסה?', chips([`סיבוב ${game.round+1}/6`,`✅ ${game.score}`]), true) +
+  return gameHeader('📦 לאיזו קופסה?', chips([`סיבוב ${game.round+1}/6`,`✅ ${game.score}`])) +
     `<div class="prompt-box"><div style="font-size:4rem">${media(game.it)}</div>
       <div class="prompt-word">${display(game.it.word)}</div>
       <p>לאיזו קופסה זה שייך?</p></div>
@@ -2191,7 +2213,7 @@ function setupPuzzleBoard(){
 
 function renderPuzzle(){
   if(!game || game.type!=='puzzle'){ if(!startGame('puzzle', activeCat)) return renderHome(); }
-  if(game.done) return gameHeader('🧩 שִׂימִי בַּמָּקוֹם', '', true) + puzzleDoneCard();
+  if(game.done) return gameHeader('🧩 שִׂימִי בַּמָּקוֹם', '') + puzzleDoneCard();
 
   const slots = game.slots.map(p=>{
     const cls = ['pz-slot', p.placed ? 'filled' : '', game.hint===p.id ? 'hint' : ''].join(' ').trim();
@@ -2218,7 +2240,7 @@ function renderPuzzle(){
     ? 'עַכְשָׁיו לוֹחֲצִים עַל הַצֵּל'
     : 'גּוֹרְרִים כָּל תְּמוּנָה אֶל הַצֵּל שֶׁלָּהּ';
 
-  return gameHeader('🧩 שִׂימִי בַּמָּקוֹם', chips([`🧩 ${game.placed}/${game.pieces.length}`]), true) +
+  return gameHeader('🧩 שִׂימִי בַּמָּקוֹם', chips([`🧩 ${game.placed}/${game.pieces.length}`])) +
     `<div class="pz-board" id="pzBoard">
        <div class="pz-slots">${slots}</div>
        <p class="pz-guide">${guide}</p>
@@ -2442,7 +2464,7 @@ function renderFocus(){
 /* B. Cloze + expectant pause — 5 silent seconds, then model */
 function renderCloze(){
   if(!game || game.type!=='cloze'){ if(!startGame('cloze', activeCat)) return renderHome(); }
-  if(game.done) return gameHeader('⏸️ משלימים ביחד','',true) +
+  if(game.done) return gameHeader('⏸️ משלימים ביחד','') +
     doneCard(game.score, game.pool.length, 0, 'כל השלמה נחשבת');
   const it = game.pool[game.i];
   const body = game.phase==='wait'
@@ -2450,7 +2472,7 @@ function renderCloze(){
     : game.phase==='model'
       ? `<div style="font-size:4rem">${media(it)}</div><div class="prompt-word">${display(it.answer)}</div>`
       : `<div style="font-size:3.4rem">🗣️</div><p>מקשיבים למשפט...</p>`;
-  return gameHeader('⏸️ משלימים ביחד', chips([`${game.i+1}/${game.pool.length}`,`✅ ${game.score}`]), true) +
+  return gameHeader('⏸️ משלימים ביחד', chips([`${game.i+1}/${game.pool.length}`,`✅ ${game.score}`])) +
     `<div class="prompt-box"><div class="prompt-word">${display(it.phrase)}</div>${body}
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px">
         <button class="big-btn b-leaf" data-clozeyes="1">✅ היא אמרה!</button>
@@ -2533,10 +2555,10 @@ function setupPairsRound(){
 }
 function renderPairs(){
   if(!game || game.type!=='pairs'){ if(!startGame('pairs', activeCat)) return renderHome(); }
-  if(game.done) return gameHeader('👂 דומה אבל לא','',true) + doneCard(game.score, game.pool.length, 0);
+  if(game.done) return gameHeader('👂 דומה אבל לא','') + doneCard(game.score, game.pool.length, 0);
   const opts = game.shown.map(o=>`<button class="opt" data-pair="${esc(o.word)}" style="font-size:2.6rem">
       ${media(o)}<div style="font-size:1rem;font-weight:900;margin-top:6px">${display(o.word)}</div></button>`).join('');
-  return gameHeader('👂 דומה אבל לא', chips([`${game.i+1}/${game.pool.length}`,`✅ ${game.score}`]), true) +
+  return gameHeader('👂 דומה אבל לא', chips([`${game.i+1}/${game.pool.length}`,`✅ ${game.score}`])) +
     `<div class="prompt-box"><p>שתי מילים כמעט זהות — איזו נשמעה?</p>
       <button class="big-btn b-sky" data-pairsay="1">🔊 לשמוע שוב</button></div>
      <div class="opt-grid">${opts}</div>`;
@@ -2767,6 +2789,11 @@ function bind(){
   on('[data-play]', el=>{ launch('quiz', el.dataset.play); });
   on('[data-practice]', el=>{ activeCat=el.dataset.practice; view='practice'; render(); });
   on('[data-stickerfilter]', el=>{ stickerFilter=el.dataset.stickerfilter; render(); });
+  on('[data-gamecat]', el=>{
+    activeCat = el.dataset.gamecat;
+    AudioManager.playSfx('ui.secondaryTap');
+    render();
+  });
   on('[data-game]', el=>{
     const g = el.dataset.game;
     const fallback = (allCats().find(c=>c.items.length>=4) || allCats()[0]).id;
@@ -2820,8 +2847,6 @@ function bind(){
   }
 
   /* shared game controls */
-  const gc = document.getElementById('gameCat');
-  if(gc) gc.addEventListener('change', ()=> launch(game.type, gc.value));
   on('[data-say]', ()=>{
     if(game && game.type==='quiz') say(game.catId, game.target.word);
     else if(game && game.type==='speech') say(game.catId, game.pool[game.i].word);
