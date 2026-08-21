@@ -3,7 +3,7 @@
    server data at all), and refresh the HTML in the background so a new
    deploy is picked up on the next launch. */
 
-const VERSION = 'talki-v3';
+const VERSION = 'talki-v4';
 const SHELL = [
   './',
   './index.html',
@@ -70,17 +70,28 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Everything else: cache first, then network, and cache what comes back.
+  const isMedia = /\.(png|jpe?g|webp|gif|svg|mp3|wav)$/i.test(url.pathname);
+  const put = res => {
+    if (res && res.ok && (sameOrigin || res.type === 'cors')) {
+      const copy = res.clone();
+      caches.open(VERSION).then(c => c.put(req, copy));
+    }
+    return res;
+  };
+  const fromCache = () => caches.match(req).then(cached => cached || Response.error());
+
+  // Pictures and audio: network first. A cache-first SW plus a
+  // single-threaded file server drops dozens of parallel image requests
+  // and leaves the tiles looking broken.
+  if (isMedia) {
+    event.respondWith(fetch(req).then(put).catch(fromCache));
+    return;
+  }
+
   event.respondWith(
     caches.match(req).then(cached => {
       if (cached) return cached;
-      return fetch(req).then(res => {
-        if (res && res.ok && (sameOrigin || res.type === 'cors')) {
-          const copy = res.clone();
-          caches.open(VERSION).then(c => c.put(req, copy));
-        }
-        return res;
-      }).catch(() => cached);
+      return fetch(req).then(put).catch(fromCache);
     })
   );
 });

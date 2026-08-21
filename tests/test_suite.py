@@ -85,9 +85,74 @@ def test_layout(b):
         ctx.close()
 
 
-# ------------------------------------------------------- 2. every screen opens
+# ------------------------------------------------------------ 2. RTL semantics
+def test_rtl(b):
+    print("\n2. Hebrew RTL semantics")
+    ctx = b.new_context(viewport={"width": 390, "height": 844},
+                        has_touch=True, is_mobile=True)
+    page, errors = open_app(ctx)
+
+    doc = page.evaluate("""()=>({
+      lang: document.documentElement.lang,
+      dir: document.documentElement.dir,
+      computed: getComputedStyle(document.body).direction
+    })""")
+    if doc != {"lang": "he", "dir": "rtl", "computed": "rtl"}:
+        fail("rtl-document", f"unexpected document language/direction: {doc}")
+    else:
+        ok("document declares and computes Hebrew RTL")
+
+    positions = page.evaluate("""()=>{
+      const center = selector => {
+        const r = document.querySelector(selector).getBoundingClientRect();
+        return r.left + r.width / 2;
+      };
+      return {
+        brand: center('.brand'),
+        actions: center('.bar-right'),
+        homeTab: center('[data-nav="home"].bn-item'),
+        parentTab: center('[data-nav="parent"].bn-item'),
+        category1: center('.v2-cat-card:nth-child(1)'),
+        category2: center('.v2-cat-card:nth-child(2)'),
+        continueArt: center('.v2-continue .v2c-art'),
+        continueChevron: center('.v2-continue .v2c-chev'),
+        practiceIcon: center('.v2-practice-card .pc-icon'),
+        practiceChevron: center('.v2-practice-card .pc-chev')
+      };
+    }""")
+    pairs = [
+        ("header brand", positions["brand"], positions["actions"]),
+        ("bottom navigation", positions["homeTab"], positions["parentTab"]),
+        ("category grid", positions["category1"], positions["category2"]),
+        ("continue card", positions["continueArt"], positions["continueChevron"]),
+        ("practice card", positions["practiceIcon"], positions["practiceChevron"]),
+    ]
+    for name, start, end in pairs:
+        if start <= end:
+            fail("rtl-order", f"{name} is not ordered from right to left: {start} <= {end}")
+        else:
+            ok(f"{name} follows RTL visual order")
+
+    labels = page.evaluate("""()=>({
+      cta: document.querySelector('.v2-cta')?.textContent.trim(),
+      continueChevron: document.querySelector('.v2c-chev')?.textContent.trim(),
+      practiceChevron: document.querySelector('.pc-chev')?.textContent.trim()
+    })""")
+    if not labels["cta"] or not labels["cta"].endswith("◀"):
+        fail("rtl-chevron", f"forward CTA has wrong chevron: {labels['cta']!r}")
+    elif labels["continueChevron"] != "◀" or labels["practiceChevron"] != "◀":
+        fail("rtl-chevron", f"inconsistent forward chevrons: {labels}")
+    else:
+        ok("forward actions consistently use left-pointing RTL chevrons")
+
+    if errors:
+        fail("rtl", f"JS errors: {errors[:2]}")
+    ctx.close()
+
+
+# ------------------------------------------------------- 3. every screen opens
 def test_all_screens(b):
-    print("\n2. Every category and game opens without errors")
+    print("\n3. Every category and game opens without errors")
     ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
     page, errors = open_app(ctx)
 
@@ -135,9 +200,9 @@ def test_all_screens(b):
     ctx.close()
 
 
-# ------------------------------------------------------- 3. games play through
+# ------------------------------------------------------- 4. games play through
 def test_gameplay(b):
-    print("\n3. Games can actually be completed")
+    print("\n4. Games can actually be completed")
     ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
     page, errors = open_app(ctx)
 
@@ -193,9 +258,9 @@ def test_gameplay(b):
     ctx.close()
 
 
-# ------------------------------------------------------------- 4. persistence
+# ------------------------------------------------------------- 5. persistence
 def test_storage(b):
-    print("\n4. Storage, persistence and backup")
+    print("\n5. Storage, persistence and backup")
     ctx = b.new_context(viewport={"width": 390, "height": 844}, accept_downloads=True)
     page, errors = open_app(ctx)
 
@@ -262,9 +327,9 @@ def test_storage(b):
     ctx.close()
 
 
-# --------------------------------------------------------------------- 5. PWA
+# --------------------------------------------------------------------- 6. PWA
 def test_pwa(b):
-    print("\n5. PWA: manifest, icons, service worker, offline")
+    print("\n6. PWA: manifest, icons, service worker, offline")
     ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
     page, errors = open_app(ctx, wait=1200)
 
@@ -313,7 +378,7 @@ def main():
     print(f"Testing {URL}")
     with sync_playwright() as p:
         b = p.chromium.launch()
-        for t in (test_layout, test_all_screens, test_gameplay, test_storage, test_pwa):
+        for t in (test_layout, test_rtl, test_all_screens, test_gameplay, test_storage, test_pwa):
             try:
                 t(b)
             except Exception as e:

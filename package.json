@@ -3,6 +3,7 @@
   "private": true,
   "description": "Talki — Hebrew early-speech practice app",
   "scripts": {
+    "dev": "node tools/dev-server.js",
     "prepare-www": "node tools/prepare_www.js",
     "icons": "python tools/make_native_icons.py",
     "sync": "node tools/prepare_www.js && npx cap sync",
