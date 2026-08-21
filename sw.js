@@ -3,7 +3,7 @@
    server data at all), and refresh the HTML in the background so a new
    deploy is picked up on the next launch. */
 
-const VERSION = 'talki-v1';
+const VERSION = 'talki-v3';
 const SHELL = [
   './',
   './index.html',
@@ -12,7 +12,9 @@ const SHELL = [
   './icons/icon-512.png',
   './icons/icon-512-maskable.png',
   './icons/apple-touch-icon.png',
-  './icons/favicon-32.png'
+  './icons/favicon-32.png',
+  './audio-manager.js',
+  './assets/audio/audio-logic.js'
 ];
 
 self.addEventListener('install', event => {
@@ -46,8 +48,14 @@ self.addEventListener('fetch', event => {
   const url = new URL(req.url);
   const sameOrigin = url.origin === self.location.origin;
 
-  // Navigations: serve the cached shell instantly, refresh it in the background.
+  // Navigations: app shell for the PWA, but not for standalone pages
+  // like privacy.html (required by the stores).
   if (req.mode === 'navigate') {
+    const file = url.pathname.split('/').pop() || '';
+    if (file && file !== 'index.html' && file.includes('.')) {
+      event.respondWith(fetch(req).catch(() => caches.match(req)));
+      return;
+    }
     event.respondWith(
       caches.match('./index.html').then(cached => {
         const network = fetch(req)

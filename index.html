@@ -766,6 +766,8 @@
   </div>
 </nav>
 
+<script src="assets/audio/audio-logic.js"></script>
+<script src="audio-manager.js"></script>
 <script>
 /* ---- generated art: mascot + category patterns (see make_art.py) ---- */
 const MASCOT_IMG = {
@@ -960,7 +962,7 @@ let learned = new Set();                 // "cat:word"
 let stats = {};                          // key -> {seen, wrong}
 let custom = [];                         // [{id,word,emoji,photo}]
 let recordings = {};                     // key -> dataURL (loaded lazily, cached)
-let settings = { rate:0.85, niqqud:true, sounds:true, effects:true, music:false, musicVol:0.5 };
+let settings = { rate:0.85, niqqud:true, sounds:true, effects:true, music:true, musicVol:0.5, voice:true };
 
 let bubbleTimer = null;
 let view = 'home', activeCat = null, game = null, cardIdx = 0, parentTab = 'settings';
@@ -1191,15 +1193,15 @@ async function say(catId, word, opts){
     recordings[k] = await sGet(K.rec(k)) || null;
   }
   if(recordings[k]){
-    duckMusic(1600);
-    const done = once(opts.after);
+    AudioManager.setVoicePromptPlaying(true);
+    const done = once(()=>{ AudioManager.setVoicePromptPlaying(false); if(opts.after) opts.after(); });
     currentAudio = new Audio(recordings[k]);
     currentAudio.onended = done; currentAudio.onerror = done;
-    currentAudio.play().catch(()=>{ speakTTS(word, {}); done(); });
+    currentAudio.play().catch(()=>{ AudioManager.setVoicePromptPlaying(false); speakTTS(word, {core:true}); done(); });
     setTimeout(done, 6000);
     return;
   }
-  speakTTS(word, opts);
+  speakTTS(word, {...opts, core:true});
 }
 function once(fn){ let used=false; return ()=>{ if(used||!fn) return; used=true; fn(); }; }
 function estimateMs(text){
@@ -1208,8 +1210,9 @@ function estimateMs(text){
 }
 function speakTTS(text, opts){
   opts = opts || {};
-  duckMusic(1600);
-  const done = once(opts.after);
+  if(!settings.voice && !opts.core){ if(opts.after) setTimeout(opts.after, 10); return; }
+  AudioManager.setVoicePromptPlaying(true);
+  const done = once(()=>{ AudioManager.setVoicePromptPlaying(false); if(opts.after) opts.after(); });
   if(!speechOk){ setTimeout(done, estimateMs(text)); return; }
   try{
     window.speechSynthesis.cancel();
@@ -1223,74 +1226,40 @@ function speakTTS(text, opts){
   setTimeout(done, estimateMs(text) + 900);
 }
 let ac = null;
-function chime(good){
-  if(!settings.sounds) return;
-  try{
-    ac = ac || new (window.AudioContext||window.webkitAudioContext)();
-    const notes = good ? [523.25,659.25,783.99] : [329.63,261.63];
-    notes.forEach((f,i)=>{
-      const o=ac.createOscillator(), g=ac.createGain();
-      o.type='sine'; o.frequency.value=f;
-      const t=ac.currentTime+i*0.09;
-      g.gain.setValueAtTime(0.0001,t);
-      g.gain.exponentialRampToValueAtTime(0.16,t+0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001,t+0.22);
-      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+0.24);
-    });
-  }catch(e){}
+/* ---- centralized audio: semantic events only, see audio-manager.js ---- */
+function chime(good, opts){
+  opts = opts || {};
+  if(!good){
+    AudioManager.playSfx(opts.kind==='match' ? 'interaction.invalidMove' : 'answer.retry');
+    return;
+  }
+  if(opts.isLevelComplete){ AudioManager.playSfx('game.levelComplete'); return; }
+  AudioManager.playSfx(opts.kind==='match' ? 'interaction.correctMatch' : 'answer.correct');
 }
-/* ---- gentle background music: pentatonic lullaby loop, generated live ---- */
-const MUSIC = {
-  scale:[523.25,587.33,659.25,783.99,880.00,1046.50],  // C D E G A C — pentatonic, no dissonance
-  bass:[130.81,146.83,164.81,196.00],
-  step:0, timer:null, gain:null
+/* one background track per game "personality" (bouncy/curious/gentle); chosen once
+   per game type, never re-randomized mid-round. See talki-audio-map for the source. */
+const GAME_MUSIC_PROFILE = {
+  quiz:'gameplay_curious', memory:'gameplay_bouncy', missing:'gameplay_gentle',
+  match:'gameplay_curious', cards:'gameplay_gentle', bubbles:'gameplay_bouncy',
+  sounds:'gameplay_curious', count:'gameplay_gentle', sort:'gameplay_curious'
 };
-function musicNote(freq, when, dur, vol, type){
-  const o=ac.createOscillator(), g=ac.createGain();
-  o.type=type||'triangle'; o.frequency.value=freq;
-  g.gain.setValueAtTime(0.0001,when);
-  g.gain.exponentialRampToValueAtTime(vol,when+0.06);
-  g.gain.exponentialRampToValueAtTime(0.0001,when+dur);
-  o.connect(g); g.connect(MUSIC.gain); o.start(when); o.stop(when+dur+0.05);
+const SPEECH_VIEWS = new Set(['speech','focus','cloze','temptation','receptive','pairs','combine']);
+function resolveMusicState(){
+  if(game && game.done) return 'rewardScreen';
+  if(SPEECH_VIEWS.has(view)) return 'speechOrListeningTask';
+  if(GAME_MUSIC_PROFILE[view]) return GAME_MUSIC_PROFILE[view];
+  return 'home';
 }
-function startMusic(){
-  try{
-    ac = ac || new (window.AudioContext||window.webkitAudioContext)();
-    if(ac.state==='suspended') ac.resume();
-    if(!MUSIC.gain){ MUSIC.gain = ac.createGain(); MUSIC.gain.connect(ac.destination); }
-    MUSIC.gain.gain.value = 0.06 * (settings.musicVol||0.5);
-    if(MUSIC.timer) return;
-    const tick = ()=>{
-      const t = ac.currentTime + 0.05, s = MUSIC.step;
-      const note = MUSIC.scale[(s*3 + Math.floor(Math.random()*2)) % MUSIC.scale.length];
-      musicNote(note, t, 0.9, 0.5);
-      if(s % 2 === 0) musicNote(MUSIC.scale[(s+2)%MUSIC.scale.length], t+0.28, 0.6, 0.28, 'sine');
-      if(s % 4 === 0) musicNote(MUSIC.bass[(s/4)%MUSIC.bass.length], t, 1.6, 0.4, 'sine');
-      MUSIC.step = (s+1) % 16;
-    };
-    tick(); MUSIC.timer = setInterval(tick, 900);
-  }catch(e){}
-}
-function stopMusic(){
-  if(MUSIC.timer){ clearInterval(MUSIC.timer); MUSIC.timer=null; }
-  if(MUSIC.gain){ try{ MUSIC.gain.gain.value = 0; }catch(e){} }
-}
+function startMusic(){ AudioManager.setMusicState(resolveMusicState()); }
+function stopMusic(){ AudioManager.stopMusic(); }
 function setMusic(on){
   settings.music = on; saveSettings();
-  if(on) startMusic(); else stopMusic();
+  AudioManager.setMusicEnabled(on);
   syncMusicIcon();
 }
 function syncMusicIcon(){
   const b=document.getElementById('musicBtn');
   if(b){ b.textContent = settings.music ? '🎵' : '🔇'; b.style.opacity = settings.music ? '1' : '.5'; }
-}
-function duckMusic(ms){
-  if(!settings.music || !MUSIC.gain) return;
-  try{
-    MUSIC.gain.gain.value = 0.02 * (settings.musicVol||0.5);
-    clearTimeout(MUSIC.duckT);
-    MUSIC.duckT = setTimeout(()=>{ if(MUSIC.gain) MUSIC.gain.gain.value = 0.06*(settings.musicVol||0.5); }, ms||1400);
-  }catch(e){}
 }
 
 function confetti(n){
@@ -1307,6 +1276,7 @@ function confetti(n){
 }
 function celebrate(text){
   if(!settings.effects) return;
+  AudioManager.playSfx('reward.unlock');
   const el = document.createElement('div');
   el.className = 'celebrate';
   el.innerHTML = `<div class="box">${mascot('cheer', 110)}<b>${text}</b></div>`;
@@ -1359,6 +1329,7 @@ function render(){
   syncBarHeight();
   syncBottomNav();
   window.scrollTo({top:0,behavior:'instant'});
+  AudioManager.setMusicState(resolveMusicState());
 }
 function syncBottomNav(){
   const nav = document.getElementById('bottomNav');
@@ -1667,6 +1638,7 @@ function startGame(type, catId){
   if(!cat){ view='home'; return false; }
   activeCat = cat.id;
   view = type;
+  AudioManager.playSfx('game.levelStart');
   if(type==='quiz'){
     const pool = weightedPick(cat.items, cat.id, Math.min(8,cat.items.length));
     game = {type,catId:cat.id,pool,i:0,score:0,streak:0,best:0,locked:false,done:false};
@@ -1724,7 +1696,7 @@ function launch(type, catId){
 /* Quiz: hear a word, tap the picture */
 function setupQuizRound(){
   const cat = getCat(game.catId);
-  if(game.i >= game.pool.length){ game.done = true; return; }
+  if(game.i >= game.pool.length){ game.done = true; AudioManager.playSfx('game.levelComplete'); return; }
   const target = game.pool[game.i];
   const others = shuffle(cat.items.filter(i=>i.word!==target.word)).slice(0,3);
   game.target = target;
@@ -1850,7 +1822,8 @@ function spawnBubble(){
   b.addEventListener('click', ()=>{
     if(b.classList.contains('pop-out')) return;
     b.classList.add('pop-out'); setTimeout(()=>b.remove(), 280);
-    say(game.catId, it.word); chime(true);
+    const willComplete = game.popped+1 >= game.total;
+    say(game.catId, it.word); chime(true, {isLevelComplete: willComplete});
     const k = key(game.catId, it.word);
     if(!learned.has(k)){ learned.add(k); saveProgress(); }
     game.popped++;
@@ -1865,7 +1838,7 @@ function spawnBubble(){
 
 /* ---------- Who said that? animal sounds ---------- */
 function setupSoundsRound(){
-  if(game.i >= game.pool.length){ game.done=true; return; }
+  if(game.i >= game.pool.length){ game.done=true; AudioManager.playSfx('game.levelComplete'); return; }
   const target = game.pool[game.i];
   const others = shuffle(CATEGORIES.animals.items.filter(i=>i.word!==target.word)).slice(0,2);
   game.target = target;
@@ -1885,7 +1858,7 @@ function renderSounds(){
 /* ---------- How many? ---------- */
 const NUM_WORDS = ['','אַחַת','שְׁתַּיִם','שָׁלוֹשׁ','אַרְבַּע','חָמֵשׁ'];
 function setupCountRound(){
-  if(game.round >= 5){ game.done=true; return; }
+  if(game.round >= 5){ game.done=true; AudioManager.playSfx('game.levelComplete'); return; }
   const cat = getCat(game.catId);
   const pool = cat.items.filter(i=>!i.photo);
   const it = (pool.length?pool:cat.items)[Math.floor(Math.random()*(pool.length||cat.items.length))];
@@ -1907,7 +1880,7 @@ function renderCount(){
 
 /* ---------- Which box? sorting ---------- */
 function setupSortRound(){
-  if(game.round >= 6){ game.done=true; return; }
+  if(game.round >= 6){ game.done=true; AudioManager.playSfx('game.levelComplete'); return; }
   const pool = Object.values(CATEGORIES).filter(c=>c.items.length>=4);
   const [a,b] = shuffle(pool).slice(0,2);
   const it = a.items[Math.floor(Math.random()*a.items.length)];
@@ -2013,7 +1986,7 @@ function renderTemptation(){
 
 /* D. Receptive identification — adaptive, no talking required */
 function setupReceptiveRound(){
-  if(game.i >= 8){ game.done = true; return; }
+  if(game.i >= 8){ game.done = true; AudioManager.playSfx('game.levelComplete'); return; }
   const cat = getCat(game.catId);
   const target = weightedPick(cat.items, cat.id, 1)[0];
   const others = shuffle(cat.items.filter(i=>i.word!==target.word)).slice(0, game.level-1);
@@ -2033,7 +2006,7 @@ function renderReceptive(){
 
 /* E. Minimal pairs — perception before production */
 function setupPairsRound(){
-  if(game.i >= game.pool.length){ game.done = true; return; }
+  if(game.i >= game.pool.length){ game.done = true; AudioManager.playSfx('game.levelComplete'); return; }
   const pair = game.pool[game.i];
   game.pair = pair;
   game.target = pair[Math.floor(Math.random()*2)];
@@ -2129,6 +2102,7 @@ function parentSettings(){
       <div class="seg">${[['0.25','שקט'],['0.5','בינוני'],['0.85','חזק']].map(([v,t])=>
         `<button class="${String(settings.musicVol)===v?'on':''}" data-mvol="${v}">${t}</button>`).join('')}</div></div>
     <div class="row"><div class="lbl"><b>צלילי פידבק</b><small>צליל בתשובה נכונה ושגויה</small></div>${sw('sounds',settings.sounds)}</div>
+    <div class="row"><div class="lbl"><b>הוראות קוליות</b><small>משפטי ההנחיה במשחקים — מילות האוצר עצמן תמיד יישמעו</small></div>${sw('voice',settings.voice)}</div>
     <div class="row"><div class="lbl"><b>קונפטי ואנימציות</b><small>אפשר לכבות אם זה מסיח דעת</small></div>${sw('effects',settings.effects)}</div>
   </div>
   ${install}
@@ -2348,9 +2322,11 @@ function bind(){
     game.moves++;
     const a = game.cards[game.first];
     if(a.pair===c.pair && a.idx!==c.idx){
-      a.matched=c.matched=true; game.found++; game.first=null; chime(true);
+      a.matched=c.matched=true; game.found++; game.first=null;
+      const willComplete = game.found===game.total;
+      chime(true, {isLevelComplete: willComplete});
       learned.add(key(game.catId,c.it.word)); saveProgress();
-      if(game.found===game.total){ game.done=true; confetti(34); }
+      if(willComplete){ game.done=true; confetti(34); }
       render();
     }else{
       game.locked=true; chime(false); render();
@@ -2370,7 +2346,7 @@ function bind(){
     setTimeout(()=>{
       if(!alive('missing')) return;
       game.round++;
-      if(game.round>=5){ game.done=true; render(); } else nextMissing();
+      if(game.round>=5){ game.done=true; AudioManager.playSfx('game.levelComplete'); render(); } else nextMissing();
     }, ok?900:500);
   });
 
@@ -2382,11 +2358,12 @@ function bind(){
     markSeen(game.catId, game.sel, !ok);
     if(ok){
       game.matched.push(game.sel); learned.add(key(game.catId,game.sel)); saveProgress();
-      chime(true); game.sel=null;
-      if(game.matched.length===game.left.length){ game.done=true; confetti(30); }
+      const willComplete = game.matched.length===game.left.length;
+      chime(true, {kind:'match', isLevelComplete: willComplete}); game.sel=null;
+      if(willComplete){ game.done=true; confetti(30); }
       render();
     }else{
-      chime(false); el.classList.add('wrong');
+      chime(false, {kind:'match'}); el.classList.add('wrong');
       setTimeout(()=>el.classList.remove('wrong'),420);
     }
   });
@@ -2438,11 +2415,11 @@ function bind(){
     const ok = el.dataset.box === game.right.id;
     markSeen(game.right.id, game.it.word, !ok);
     if(ok){
-      game.locked=true; el.classList.add('correct'); chime(true); game.score++; confetti(14);
+      game.locked=true; el.classList.add('correct'); chime(true, {kind:'match'}); game.score++; confetti(14);
       say(game.right.id, game.it.word);
       learned.add(key(game.right.id,game.it.word)); saveProgress();
       setTimeout(()=>{ if(!alive('sort')) return; game.round++; setupSortRound(); render(); }, 1100);
-    }else{ el.classList.add('wrong'); chime(false); setTimeout(()=>el.classList.remove('wrong'),420); }
+    }else{ el.classList.add('wrong'); chime(false, {kind:'match'}); setTimeout(()=>el.classList.remove('wrong'),420); }
   });
 
   /* A. focused stimulation */
@@ -2458,14 +2435,19 @@ function bind(){
     const k = key(game.catId, game.it.word);
     if(!learned.has(k)){ learned.add(k); saveProgress(); }
     game.step++;
-    if(game.step >= game.total){ game.done = true; confetti(26); markSeen(game.catId, game.it.word, false); render(); return; }
+    if(game.step >= game.total){ game.done = true; confetti(26); AudioManager.playSfx('game.levelComplete'); markSeen(game.catId, game.it.word, false); render(); return; }
     game.spoke = false; render();
   });
   on('[data-nextword]', ()=> launch('focus', game.catId));
 
   /* B. cloze */
   if(view==='cloze' && game && !game.done && !game.started){ game.started = true; setTimeout(runCloze, 250); }
-  on('[data-clozeyes]', ()=>{ chime(true); confetti(18); clozeNext(true); });
+  on('[data-clozeyes]', ()=>{
+    const willComplete = game.i+1 >= game.pool.length;
+    chime(true, {isLevelComplete: willComplete});
+    if(!willComplete) confetti(18);
+    clozeNext(true);
+  });
   on('[data-clozenext]', ()=> clozeNext(false));
 
   /* C. communication temptation */
@@ -2477,7 +2459,7 @@ function bind(){
   on('[data-temptmic]', ()=> listenForAnything());
   on('[data-temptnext]', ()=>{
     game.i++; game.opened=false; game.asked=false;
-    if(game.i>=game.pool.length){ game.done=true; confetti(30); }
+    if(game.i>=game.pool.length){ game.done=true; confetti(30); AudioManager.playSfx('game.levelComplete'); }
     render();
   });
 
@@ -2540,7 +2522,7 @@ function bind(){
     render();
     speakTTS(plain(mod.w)+' '+plain(word), {after:()=>
       setTimeout(()=>speakTTS(plain(mod.expand.replace('{w}', plain(word))), {}), 250)});
-    if(game.round>=6){ setTimeout(()=>{ if(!alive('combine')) return; game.done=true; confetti(28); render(); }, 2600); }
+    if(game.round>=6){ setTimeout(()=>{ if(!alive('combine')) return; game.done=true; confetti(28); AudioManager.playSfx('game.levelComplete'); render(); }, 2600); }
   });
 
   /* parent */
@@ -2558,11 +2540,13 @@ function bind(){
   on('[data-toggle]', el=>{
     const id=el.dataset.toggle; settings[id]=!settings[id]; saveSettings();
     if(id==='music') setMusic(settings.music);
+    else if(id==='sounds') AudioManager.setSfxEnabled(settings.sounds);
+    else if(id==='voice') AudioManager.setVoiceEnabled(settings.voice);
     render();
   });
   on('[data-mvol]', el=>{
     settings.musicVol = parseFloat(el.dataset.mvol); saveSettings();
-    if(settings.music){ stopMusic(); startMusic(); }
+    AudioManager.setMusicVolumeMultiplier(settings.musicVol);
     render();
   });
   on('[data-reset]', async ()=>{
@@ -2626,6 +2610,9 @@ function startListening(){
     recog = new SR();
     recog.lang='he-IL'; recog.interimResults=false; recog.maxAlternatives=5;
     game.listening = true; game.feedback='מקשיבים...'; render();
+    AudioManager.setListening(true);
+    AudioManager.playSfx('speech.listeningReady');
+    recog.onspeechstart = ()=> AudioManager.setChildSpeaking(true);
     recog.onresult = e=>{
       const target = plain(game.pool[game.i].word);
       const heard = [...e.results[0]].map(r=>r.transcript.trim());
@@ -2634,21 +2621,23 @@ function startListening(){
         return a.includes(target) || target.includes(a) || levenshtein(a,target)<=1;
       });
       game.listening=false;
+      AudioManager.setChildSpeaking(false); AudioManager.setListening(false);
+      AudioManager.playSfx('speech.recognized');
       markSeen(game.catId, game.pool[game.i].word, !ok);
       if(ok){
         game.score++; chime(true); confetti(20);
         game.feedback='מעולה! שמענו אותך 🎉';
         learned.add(key(game.catId,game.pool[game.i].word)); saveProgress();
-        setTimeout(()=>{ if(!alive('speech')) return; game.i++; if(game.i>=game.pool.length) game.done=true; game.feedback=''; render(); }, 1200);
+        setTimeout(()=>{ if(!alive('speech')) return; game.i++; if(game.i>=game.pool.length){ game.done=true; AudioManager.playSfx('game.levelComplete'); } game.feedback=''; render(); }, 1200);
       }else{
         chime(false); game.feedback='שמענו "'+heard[0]+'" — ננסה שוב?';
       }
       render();
     };
-    recog.onerror = ()=>{ game.listening=false; game.feedback='לא הצלחנו לשמוע. ננסה שוב?'; render(); };
-    recog.onend = ()=>{ if(game && game.listening){ game.listening=false; render(); } };
+    recog.onerror = ()=>{ game.listening=false; AudioManager.setChildSpeaking(false); AudioManager.setListening(false); game.feedback='לא הצלחנו לשמוע. ננסה שוב?'; render(); };
+    recog.onend = ()=>{ if(game && game.listening){ game.listening=false; AudioManager.setChildSpeaking(false); AudioManager.setListening(false); render(); } };
     recog.start();
-  }catch(e){ game.listening=false; game.feedback='המיקרופון לא זמין'; render(); }
+  }catch(e){ game.listening=false; AudioManager.setChildSpeaking(false); AudioManager.setListening(false); game.feedback='המיקרופון לא זמין'; render(); }
 }
 function levenshtein(a,b){
   const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>[i,...Array(n).fill(0)]);
@@ -2675,13 +2664,20 @@ function listenForAnything(){
     const r = new SR();
     r.lang='he-IL'; r.interimResults=true;
     game.listening = true; render();
-    const finish = ()=>{ game.listening=false; try{r.stop();}catch(e){} openJar(); };
+    AudioManager.setListening(true);
+    AudioManager.playSfx('speech.listeningReady');
+    const finish = ()=>{
+      game.listening=false;
+      AudioManager.setChildSpeaking(false); AudioManager.setListening(false);
+      AudioManager.playSfx('speech.finished');
+      try{r.stop();}catch(e){} openJar();
+    };
     r.onresult = finish;
-    r.onspeechstart = finish;
-    r.onerror = ()=>{ game.listening=false; render(); };
-    r.onend = ()=>{ if(game && game.listening){ game.listening=false; render(); } };
+    r.onspeechstart = ()=>{ AudioManager.setChildSpeaking(true); finish(); };
+    r.onerror = ()=>{ game.listening=false; AudioManager.setChildSpeaking(false); AudioManager.setListening(false); render(); };
+    r.onend = ()=>{ if(game && game.listening){ game.listening=false; AudioManager.setChildSpeaking(false); AudioManager.setListening(false); render(); } };
     r.start();
-    setTimeout(()=>{ if(game && game.listening){ game.listening=false; try{r.stop();}catch(e){} render(); } }, 8000);
+    setTimeout(()=>{ if(game && game.listening){ game.listening=false; AudioManager.setChildSpeaking(false); AudioManager.setListening(false); try{r.stop();}catch(e){} render(); } }, 8000);
   }catch(e){ game.listening=false; toast('המיקרופון לא זמין'); render(); }
 }
 
@@ -2915,6 +2911,7 @@ async function polishNativeShell(){
 document.getElementById('gateMascot').innerHTML = mascot('wave', 190);
 document.getElementById('gateBtn').addEventListener('click', ()=>{
   unlockAudio();
+  AudioManager.unlock();
   keepAwake();
   lockPortrait();
   if(settings.music) startMusic();
@@ -2928,6 +2925,17 @@ document.getElementById('gateBtn').addEventListener('click', ()=>{
 });
 // re-arm the wake lock when coming back from the lock screen
 document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'visible') keepAwake(); });
+
+/* ---------- generic UI tap sounds (single delegated listener, no per-button wiring) ----------
+   Answer elements (.tile/.opt/.mem/.match-item/.box) already get semantic correct/retry/match
+   sounds from chime() — skipped here to avoid stacking a tap sound on top of that feedback. */
+document.addEventListener('click', e=>{
+  if(e.target.closest('[data-nav]')){ AudioManager.playSfx('ui.backOrClose'); return; }
+  if(e.target.closest('.tile, .opt, .mem, .match-item, .box')) return;
+  if(e.target.closest('.card-nav')){ AudioManager.playSfx('ui.swipe'); return; }
+  if(e.target.closest('.big-btn, .cat-card, .game-card, #gateBtn')){ AudioManager.playSfx('ui.primaryTap'); return; }
+  if(e.target.closest('.pill-btn, .icon-btn, .switch, .seg button, button')){ AudioManager.playSfx('ui.secondaryTap'); }
+}, true);
 
 /* ---------- toddler-proofing ---------- */
 document.addEventListener('contextmenu', e=>e.preventDefault());
@@ -2962,6 +2970,10 @@ document.addEventListener('keydown', e=>{
 loadAll().then(()=>{
   syncBarHeight(); syncSpeedIcon(); syncMusicIcon();
   polishNativeShell();
+  AudioManager.setMusicEnabled(settings.music);
+  AudioManager.setSfxEnabled(settings.sounds);
+  AudioManager.setVoiceEnabled(settings.voice);
+  AudioManager.setMusicVolumeMultiplier(settings.musicVol);
   if(settings.music){
     const kick = ()=>{ startMusic(); document.removeEventListener('pointerdown', kick); };
     document.addEventListener('pointerdown', kick, {once:true});

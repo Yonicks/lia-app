@@ -1,8 +1,16 @@
 # Backup exports contain voice recordings as base64 — never commit these
 lia-backup-*.json
+talki-backup-*.json
 
 # Local tooling
 __pycache__/
 .venv/
 node_modules/
+www/
 .DS_Store
+.idea/
+*.jks
+*.keystore
+*.aab
+*.apk
+
