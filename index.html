@@ -1496,9 +1496,41 @@ function render(){
   bind();
   syncBarHeight();
   syncBottomNav();
+  syncHistory();
   window.scrollTo({top:0,behavior:'instant'});
   AudioManager.setMusicState(resolveMusicState());
 }
+
+/* ---------- Back button ----------
+   Android's hardware Back and the browser's back gesture used to leave Talki
+   entirely: the app is one page with no history, so a child who pressed Back
+   in the middle of a quiz closed the app. One history entry per screen makes
+   Back walk back up through Talki instead, on Android (Capacitor's WebView
+   goes back whenever it can) and in the browser PWA alike. Back from the home
+   screen still leaves, which is what a root screen should do. */
+let historyView = null, restoringHistory = false;
+function syncHistory(){
+  if(restoringHistory){ restoringHistory = false; historyView = view; return; }
+  if(view === historyView) return;                 // same screen, new round
+  const entry = {talki:true, view, activeCat, cardIdx};
+  try{
+    if(historyView === null) history.replaceState(entry, '');
+    else history.pushState(entry, '');
+  }catch(e){}
+  historyView = view;
+}
+window.addEventListener('popstate', e=>{
+  const st = e.state;
+  if(!st || !st.talki) return;
+  restoringHistory = true;
+  /* a half-played round is not resumable, and a child pressing Back means
+     "out of here" — so the screen comes back, the round does not */
+  game = null;
+  if(st.activeCat) activeCat = st.activeCat;
+  cardIdx = st.cardIdx || 0;
+  view = st.view;
+  render();
+});
 function syncBottomNav(){
   const nav = document.getElementById('bottomNav');
   if(!nav) return;

@@ -365,6 +365,65 @@ def test_rapid_taps(b):
     ctx.close()
 
 
+# --------------------------------------------- 5b. the Back button/gesture
+def test_back_button(b):
+    print("\n5b. Back steps out of a game instead of closing Talki")
+    ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
+    page, errors = open_app(ctx)
+
+    page.click('#bottomNav [data-nav="games"]', timeout=5000)
+    page.wait_for_timeout(300)
+    page.locator('[data-game="quiz"]').first.click(timeout=5000)
+    page.wait_for_timeout(600)
+    if page.evaluate("()=>view") != "quiz":
+        fail("back", "could not open the quiz to test Back")
+        ctx.close()
+        return
+
+    page.go_back(); page.wait_for_timeout(500)
+    st = page.evaluate("()=>({view, gameCleared: game===null})")
+    if st["view"] != "games":
+        fail("back", f"Back from a game landed on '{st['view']}', not the games menu")
+    elif not st["gameCleared"]:
+        fail("back", "Back left the abandoned round in memory")
+    else:
+        ok("Back steps out of a game onto the menu it came from")
+
+    page.go_back(); page.wait_for_timeout(500)
+    if page.evaluate("()=>view") != "home":
+        fail("back", "a second Back did not reach home")
+    else:
+        ok("a second Back reaches home")
+
+    # a category drill-down walks back the same way
+    show(page, "home")
+    page.locator('[data-cat="animals"]').first.click(timeout=5000)
+    page.wait_for_timeout(400)
+    page.locator('[data-cards="animals"]').first.click(timeout=5000)
+    page.wait_for_timeout(400)
+    page.go_back(); page.wait_for_timeout(400)
+    if page.evaluate("()=>[view,activeCat]") != ["category", "animals"]:
+        fail("back", "Back from the flashcards did not return to the category")
+    else:
+        ok("Back from the flashcards returns to the category it opened from")
+
+    # replaying the same game must not pile up history entries
+    show(page, "home")
+    before = page.evaluate("()=>history.length")
+    for _ in range(5):
+        page.evaluate("()=>launch('quiz','animals')")
+        page.wait_for_timeout(150)
+    page.go_back(); page.wait_for_timeout(400)
+    if page.evaluate("()=>view") != "home":
+        fail("back", "replaying a game stacked extra history entries — Back no longer reaches home")
+    else:
+        ok("replaying a round adds no extra Back steps")
+
+    if errors:
+        fail("back", f"JS errors: {errors[:2]}")
+    ctx.close()
+
+
 # ------------------------------------- 6. every game finishes and restarts
 # One "move" per game, expressed as the thing a child would actually do.
 def _jclick(page, sel):
@@ -772,6 +831,96 @@ def test_puzzle_on_every_screen(b):
         ctx.close()
 
 
+# ------------------------- 10. no game depends on an audio/speech API
+# Everything Talki reaches for that a real device can refuse: speech
+# recognition, speech synthesis, recording, the microphone, and even the
+# AudioContext the start gate warms up.
+STRIP_AUDIO = """()=>{
+  delete window.SpeechRecognition; delete window.webkitSpeechRecognition;
+  const gone = n => { try{ Object.defineProperty(window, n, {get(){ return undefined; }}); }catch(e){} };
+  gone('speechSynthesis'); gone('AudioContext'); gone('webkitAudioContext');
+  try{ delete window.MediaRecorder; }catch(e){ window.MediaRecorder = undefined; }
+  try{ Object.defineProperty(navigator,'mediaDevices',{get(){ return undefined; }}); }catch(e){}
+}"""
+
+def test_degraded_audio_apis(b):
+    print("\n10. Every game survives without speech, recording or an AudioContext")
+    ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
+    ctx.add_init_script(STRIP_AUDIO)
+    page, errors = open_app(ctx)
+
+    if page.evaluate("()=>view") != "home":
+        fail("degraded", "the app did not start with the audio APIs missing")
+        ctx.close()
+        return
+
+    dead = []
+    for name, move, budget in PLAYTHROUGH:
+        play(page, name)
+        page.wait_for_timeout(250)
+        if page.eval_on_selector_all("#app button", "e=>e.length") == 0:
+            dead.append(f"{name}: no controls at all")
+            continue
+        for _ in range(budget):
+            if page.evaluate("()=>!!(game && game.done)"):
+                break
+            if not move(page):
+                break
+        if not page.evaluate("()=>!!(game && game.done)"):
+            dead.append(f"{name}: could not be finished")
+        show(page, "home")
+    if dead:
+        fail("degraded", f"games unplayable without audio APIs: {dead}")
+    else:
+        ok(f"all {len(PLAYTHROUGH)} games still open and finish with every audio API removed")
+
+    # the parent recording screen must explain itself, not throw
+    page.evaluate("()=>{unlocked=true;view='parent';parentTab='record';render();}")
+    page.wait_for_timeout(500)
+    rec = page.locator("[data-recstart]").first
+    if rec.count():
+        rec.scroll_into_view_if_needed()
+        rec.click(timeout=5000)
+        page.wait_for_timeout(400)
+    ok("the parent recording screen refuses safely instead of throwing")
+
+    if errors:
+        fail("degraded", f"JS errors with the audio APIs missing: {errors[:3]}")
+    ctx.close()
+
+
+def test_offline(b):
+    print("\n11. Talki still runs after the network goes away")
+    ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
+    page, errors = open_app(ctx, wait=1400)
+    page.evaluate("()=>launch('quiz','animals')")
+    page.wait_for_timeout(600)
+
+    ctx.set_offline(True)
+    page.reload()
+    page.wait_for_timeout(1600)
+    if page.query_selector("#gateBtn"):
+        page.click("#gateBtn")
+        page.wait_for_timeout(400)
+    if page.evaluate("()=>typeof view === 'undefined' ? null : view") != "home":
+        fail("offline", "the app does not boot from cache with the network gone")
+        ctx.close()
+        return
+    ok("boots from cache with the network gone")
+
+    for g in ("quiz", "memory", "puzzle"):
+        play(page, g)
+        if page.evaluate("()=>view") != g or page.eval_on_selector_all("#app button", "e=>e.length") == 0:
+            fail("offline", f"{g} does not open offline")
+    ok("games still open and render offline")
+
+    # a failed ad or font request must never take gameplay with it
+    hard = [e for e in errors if "console.error" not in e]
+    if hard:
+        fail("offline", f"uncaught errors while offline: {hard[:3]}")
+    ctx.close()
+
+
 def test_puzzle_reduced_motion(b):
     print("\n9. The puzzle is fully playable with reduced motion")
     ctx = b.new_context(viewport={"width": 390, "height": 844},
@@ -801,8 +950,9 @@ def main():
         b = p.chromium.launch(**({"executable_path": CHROMIUM_PATH} if CHROMIUM_PATH else {}))
         tests = [test_reachable_everywhere, test_touch_target_sizes,
                  test_real_tap_navigation, test_no_listener_growth, test_rapid_taps,
+                 test_back_button,
                  test_every_game_completes, test_puzzle, test_puzzle_on_every_screen,
-                 test_puzzle_reduced_motion]
+                 test_puzzle_reduced_motion, test_degraded_audio_apis, test_offline]
         for t in tests:
             try:
                 t(b)
