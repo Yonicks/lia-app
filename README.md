@@ -137,6 +137,7 @@ separate from the tap-grid.
 | 🐮 מי אמר את זה? (Sounds) | Hear an animal sound, find the right animal |
 | 🔢 כמה יש? (Count) | Count items, pick the matching number |
 | 📦 לאיזו קופסה? (Sort) | Sort pictures into the right category |
+| 🧩 שימי במקום (Puzzle) | Drag each picture onto its shadow — or tap the piece, then tap the shadow. Talki speaks the word as it snaps in |
 
 ### Speech practice — the clinical method
 Six activities under "תרגול דיבור", each tied to a named early-intervention
@@ -264,7 +265,8 @@ talki/
 │   ├── make_native_icons.py Android/iOS launcher icons + splash
 │   └── prepare_www.js       copy the PWA into www/ for Capacitor
 ├── tests/
-│   └── test_suite.py         Playwright end-to-end suite
+│   ├── test_suite.py         Playwright end-to-end suite (state)
+│   └── interaction_suite.py  Real touch/pointer/keyboard + reachability audit
 └── .github/workflows/
     └── test-and-deploy.yml   CI: run tests on push/PR, deploy to Pages on main
 ```
@@ -282,18 +284,37 @@ python3 -m http.server 8000
 
 ## Tests & CI
 
-A Playwright suite covers layout at four screen sizes, every category and
-game opening, four games played to completion, IndexedDB persistence,
-backup export/restore, and PWA basics (manifest, icons, service worker,
-offline).
+Two Playwright suites.
+
+**`tests/test_suite.py`** covers layout at four screen sizes, every category and
+game opening, games played to completion, IndexedDB persistence, backup
+export/restore, and PWA basics (manifest, icons, service worker, offline). It
+drives the app with programmatic `element.click()`, which is ideal for checking
+state transitions.
+
+**`tests/interaction_suite.py`** is the other half: a JS click succeeds happily
+on a button that is covered by the bottom nav, sized 30px, or parked off-screen,
+so this suite uses real Playwright actions — `click()` with its actionability and
+hit-test checks, `touchscreen.tap()`, stepped pointer drags, keyboard — plus a
+DOM reachability and touch-size audit across eight device viewports. It covers
+every control being reachable and at least 48px, every game opening and finishing
+under a real tap, rapid taps scoring once, the Back button, the parent gate, the
+Match & Drop puzzle (drag, tap→tap, keyboard, escalating help, resize, reduced
+motion), degraded audio APIs, and offline.
 
 ```bash
 pip install playwright && python -m playwright install chromium
 python3 -m http.server 8000 &
 BASE_URL=http://localhost:8000 python3 tests/test_suite.py
+BASE_URL=http://localhost:8000 python3 tests/interaction_suite.py
 ```
 
-`.github/workflows/test-and-deploy.yml` runs the suite on every push and
+Both accept `CHROMIUM_PATH=/path/to/chrome` to use a prebuilt browser instead of
+the managed download. The puzzle's word choice is randomised in production;
+`?seed=7` (or `window.__talkiSeed`) makes it reproducible so tests never flake on
+which words came up.
+
+`.github/workflows/test-and-deploy.yml` runs both suites on every push and
 pull request. On `master`, a passing run deploys to GitHub Pages and
 rewrites the service worker's cache version to the commit SHA so
 returning devices always pick up the new build. Pages is configured

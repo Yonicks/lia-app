@@ -212,6 +212,8 @@
   .pill-btn.accent{background:linear-gradient(155deg,var(--sun),var(--sun-dark));color:#fff;border:none}
   .pill-btn.blue{background:linear-gradient(155deg,var(--sky),var(--sky-dark));color:#fff;border:none}
   .cat-title{display:flex;align-items:center;gap:8px;font-weight:900;font-size:1.15rem}
+  /* balances the back pill so the title stays centred */
+  .ch-spacer{flex:0 0 auto;width:56px}
 
   .word-grid{display:grid;gap:clamp(9px,1.3vw,16px);
     grid-template-columns:repeat(auto-fill,minmax(clamp(130px,40vw,190px),1fr))}
@@ -741,6 +743,7 @@
   .v2-chip{flex:none;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;
     padding:8px 16px;font-weight:800;font-size:.82rem}
   .v2-chip.on{background:var(--v2-purple);border-color:var(--v2-purple);color:#fff}
+  .v2-pick-label{margin:2px 4px 6px;font-weight:800;font-size:.86rem;color:var(--ink-soft)}
   .v2-sticker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:640px;margin:0 auto}
   @media(min-width:600px){ .v2-sticker-grid{grid-template-columns:repeat(5,1fr)} }
   @media(min-width:1100px){ .v2-sticker-grid{grid-template-columns:repeat(6,1fr)} }
@@ -768,6 +771,159 @@
   .home-section-heading .hsh-link{font-size:.74rem;padding:6px 12px}
   .home-card{background:var(--talki-surface);border:1px solid var(--talki-border-soft);
     border-radius:22px;box-shadow:var(--shadow-card)}
+
+  /* ================================================================
+     MATCH & DROP PUZZLE — 🧩 שִׂימִי בַּמָּקוֹם
+     Silhouettes on a warm board above, illustrated pieces on a tray
+     below. Same cream/purple/mint/peach palette, same rounded surfaces
+     and soft shadows as the rest of Talki.
+  ================================================================ */
+  .pz-board{max-width:min(760px,96vw);margin:0 auto;display:flex;flex-direction:column;
+    justify-content:center;min-height:min(58vh,520px)}
+  /* Wrapping by size rather than by a column count: the shadows are always the
+     same comfortable square whatever the board holds, they centre themselves
+     on the last row, and a six-piece board can never grow tall enough to push
+     the tray under the bottom nav. */
+  .pz-slots{display:flex;flex-wrap:wrap;justify-content:center;align-content:center;
+    gap:clamp(10px,2vw,16px);padding:clamp(12px,2.4vw,20px);
+    background:linear-gradient(165deg,rgba(255,255,255,.92),rgba(255,241,220,.92));
+    border:3px solid var(--line);border-radius:var(--v2-radius-hero);box-shadow:var(--shadow)}
+  .pz-slot{position:relative;flex:0 0 auto;
+    width:clamp(84px,24vw,170px);height:clamp(84px,24vw,170px);display:flex;
+    align-items:center;justify-content:center;flex-direction:column;gap:2px;
+    background:rgba(124,76,214,.05);border:3px dashed rgba(109,59,166,.30);
+    border-radius:20px;padding:8px;touch-action:none;
+    transition:border-color .18s ease,background .18s ease,transform .18s ease}
+  /* A flat black blob makes a duck and a penguin the same shadow. Keeping the
+     internal detail — grayscale and faded rather than filled in — still reads
+     as a shadow but stays identifiable to a two-year-old. */
+  .pz-slot .pz-shadow{display:flex;align-items:center;justify-content:center;
+    width:100%;height:100%;opacity:.34;filter:grayscale(1) contrast(.72) brightness(.92)}
+  .pz-slot .pz-shadow img{width:100%;height:100%;object-fit:contain}
+  .pz-slot .pz-shadow .em,.pz-slot .pz-shadow .emoji{font-size:clamp(2rem,9vw,3.2rem);line-height:1}
+  .pz-slot .pz-fill{position:absolute;inset:8px;display:flex;align-items:center;justify-content:center;
+    animation:pzSnap .34s cubic-bezier(.3,1.5,.5,1)}
+  .pz-slot .pz-fill img{width:100%;height:100%;object-fit:contain}
+  .pz-slot .pz-fill .em,.pz-slot .pz-fill .emoji{font-size:clamp(2rem,9vw,3.2rem);line-height:1}
+  .pz-slot .pz-word{position:absolute;bottom:-2px;left:0;right:0;text-align:center;
+    font-weight:800;font-size:clamp(.72rem,2.4vw,.95rem);color:var(--v2-purple);
+    text-shadow:0 1px 0 rgba(255,255,255,.9)}
+  .pz-slot.filled{background:linear-gradient(160deg,#F3ECFF,#EAFBF2);
+    border-style:solid;border-color:var(--v2-mint)}
+  .pz-slot.filled .pz-shadow{opacity:0}
+  /* second miss on a piece: quietly show the child where it goes */
+  .pz-slot.hint{border-color:var(--sun-dark);background:rgba(255,215,90,.22);
+    animation:pzHint 1.3s ease-in-out infinite}
+
+  .pz-guide{text-align:center;color:var(--ink-soft);font-weight:700;
+    font-size:clamp(.8rem,2.6vw,.95rem);margin:12px 4px 10px}
+
+  .pz-tray{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(10px,2.4vw,18px)}
+  .pz-piece{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;
+    width:clamp(76px,23vw,104px);min-height:88px;padding:8px 6px 6px;
+    background:var(--paper);border:3px solid var(--line);border-radius:20px;
+    box-shadow:var(--shadow);touch-action:none;
+    transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+  .pz-piece img{width:100%;aspect-ratio:1;object-fit:contain;pointer-events:none}
+  .pz-piece .em,.pz-piece .emoji{font-size:clamp(2rem,8vw,3rem);line-height:1;pointer-events:none}
+  .pz-piece .pz-w{font-weight:800;font-size:clamp(.72rem,2.4vw,.92rem);
+    line-height:1.15;text-align:center;pointer-events:none}
+  .pz-piece.sel{border-color:var(--v2-purple-bright);
+    box-shadow:0 0 0 4px rgba(124,76,214,.22),var(--shadow);transform:translateY(-3px)}
+  /* animation:none matters — a keyframed transform would win over the inline
+     transform the drag writes, and the piece would never leave the tray */
+  .pz-piece.pz-dragging{z-index:70;border-color:var(--v2-purple-bright);
+    box-shadow:0 14px 26px rgba(109,59,166,.28);transition:none;animation:none;cursor:grabbing}
+  .pz-piece.pz-return{transition:transform .3s cubic-bezier(.3,1.2,.5,1)}
+  .pz-piece.placed{visibility:hidden;pointer-events:none}
+  /* before the first piece lands, one piece breathes to show what to grab —
+     a demonstration for a child who cannot read the line above */
+  .pz-piece.nudge{animation:pzNudge 2.2s ease-in-out infinite}
+  .pz-together{color:var(--v2-purple);font-weight:800;margin:6px 0 12px}
+
+  @keyframes pzSnap{0%{transform:scale(.7)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+  @keyframes pzHint{0%,100%{box-shadow:0 0 0 0 rgba(232,185,58,.0)}
+                    50%{box-shadow:0 0 0 7px rgba(232,185,58,.30)}}
+  @keyframes pzNudge{0%,72%,100%{transform:translateY(0) rotate(0)}
+                     80%{transform:translateY(-7px) rotate(-3deg)}
+                     90%{transform:translateY(-4px) rotate(2deg)}}
+
+  /* Landscape is wide and short: spread the shadows and the tray into single
+     rows instead of stacking, so a six-piece board still fits above the nav. */
+  @media (orientation:landscape) and (max-height:560px){
+    .pz-slots{flex-wrap:nowrap}
+    .pz-slot{width:clamp(56px,9vw,88px);height:clamp(48px,14vh,80px)}
+    .pz-tray{flex-wrap:nowrap}
+    .pz-piece{width:clamp(60px,11vw,88px)}
+    /* the guide line is written for the parent, and landscape has no height to
+       spare — the nudging piece and the shadows carry the affordance alone */
+    .pz-guide{display:none}
+    body[data-view="puzzle"] main{padding-top:4px}
+    body[data-view="puzzle"] .cat-header{padding:2px 2px 6px}
+    body[data-view="puzzle"] .quiz-stats{margin-bottom:4px}
+  }
+
+  /* ================================================================
+     TODDLER TOUCH LAYER
+     Platform guidance puts the floor at ~48dp; Talki's users are two-
+     and three-year-olds pressing with the flat of a finger, so every
+     control a child is expected to hit gets a 56px minimum box. Where
+     the visible pill has to stay small for layout reasons the box is
+     grown with an invisible ::before so the art does not change size.
+  ================================================================ */
+  .pill-btn{min-height:56px;padding:10px 18px}
+  .big-btn{min-height:56px;padding:12px 26px}
+  .v2-chip{min-height:48px;padding:12px 18px}
+  .v2h-back,.v2-gift-btn{position:relative}
+  .v2h-back::before,.v2-gift-btn::before{content:"";position:absolute;
+    top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%}
+  .icon-btn{min-width:48px;min-height:48px}
+  .bn-item{min-height:56px}
+  /* Neighbouring answers need a visible gutter so a sloppy tap that lands
+     between two pictures does not register on the wrong one. */
+  .opt-grid{gap:clamp(12px,2vw,18px)}
+
+  /* ================================================================
+     SHORT VIEWPORTS — keep one whole round on one screen
+     On a 320x568 phone (and on any phone held in landscape) the answer
+     grid used to run underneath the fixed bottom nav: the child saw two
+     of the four pictures, and a tap aimed at the bottom row landed on
+     the nav and threw them out of the game. Below 700px of height the
+     game chrome compacts so the whole board fits without scrolling.
+  ================================================================ */
+  @media (max-height:700px){
+    main{padding-top:10px}
+    .cat-header{padding:4px 2px 8px;gap:6px;flex-wrap:nowrap}
+    .cat-title{font-size:1rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .pill-btn{min-height:48px;padding:8px 12px;font-size:.82rem}
+    .big-btn{min-height:48px;padding:9px 18px;font-size:.86rem}
+    .quiz-stats{gap:6px;margin-bottom:7px}
+    .stat-chip{padding:3px 10px;font-size:.72rem;border-width:1px}
+    .prompt-box{padding:8px 10px;margin-bottom:10px;border-width:2px}
+    .prompt-box p{font-size:.8rem;margin-bottom:7px}
+    .prompt-word{font-size:1.5rem;margin-bottom:6px}
+    .opt{padding:7px 6px;border-width:2px}
+    .opt img{width:clamp(56px,11vh,110px);height:clamp(56px,11vh,110px)}
+    .opt img.art{width:clamp(60px,13vh,130px);height:clamp(60px,13vh,130px)}
+    .opt-grid{gap:10px}
+    .prompt-box img.art{width:92px;height:92px}
+    /* a board dealt on a taller screen must still fit after a rotation, so
+       the slots stop being square and take a share of the height instead */
+    .pz-board{min-height:0}
+    .pz-slots{padding:9px;gap:8px}
+    .pz-slot{width:clamp(64px,20vw,110px);height:clamp(56px,11vh,96px);padding:5px}
+    .pz-guide{margin:7px 4px 6px;font-size:.76rem}
+    .pz-piece{width:clamp(64px,19vw,92px);min-height:64px;padding:5px 4px 4px}
+    .pz-piece img{aspect-ratio:auto;height:clamp(32px,6.5vh,56px)}
+    .pz-slot .pz-word{font-size:.68rem}
+  }
+  @media (max-height:560px){
+    .prompt-box{padding:6px 8px;margin-bottom:7px}
+    .opt img{width:clamp(48px,15vh,96px);height:clamp(48px,15vh,96px)}
+    .opt img.art{width:clamp(52px,17vh,104px);height:clamp(52px,17vh,104px)}
+    .prompt-box img.art{width:74px;height:74px}
+    .quiz-stats{margin-bottom:5px}
+  }
 </style>
 </head>
 <body>
@@ -861,115 +1017,115 @@ const art = (cat, slug) => {
 };
 const CATEGORIES = {
   animals:{id:'animals',title:'חַיּוֹת',icon:'🐶',cls:'c-animals',items:[
-    {word:'כֶּלֶב',emoji:'🐶',sound:'הַב הַב',img:art('animals','dog')},{word:'חָתוּל',emoji:'🐱',sound:'מְיָאוּ',img:art('animals','cat')},
-    {word:'פָּרָה',emoji:'🐮',sound:'מוּ',img:art('animals','cow')},{word:'אַרְיֵה',emoji:'🦁',sound:'רְרְרָאוּ',img:art('animals','lion')},
-    {word:'פִּיל',emoji:'🐘',img:art('animals','elephant')},{word:'בַּרְוָוז',emoji:'🦆',sound:'גַּע גַּע',img:art('animals','duck')},
-    {word:'סוּס',emoji:'🐎',sound:'הִי הָה',img:art('animals','horse')},{word:'תַּרְנְגוֹלֶת',emoji:'🐔',sound:'קוּ קוּ רִיקוּ',img:art('animals','hen')},
-    {word:'כִּבְשָׂה',emoji:'🐑',sound:'מֶה',img:art('animals','sheep')},{word:'קוֹף',emoji:'🐒',sound:'אוּ אוּ אָה אָה',img:art('animals','monkey')},
-    {word:'חֲזִיר',emoji:'🐷',sound:'אוֹיְנְק',img:art('animals','pig')},{word:'צְפַרְדֵּעַ',emoji:'🐸',sound:'קְוָואק',img:art('animals','frog')},
-    {word:'פַּרְפַּר',emoji:'🦋',img:art('animals','butterfly')},{word:'אַרְנָב',emoji:'🐰',img:art('animals','rabbit')},
-    {word:'צָב',emoji:'🐢',img:art('animals','turtle')},{word:'דָּג',emoji:'🐟',img:art('animals','fish')},
-    {word:'צִפּוֹר',emoji:'🐦',sound:'צִיוּ צִיוּ',img:art('animals','bird')},{word:'דֹּב',emoji:'🐻',sound:'גְּרְרְר',img:art('animals','bear')},
-    {word:'גִּ\'ירָפָה',emoji:'🦒',img:art('animals','giraffe')},{word:'נָחָשׁ',emoji:'🐍',sound:'שְׁשְׁשְׁ',img:art('animals','snake')},
-    {word:'עַכְבָּר',emoji:'🐭',sound:'צִיק צִיק',img:art('animals','mouse')},{word:'זֶבְּרָה',emoji:'🦓',img:art('animals','zebra')},
-    {word:'יַנְשׁוּף',emoji:'🦉',sound:'הוּ הוּ',img:art('animals','owl')},{word:'דְּבוֹרָה',emoji:'🐝',sound:'זְזְזְז',img:art('animals','bee')},
-    {word:'נְמָלָה',emoji:'🐜',img:art('animals','ant')},{word:'פִּינְגְּוִין',emoji:'🐧',img:art('animals','penguin')}
+    {word:'כֶּלֶב',emoji:'🐶',sound:'הַב הַב',img:art('animals','dog'),shape:'quadruped'},{word:'חָתוּל',emoji:'🐱',sound:'מְיָאוּ',img:art('animals','cat'),shape:'quadruped'},
+    {word:'פָּרָה',emoji:'🐮',sound:'מוּ',img:art('animals','cow'),shape:'quadruped'},{word:'אַרְיֵה',emoji:'🦁',sound:'רְרְרָאוּ',img:art('animals','lion'),shape:'quadruped'},
+    {word:'פִּיל',emoji:'🐘',img:art('animals','elephant'),shape:'quadruped'},{word:'בַּרְוָוז',emoji:'🦆',sound:'גַּע גַּע',img:art('animals','duck'),shape:'flying-animal'},
+    {word:'סוּס',emoji:'🐎',sound:'הִי הָה',img:art('animals','horse'),shape:'quadruped'},{word:'תַּרְנְגוֹלֶת',emoji:'🐔',sound:'קוּ קוּ רִיקוּ',img:art('animals','hen'),shape:'flying-animal'},
+    {word:'כִּבְשָׂה',emoji:'🐑',sound:'מֶה',img:art('animals','sheep'),shape:'quadruped'},{word:'קוֹף',emoji:'🐒',sound:'אוּ אוּ אָה אָה',img:art('animals','monkey'),shape:'quadruped'},
+    {word:'חֲזִיר',emoji:'🐷',sound:'אוֹיְנְק',img:art('animals','pig'),shape:'quadruped'},{word:'צְפַרְדֵּעַ',emoji:'🐸',sound:'קְוָואק',img:art('animals','frog'),shape:'small-animal'},
+    {word:'פַּרְפַּר',emoji:'🦋',img:art('animals','butterfly'),shape:'small-animal'},{word:'אַרְנָב',emoji:'🐰',img:art('animals','rabbit'),shape:'small-animal'},
+    {word:'צָב',emoji:'🐢',img:art('animals','turtle'),shape:'small-animal'},{word:'דָּג',emoji:'🐟',img:art('animals','fish'),shape:'small-animal'},
+    {word:'צִפּוֹר',emoji:'🐦',sound:'צִיוּ צִיוּ',img:art('animals','bird'),shape:'flying-animal'},{word:'דֹּב',emoji:'🐻',sound:'גְּרְרְר',img:art('animals','bear'),shape:'quadruped'},
+    {word:'גִּ\'ירָפָה',emoji:'🦒',img:art('animals','giraffe'),shape:'quadruped'},{word:'נָחָשׁ',emoji:'🐍',sound:'שְׁשְׁשְׁ',img:art('animals','snake'),shape:'small-animal'},
+    {word:'עַכְבָּר',emoji:'🐭',sound:'צִיק צִיק',img:art('animals','mouse'),shape:'small-animal'},{word:'זֶבְּרָה',emoji:'🦓',img:art('animals','zebra'),shape:'quadruped'},
+    {word:'יַנְשׁוּף',emoji:'🦉',sound:'הוּ הוּ',img:art('animals','owl'),shape:'flying-animal'},{word:'דְּבוֹרָה',emoji:'🐝',sound:'זְזְזְז',img:art('animals','bee'),shape:'small-animal'},
+    {word:'נְמָלָה',emoji:'🐜',img:art('animals','ant'),shape:'small-animal'},{word:'פִּינְגְּוִין',emoji:'🐧',img:art('animals','penguin'),shape:'flying-animal'}
   ]},
   food:{id:'food',title:'אוֹכֶל',icon:'🍎',cls:'c-food',items:[
-    {word:'תַּפּוּחַ',emoji:'🍎',img:art('food','apple')},{word:'בָּנָנָה',emoji:'🍌',img:art('food','banana')},
-    {word:'מַיִם',emoji:'💧',img:art('food','water')},{word:'לֶחֶם',emoji:'🍞',img:art('food','bread')},
-    {word:'גְּלִידָה',emoji:'🍦',img:art('food','ice-cream')},{word:'עַגְבָנִיָּה',emoji:'🍅',img:art('food','tomato')},
-    {word:'מְלָפְפוֹן',emoji:'🥒',img:art('food','cucumber')},{word:'חָלָב',emoji:'🥛',img:art('food','milk')},
-    {word:'עֲנָבִים',emoji:'🍇',img:art('food','grapes')},{word:'תּוּת',emoji:'🍓',img:art('food','strawberry')},
-    {word:'תַּפּוּז',emoji:'🍊',img:art('food','orange')},{word:'אֲבַטִּיחַ',emoji:'🍉',img:art('food','watermelon')},
-    {word:'בֵּיצָה',emoji:'🥚',img:art('food','egg')},{word:'גְּבִינָה',emoji:'🧀',img:art('food','cheese')},
-    {word:'עוֹף',emoji:'🍗',img:art('food','chicken')},{word:'פִּצָּה',emoji:'🍕',img:art('food','pizza')},
-    {word:'מָרָק',emoji:'🥣',img:art('food','soup')},{word:'עוּגָה',emoji:'🍰',img:art('food','cake')},
-    {word:'עוּגִיָּה',emoji:'🍪',img:art('food','cookie')},{word:'מִיץ',emoji:'🧃',img:art('food','juice')},
-    {word:'כָּרִיךְ',emoji:'🥪',img:art('food','sandwich')},{word:'פּוֹפְּקוֹרְן',emoji:'🍿',img:art('food','popcorn')},
-    {word:'שׁוֹקוֹלָד',emoji:'🍫',img:art('food','chocolate')},{word:'גֶּזֶר',emoji:'🥕',img:art('food','carrot')},
-    {word:'תִּירָס',emoji:'🌽',img:art('food','corn')},{word:'לִימוֹן',emoji:'🍋',img:art('food','lemon')}
+    {word:'תַּפּוּחַ',emoji:'🍎',img:art('food','apple'),shape:'fruit'},{word:'בָּנָנָה',emoji:'🍌',img:art('food','banana'),shape:'fruit'},
+    {word:'מַיִם',emoji:'💧',img:art('food','water'),shape:'food-drink'},{word:'לֶחֶם',emoji:'🍞',img:art('food','bread'),shape:'dairy-bread'},
+    {word:'גְּלִידָה',emoji:'🍦',img:art('food','ice-cream'),shape:'frozen-food'},{word:'עַגְבָנִיָּה',emoji:'🍅',img:art('food','tomato'),shape:'vegetable'},
+    {word:'מְלָפְפוֹן',emoji:'🥒',img:art('food','cucumber'),shape:'vegetable'},{word:'חָלָב',emoji:'🥛',img:art('food','milk'),shape:'food-drink'},
+    {word:'עֲנָבִים',emoji:'🍇',img:art('food','grapes'),shape:'fruit'},{word:'תּוּת',emoji:'🍓',img:art('food','strawberry'),shape:'fruit'},
+    {word:'תַּפּוּז',emoji:'🍊',img:art('food','orange'),shape:'fruit'},{word:'אֲבַטִּיחַ',emoji:'🍉',img:art('food','watermelon'),shape:'fruit'},
+    {word:'בֵּיצָה',emoji:'🥚',img:art('food','egg'),shape:'dairy-bread'},{word:'גְּבִינָה',emoji:'🧀',img:art('food','cheese'),shape:'dairy-bread'},
+    {word:'עוֹף',emoji:'🍗',img:art('food','chicken'),shape:'prepared-food'},{word:'פִּצָּה',emoji:'🍕',img:art('food','pizza'),shape:'prepared-food'},
+    {word:'מָרָק',emoji:'🥣',img:art('food','soup'),shape:'food-drink'},{word:'עוּגָה',emoji:'🍰',img:art('food','cake'),shape:'prepared-food'},
+    {word:'עוּגִיָּה',emoji:'🍪',img:art('food','cookie'),shape:'prepared-food'},{word:'מִיץ',emoji:'🧃',img:art('food','juice'),shape:'food-drink'},
+    {word:'כָּרִיךְ',emoji:'🥪',img:art('food','sandwich'),shape:'prepared-food'},{word:'פּוֹפְּקוֹרְן',emoji:'🍿',img:art('food','popcorn'),shape:'prepared-food'},
+    {word:'שׁוֹקוֹלָד',emoji:'🍫',img:art('food','chocolate'),shape:'prepared-food'},{word:'גֶּזֶר',emoji:'🥕',img:art('food','carrot'),shape:'vegetable'},
+    {word:'תִּירָס',emoji:'🌽',img:art('food','corn'),shape:'vegetable'},{word:'לִימוֹן',emoji:'🍋',img:art('food','lemon'),shape:'fruit'}
   ]},
   colors:{id:'colors',title:'צְבָעִים וְצוּרוֹת',icon:'🎨',cls:'c-colors',items:[
-    {word:'אָדוֹם',emoji:'🔴',img:art('colors','red')},{word:'כָּחוֹל',emoji:'🔵',img:art('colors','blue')},
-    {word:'צָהוֹב',emoji:'🟡',img:art('colors','yellow')},{word:'יָרוֹק',emoji:'🟢',img:art('colors','green')},
-    {word:'כָּתוֹם',emoji:'🟠',img:art('colors','orange')},{word:'סָגוֹל',emoji:'🟣',img:art('colors','purple')},
-    {word:'וָרוֹד',emoji:'🩷',img:art('colors','pink')},{word:'חוּם',emoji:'🤎',img:art('colors','brown')},
-    {word:'שָׁחוֹר',emoji:'🖤',img:art('colors','black')},{word:'לָבָן',emoji:'🤍',img:art('colors','white')},
-    {word:'אָפוֹר',emoji:'🩶',img:art('colors','gray')},{word:'תְּכֵלֶת',emoji:'🩵',img:art('colors','light-blue')},
-    {word:'צִבְעוֹנִי',emoji:'🌈',img:art('colors','colorful')},{word:'כּוֹכָב',emoji:'⭐',img:art('colors','star')},
-    {word:'לֵב',emoji:'❤️',img:art('colors','heart')},{word:'עִיגּוּל',emoji:'⭕',img:art('colors','circle')},
-    {word:'רִיבּוּעַ',emoji:'🟦',img:art('colors','square')},{word:'מְשׁוּלָּשׁ',emoji:'🔺',img:art('colors','triangle')},
-    {word:'מְעוּיָּן',emoji:'🔸',img:art('colors','diamond')},{word:'חֵץ',emoji:'↔️',img:art('colors','arrow')},
-    {word:'יָרֵחַ',emoji:'🌙',img:art('colors','moon')},{word:'טִפָּה',emoji:'💧',img:art('colors','drop')},
-    {word:'פֶּרַח',emoji:'🌸',img:art('colors','flower')},{word:'תִּלְתָּן',emoji:'☘️',img:art('colors','clover')},
-    {word:'כֶּתֶר',emoji:'👑',img:art('colors','crown')},{word:'בָּלוֹן',emoji:'🎈',img:art('colors','balloon')}
+    {word:'אָדוֹם',emoji:'🔴',img:art('colors','red'),shape:'color'},{word:'כָּחוֹל',emoji:'🔵',img:art('colors','blue'),shape:'color'},
+    {word:'צָהוֹב',emoji:'🟡',img:art('colors','yellow'),shape:'color'},{word:'יָרוֹק',emoji:'🟢',img:art('colors','green'),shape:'color'},
+    {word:'כָּתוֹם',emoji:'🟠',img:art('colors','orange'),shape:'color'},{word:'סָגוֹל',emoji:'🟣',img:art('colors','purple'),shape:'color'},
+    {word:'וָרוֹד',emoji:'🩷',img:art('colors','pink'),shape:'color'},{word:'חוּם',emoji:'🤎',img:art('colors','brown'),shape:'color'},
+    {word:'שָׁחוֹר',emoji:'🖤',img:art('colors','black'),shape:'color'},{word:'לָבָן',emoji:'🤍',img:art('colors','white'),shape:'color'},
+    {word:'אָפוֹר',emoji:'🩶',img:art('colors','gray'),shape:'color'},{word:'תְּכֵלֶת',emoji:'🩵',img:art('colors','light-blue'),shape:'color'},
+    {word:'צִבְעוֹנִי',emoji:'🌈',img:art('colors','colorful'),shape:'color'},{word:'כּוֹכָב',emoji:'⭐',img:art('colors','star'),shape:'shape-object'},
+    {word:'לֵב',emoji:'❤️',img:art('colors','heart'),shape:'shape-object'},{word:'עִיגּוּל',emoji:'⭕',img:art('colors','circle'),shape:'shape-object'},
+    {word:'רִיבּוּעַ',emoji:'🟦',img:art('colors','square'),shape:'shape-object'},{word:'מְשׁוּלָּשׁ',emoji:'🔺',img:art('colors','triangle'),shape:'shape-object'},
+    {word:'מְעוּיָּן',emoji:'🔸',img:art('colors','diamond'),shape:'shape-object'},{word:'חֵץ',emoji:'➡️',img:art('colors','arrow'),shape:'shape-object'},
+    {word:'יָרֵחַ',emoji:'🌙',img:art('colors','moon'),shape:'nature-symbol'},{word:'טִפָּה',emoji:'💧',img:art('colors','drop'),shape:'nature-symbol'},
+    {word:'פֶּרַח',emoji:'🌸',img:art('colors','flower'),shape:'nature-symbol'},{word:'תִּלְתָּן',emoji:'☘️',img:art('colors','clover'),shape:'nature-symbol'},
+    {word:'כֶּתֶר',emoji:'👑',img:art('colors','crown'),shape:'nature-symbol'},{word:'בָּלוֹן',emoji:'🎈',img:art('colors','balloon'),shape:'nature-symbol'}
   ]},
   home:{id:'home',title:'בַּבַּיִת',icon:'🧸',cls:'c-home',items:[
-    {word:'כַּדּוּר',emoji:'⚽',img:art('home','ball')},{word:'בּוּבָּה',emoji:'🧸',img:art('home','doll')},
-    {word:'מִיטָה',emoji:'🛏️',img:art('home','bed')},{word:'נַעֲלַיִם',emoji:'👟',img:art('home','shoes')},
-    {word:'מוֹצֵץ',emoji:'🍼',img:art('home','pacifier')},{word:'סֵפֶר',emoji:'📖',img:art('home','book')},
-    {word:'כִּסֵּא',emoji:'🪑',img:art('home','chair')},{word:'סַפָּה',emoji:'🛋️',img:art('home','sofa')},
-    {word:'טֶלֶוִיזְיָה',emoji:'📺',img:art('home','television')},{word:'דֶּלֶת',emoji:'🚪',img:art('home','door')},
-    {word:'חַלּוֹן',emoji:'🪟',img:art('home','window')},{word:'שְׂמִיכָה',emoji:'🛌',img:art('home','blanket')},
-    {word:'אַמְבַּטְיָה',emoji:'🛁',img:art('home','bathtub')},{word:'מִבְרֶשֶׁת שִׁנַּיִם',emoji:'🪥',img:art('home','toothbrush')},
-    {word:'סַבּוֹן',emoji:'🧼',img:art('home','soap')},{word:'שֵׁירוּתִים',emoji:'🚽',img:art('home','toilet')},
-    {word:'צַלַּחַת',emoji:'🍽️',img:art('home','plate')},{word:'כּוֹס',emoji:'🥤',img:art('home','cup')},
-    {word:'כַּף',emoji:'🥄',img:art('home','spoon')},{word:'שָׁעוֹן',emoji:'⏰',img:art('home','clock')},
-    {word:'טֶלֶפוֹן',emoji:'📱',img:art('home','phone')},{word:'מַפְתֵּחַ',emoji:'🔑',img:art('home','key')},
-    {word:'מַשְׁקָפַיִם',emoji:'👓',img:art('home','glasses')},{word:'מִטְרִיָּה',emoji:'☂️',img:art('home','umbrella')},
-    {word:'בְּגָדִים',emoji:'👕',img:art('home','clothes')},{word:'גַּרְבַּיִם',emoji:'🧦',img:art('home','socks')}
+    {word:'כַּדּוּר',emoji:'⚽',img:art('home','ball'),shape:'toy'},{word:'בּוּבָּה',emoji:'🧸',img:art('home','doll'),shape:'toy'},
+    {word:'מִיטָה',emoji:'🛏️',img:art('home','bed'),shape:'furniture'},{word:'נַעֲלַיִם',emoji:'👟',img:art('home','shoes'),shape:'clothing'},
+    {word:'מוֹצֵץ',emoji:'🍼',img:art('home','pacifier'),shape:'toy'},{word:'סֵפֶר',emoji:'📖',img:art('home','book'),shape:'media'},
+    {word:'כִּסֵּא',emoji:'🪑',img:art('home','chair'),shape:'furniture'},{word:'סַפָּה',emoji:'🛋️',img:art('home','sofa'),shape:'furniture'},
+    {word:'טֶלֶוִיזְיָה',emoji:'📺',img:art('home','television'),shape:'electronics'},{word:'דֶּלֶת',emoji:'🚪',img:art('home','door'),shape:'building-part'},
+    {word:'חַלּוֹן',emoji:'🪟',img:art('home','window'),shape:'building-part'},{word:'שְׂמִיכָה',emoji:'🛌',img:art('home','blanket'),shape:'textile'},
+    {word:'אַמְבַּטְיָה',emoji:'🛁',img:art('home','bathtub'),shape:'fixture'},{word:'מִבְרֶשֶׁת שִׁנַּיִם',emoji:'🪥',img:art('home','toothbrush'),shape:'hygiene'},
+    {word:'סַבּוֹן',emoji:'🧼',img:art('home','soap'),shape:'hygiene'},{word:'שֵׁירוּתִים',emoji:'🚽',img:art('home','toilet'),shape:'fixture'},
+    {word:'צַלַּחַת',emoji:'🍽️',img:art('home','plate'),shape:'dishware'},{word:'כּוֹס',emoji:'🥤',img:art('home','cup'),shape:'dishware'},
+    {word:'כַּף',emoji:'🥄',img:art('home','spoon'),shape:'dishware'},{word:'שָׁעוֹן',emoji:'⏰',img:art('home','clock'),shape:'object'},
+    {word:'טֶלֶפוֹן',emoji:'📱',img:art('home','phone'),shape:'electronics'},{word:'מַפְתֵּחַ',emoji:'🔑',img:art('home','key'),shape:'object'},
+    {word:'מַשְׁקָפַיִם',emoji:'👓',img:art('home','glasses'),shape:'accessory'},{word:'מִטְרִיָּה',emoji:'☂️',img:art('home','umbrella'),shape:'accessory'},
+    {word:'בְּגָדִים',emoji:'👕',img:art('home','clothes'),shape:'clothing'},{word:'גַּרְבַּיִם',emoji:'🧦',img:art('home','socks'),shape:'clothing'}
   ]},
   family:{id:'family',title:'מִשְׁפָּחָה',icon:'👨‍👩‍👧',cls:'c-family',items:[
-    {word:'אִמָּא',emoji:'👩',img:art('family','mom')},{word:'אַבָּא',emoji:'👨',img:art('family','dad')},
-    {word:'סַבְתָּא',emoji:'👵',img:art('family','grandma')},{word:'סַבָּא',emoji:'👴',img:art('family','grandpa')},
-    {word:'תִּינוֹק',emoji:'👶',img:art('family','baby')},{word:'אָח',emoji:'👦',img:art('family','brother')},
-    {word:'אָחוֹת',emoji:'👧',img:art('family','sister')},{word:'יַלְדָּה',emoji:'🧒',img:art('family','girl')},
-    {word:'דּוֹדָה',emoji:'💃',img:art('family','aunt')},{word:'דּוֹד',emoji:'🕺',img:art('family','uncle')},
-    {word:'חָבֵר',emoji:'🧑‍🤝‍🧑',img:art('family','friend')},{word:'מִשְׁפָּחָה',emoji:'👨‍👩‍👧‍👦',img:art('family','family')}
+    {word:'אִמָּא',emoji:'👩',img:art('family','mom'),shape:'family-member'},{word:'אַבָּא',emoji:'👨',img:art('family','dad'),shape:'family-member'},
+    {word:'סַבְתָּא',emoji:'👵',img:art('family','grandma'),shape:'family-member'},{word:'סַבָּא',emoji:'👴',img:art('family','grandpa'),shape:'family-member'},
+    {word:'תִּינוֹק',emoji:'👶',img:art('family','baby'),shape:'family-member'},{word:'אָח',emoji:'👦',img:art('family','brother'),shape:'family-member'},
+    {word:'אָחוֹת',emoji:'👧',img:art('family','sister'),shape:'family-member'},{word:'יַלְדָּה',emoji:'🧒',img:art('family','girl'),shape:'family-member'},
+    {word:'דּוֹדָה',emoji:'💃',img:art('family','aunt'),shape:'family-member'},{word:'דּוֹד',emoji:'🕺',img:art('family','uncle'),shape:'family-member'},
+    {word:'חָבֵר',emoji:'🧑‍🤝‍🧑',img:art('family','friend'),shape:'family-member'},{word:'מִשְׁפָּחָה',emoji:'👨‍👩‍👧‍👦',img:art('family','family'),shape:'family-member'}
   ]},
   body:{id:'body',title:'הַגּוּף',icon:'👀',cls:'c-body',items:[
-    {word:'עַיִן',emoji:'👁️',img:art('body','eye')},{word:'אֹזֶן',emoji:'👂',img:art('body','ear')},
-    {word:'אַף',emoji:'👃',img:art('body','nose')},{word:'פֶּה',emoji:'👄',img:art('body','mouth')},
-    {word:'יָד',emoji:'✋',img:art('body','hand')},{word:'רֶגֶל',emoji:'🦶',img:art('body','foot')},
-    {word:'אֶצְבַּע',emoji:'☝️',img:art('body','finger')},{word:'שֵׁן',emoji:'🦷',img:art('body','tooth')},
-    {word:'לָשׁוֹן',emoji:'👅',img:art('body','tongue')},{word:'שֵׂעָר',emoji:'💇',img:art('body','hair')},
-    {word:'לֵב',emoji:'🫀',img:art('body','heart')},{word:'בֶּרֶךְ',emoji:'🦵',img:art('body','knee')}
+    {word:'עַיִן',emoji:'👁️',img:art('body','eye'),shape:'body'},{word:'אֹזֶן',emoji:'👂',img:art('body','ear'),shape:'body'},
+    {word:'אַף',emoji:'👃',img:art('body','nose'),shape:'body'},{word:'פֶּה',emoji:'👄',img:art('body','mouth'),shape:'body'},
+    {word:'יָד',emoji:'✋',img:art('body','hand'),shape:'body'},{word:'רֶגֶל',emoji:'🦶',img:art('body','foot'),shape:'body'},
+    {word:'אֶצְבַּע',emoji:'☝️',img:art('body','finger'),shape:'body'},{word:'שֵׁן',emoji:'🦷',img:art('body','tooth'),shape:'body'},
+    {word:'לָשׁוֹן',emoji:'👅',img:art('body','tongue'),shape:'body'},{word:'שֵׂעָר',emoji:'💇',img:art('body','hair'),shape:'body'},
+    {word:'לֵב',emoji:'🫀',img:art('body','heart'),shape:'body'},{word:'בֶּרֶךְ',emoji:'🦵',img:art('body','knee'),shape:'body'}
   ]},
   actions:{id:'actions',title:'פְּעוּלוֹת',icon:'🏃',cls:'c-actions',items:[
-    {word:'אוֹכֶלֶת',emoji:'🍽️',img:art('actions','eating')},{word:'שׁוֹתָה',emoji:'🥤',img:art('actions','drinking')},
-    {word:'יְשֵׁנָה',emoji:'😴',img:art('actions','sleeping')},{word:'רָצָה',emoji:'🏃',img:art('actions','running')},
-    {word:'קוֹפֶצֶת',emoji:'🤸',img:art('actions','jumping')},{word:'מוֹחֵאת כַּפַּיִם',emoji:'👏',img:art('actions','clapping')},
-    {word:'מְנַשֶּׁקֶת',emoji:'😘',img:art('actions','kissing')},{word:'מְחַבֶּקֶת',emoji:'🤗',img:art('actions','hugging')},
-    {word:'בּוֹכָה',emoji:'😢',img:art('actions','crying')},{word:'צוֹחֶקֶת',emoji:'😂',img:art('actions','laughing')},
-    {word:'מִתְרַחֶצֶת',emoji:'🛁',img:art('actions','bathing')},{word:'שָׁרָה',emoji:'🎤',img:art('actions','singing')},
-    {word:'מְצַיֶּרֶת',emoji:'🎨',img:art('actions','drawing')},{word:'הוֹלֶכֶת',emoji:'🚶',img:art('actions','walking')},
-    {word:'שׂוֹחָה',emoji:'🏊',img:art('actions','swimming')},{word:'רוֹקֶדֶת',emoji:'💃',img:art('actions','dancing')}
+    {word:'אוֹכֶלֶת',emoji:'🍽️',img:art('actions','eating'),shape:'action'},{word:'שׁוֹתָה',emoji:'🥤',img:art('actions','drinking'),shape:'action'},
+    {word:'יְשֵׁנָה',emoji:'😴',img:art('actions','sleeping'),shape:'action'},{word:'רָצָה',emoji:'🏃',img:art('actions','running'),shape:'action'},
+    {word:'קוֹפֶצֶת',emoji:'🤸',img:art('actions','jumping'),shape:'action'},{word:'מוֹחֵאת כַּפַּיִם',emoji:'👏',img:art('actions','clapping'),shape:'action'},
+    {word:'מְנַשֶּׁקֶת',emoji:'😘',img:art('actions','kissing'),shape:'action'},{word:'מְחַבֶּקֶת',emoji:'🤗',img:art('actions','hugging'),shape:'action'},
+    {word:'בּוֹכָה',emoji:'😢',img:art('actions','crying'),shape:'action'},{word:'צוֹחֶקֶת',emoji:'😂',img:art('actions','laughing'),shape:'action'},
+    {word:'מִתְרַחֶצֶת',emoji:'🛁',img:art('actions','bathing'),shape:'action'},{word:'שָׁרָה',emoji:'🎤',img:art('actions','singing'),shape:'action'},
+    {word:'מְצַיֶּרֶת',emoji:'🎨',img:art('actions','drawing'),shape:'action'},{word:'הוֹלֶכֶת',emoji:'🚶',img:art('actions','walking'),shape:'action'},
+    {word:'שׂוֹחָה',emoji:'🏊',img:art('actions','swimming'),shape:'action'},{word:'רוֹקֶדֶת',emoji:'💃',img:art('actions','dancing'),shape:'action'}
   ]},
   numbers:{id:'numbers',title:'מִסְפָּרִים',icon:'🔢',cls:'c-numbers',items:[
-    {word:'אַחַת',emoji:'1️⃣',img:art('numbers','one')},{word:'שְׁתַּיִם',emoji:'2️⃣',img:art('numbers','two')},
-    {word:'שָׁלוֹשׁ',emoji:'3️⃣',img:art('numbers','three')},{word:'אַרְבַּע',emoji:'4️⃣',img:art('numbers','four')},
-    {word:'חָמֵשׁ',emoji:'5️⃣',img:art('numbers','five')},{word:'שֵׁשׁ',emoji:'6️⃣',img:art('numbers','six')},
-    {word:'שֶׁבַע',emoji:'7️⃣',img:art('numbers','seven')},{word:'שְׁמוֹנֶה',emoji:'8️⃣',img:art('numbers','eight')},
-    {word:'תֵּשַׁע',emoji:'9️⃣',img:art('numbers','nine')},{word:'עֶשֶׂר',emoji:'🔟',img:art('numbers','ten')}
+    {word:'אַחַת',emoji:'1️⃣',img:art('numbers','one'),shape:'number'},{word:'שְׁתַּיִם',emoji:'2️⃣',img:art('numbers','two'),shape:'number'},
+    {word:'שָׁלוֹשׁ',emoji:'3️⃣',img:art('numbers','three'),shape:'number'},{word:'אַרְבַּע',emoji:'4️⃣',img:art('numbers','four'),shape:'number'},
+    {word:'חָמֵשׁ',emoji:'5️⃣',img:art('numbers','five'),shape:'number'},{word:'שֵׁשׁ',emoji:'6️⃣',img:art('numbers','six'),shape:'number'},
+    {word:'שֶׁבַע',emoji:'7️⃣',img:art('numbers','seven'),shape:'number'},{word:'שְׁמוֹנֶה',emoji:'8️⃣',img:art('numbers','eight'),shape:'number'},
+    {word:'תֵּשַׁע',emoji:'9️⃣',img:art('numbers','nine'),shape:'number'},{word:'עֶשֶׂר',emoji:'🔟',img:art('numbers','ten'),shape:'number'}
   ]},
   outside:{id:'outside',title:'בַּחוּץ',icon:'🌳',cls:'c-outside',items:[
-    {word:'עֵץ',emoji:'🌳',img:art('outside','tree')},{word:'שֶׁמֶשׁ',emoji:'☀️',img:art('outside','sun')},
-    {word:'עָנָן',emoji:'☁️',img:art('outside','cloud')},{word:'גֶּשֶׁם',emoji:'🌧️',img:art('outside','rain')},
-    {word:'שֶׁלֶג',emoji:'❄️',img:art('outside','snow')},{word:'מְכוֹנִית',emoji:'🚗',img:art('outside','car')},
-    {word:'אוֹטוֹבּוּס',emoji:'🚌',img:art('outside','bus')},{word:'אוֹפַנַּיִם',emoji:'🚲',img:art('outside','bicycle')},
-    {word:'מָטוֹס',emoji:'✈️',img:art('outside','airplane')},{word:'סִירָה',emoji:'⛵',img:art('outside','boat')},
-    {word:'רַכֶּבֶת',emoji:'🚂',img:art('outside','train')},{word:'בַּיִת',emoji:'🏠',img:art('outside','house')},
-    {word:'גַּן שַׁעֲשׁוּעִים',emoji:'🎠',img:art('outside','playground')},{word:'יָם',emoji:'🌊',img:art('outside','sea')},
-    {word:'חוֹל',emoji:'🏖️',img:art('outside','sand')},{word:'דֶּשֶׁא',emoji:'🌿',img:art('outside','grass')},
-    {word:'צֶמַח',emoji:'🌷',img:art('outside','plant')},{word:'כּוֹכָבִים',emoji:'🌟',img:art('outside','stars')}
+    {word:'עֵץ',emoji:'🌳',img:art('outside','tree'),shape:'nature-plant'},{word:'שֶׁמֶשׁ',emoji:'☀️',img:art('outside','sun'),shape:'nature-weather'},
+    {word:'עָנָן',emoji:'☁️',img:art('outside','cloud'),shape:'nature-weather'},{word:'גֶּשֶׁם',emoji:'🌧️',img:art('outside','rain'),shape:'nature-weather'},
+    {word:'שֶׁלֶג',emoji:'❄️',img:art('outside','snow'),shape:'nature-weather'},{word:'מְכוֹנִית',emoji:'🚗',img:art('outside','car'),shape:'vehicle'},
+    {word:'אוֹטוֹבּוּס',emoji:'🚌',img:art('outside','bus'),shape:'vehicle'},{word:'אוֹפַנַּיִם',emoji:'🚲',img:art('outside','bicycle'),shape:'vehicle'},
+    {word:'מָטוֹס',emoji:'✈️',img:art('outside','airplane'),shape:'vehicle'},{word:'סִירָה',emoji:'⛵',img:art('outside','boat'),shape:'vehicle'},
+    {word:'רַכֶּבֶת',emoji:'🚂',img:art('outside','train'),shape:'vehicle'},{word:'בַּיִת',emoji:'🏠',img:art('outside','house'),shape:'building'},
+    {word:'גַּן שַׁעֲשׁוּעִים',emoji:'🎠',img:art('outside','playground'),shape:'building'},{word:'יָם',emoji:'🌊',img:art('outside','sea'),shape:'nature-water'},
+    {word:'חוֹל',emoji:'🏖️',img:art('outside','sand'),shape:'nature-water'},{word:'דֶּשֶׁא',emoji:'🌿',img:art('outside','grass'),shape:'nature-plant'},
+    {word:'צֶמַח',emoji:'🌷',img:art('outside','plant'),shape:'nature-plant'},{word:'כּוֹכָבִים',emoji:'🌟',img:art('outside','stars'),shape:'nature-weather'}
   ]},
   emotions:{id:'emotions',title:'רְגָשׁוֹת',icon:'😊',cls:'c-emotions',items:[
-    {word:'שְׂמֵחָה',emoji:'😊',img:art('emotions','happy')},{word:'עֲצוּבָה',emoji:'😢',img:art('emotions','sad')},
-    {word:'כּוֹעֶסֶת',emoji:'😠',img:art('emotions','angry')},{word:'מְפֻחֶדֶת',emoji:'😨',img:art('emotions','scared')},
-    {word:'עֲיֵפָה',emoji:'🥱',img:art('emotions','tired')},{word:'מֻפְתַּעַת',emoji:'😲',img:art('emotions','surprised')},
-    {word:'אוֹהֶבֶת',emoji:'🥰',img:art('emotions','loving')},{word:'מִתְבַּיֶּשֶׁת',emoji:'🙈',img:art('emotions','shy')},
-    {word:'רְעֵבָה',emoji:'😋',img:art('emotions','hungry')},{word:'מִשְׁתַּעֲמֶמֶת',emoji:'😑',img:art('emotions','bored')}
+    {word:'שְׂמֵחָה',emoji:'😊',img:art('emotions','happy'),shape:'emotion'},{word:'עֲצוּבָה',emoji:'😢',img:art('emotions','sad'),shape:'emotion'},
+    {word:'כּוֹעֶסֶת',emoji:'😠',img:art('emotions','angry'),shape:'emotion'},{word:'מְפֻחֶדֶת',emoji:'😨',img:art('emotions','scared'),shape:'emotion'},
+    {word:'עֲיֵפָה',emoji:'🥱',img:art('emotions','tired'),shape:'emotion'},{word:'מֻפְתַּעַת',emoji:'😲',img:art('emotions','surprised'),shape:'emotion'},
+    {word:'אוֹהֶבֶת',emoji:'🥰',img:art('emotions','loving'),shape:'emotion'},{word:'מִתְבַּיֶּשֶׁת',emoji:'🙈',img:art('emotions','shy'),shape:'emotion'},
+    {word:'רְעֵבָה',emoji:'😋',img:art('emotions','hungry'),shape:'emotion'},{word:'מִשְׁתַּעֲמֶמֶת',emoji:'😑',img:art('emotions','bored'),shape:'emotion'}
   ]}
 };
 
@@ -1025,7 +1181,7 @@ let settings = { rate:0.85, niqqud:true, sounds:true, effects:true, music:true, 
 
 let bubbleTimer = null;
 let view = 'home', activeCat = null, game = null, cardIdx = 0, parentTab = 'settings';
-let unlocked = false, lockAnswer = null, lockInput = '';
+let unlocked = false, lockAnswer = null, lockInput = '', lastRenderedView = null;
 
 /* ---------------------------------------------------------------
    Storage layer. One small async key/value interface, three
@@ -1206,13 +1362,32 @@ function getCat(id){ return allCats().find(c=>c.id===id); }
 function key(catId,word){ return catId+':'+word; }
 function totalWords(){ return allCats().reduce((s,c)=>s+c.items.length,0); }
 function catLearned(cat){ return cat.items.filter(i=>learned.has(key(cat.id,i.word))).length; }
-function shuffle(a){ const x=[...a]; for(let i=x.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [x[i],x[j]]=[x[j],x[i]]; } return x; }
+function shuffle(a){ const x=[...a]; for(let i=x.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [x[i],x[j]]=[x[j],x[i]]; } return x; }
+
+/* Deterministic mode for the automated suites. `?seed=7` (or window.__talkiSeed)
+   makes every random pick reproducible so a test never fails just because a
+   different word came up. Production never sets it, so rounds stay varied. */
+let rngState = null;
+function seedRandom(s){ rngState = (s >>> 0) || 1; }
+function rnd(){
+  if(rngState === null) return Math.random();
+  rngState = (rngState + 0x6D2B79F5) >>> 0;
+  let t = rngState;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+}
+try{
+  const q = new URLSearchParams(location.search).get('seed');
+  if(q) seedRandom(parseInt(q, 10));
+  else if(typeof window.__talkiSeed === 'number') seedRandom(window.__talkiSeed);
+}catch(e){}
 
 /* SRS-lite: words answered wrong (or never seen) get picked first */
 function weightedPick(items, catId, n){
   const scored = items.map(it=>{
     const s = stats[key(catId,it.word)] || {seen:0,wrong:0};
-    const weight = 1 + s.wrong*3 - Math.min(s.seen,4)*0.4 + Math.random()*1.2;
+    const weight = 1 + s.wrong*3 - Math.min(s.seen,4)*0.4 + rnd()*1.2;
     return {it, weight};
   });
   scored.sort((a,b)=>b.weight-a.weight);
@@ -1300,7 +1475,8 @@ function chime(good, opts){
 const GAME_MUSIC_PROFILE = {
   quiz:'gameplay_curious', memory:'gameplay_bouncy', missing:'gameplay_gentle',
   match:'gameplay_curious', cards:'gameplay_gentle', bubbles:'gameplay_bouncy',
-  sounds:'gameplay_curious', count:'gameplay_gentle', sort:'gameplay_curious'
+  sounds:'gameplay_curious', count:'gameplay_gentle', sort:'gameplay_curious',
+  puzzle:'gameplay_gentle'
 };
 const SPEECH_VIEWS = new Set(['speech','focus','cloze','temptation','receptive','pairs','combine']);
 function resolveMusicState(){
@@ -1372,8 +1548,17 @@ function render(){
     missing:renderMissing, match:renderMatch, speech:renderSpeech, parent:renderParent,
     bubbles:renderBubbles, sounds:renderSounds, count:renderCount, sort:renderSort,
     focus:renderFocus, cloze:renderCloze, temptation:renderTemptation,
-    receptive:renderReceptive, pairs:renderPairs, combine:renderCombine
+    receptive:renderReceptive, pairs:renderPairs, combine:renderCombine,
+    puzzle:renderPuzzle
   };
+  /* The parent gate used to open once per session: after a parent solved the
+     sum, "הורה" in the bottom nav went straight into settings, backup and
+     reset for the rest of the session — one tap away from a toddler. Leaving
+     the parent screen re-locks it, so every entry is gated. */
+  if(lastRenderedView === 'parent' && view !== 'parent'){
+    unlocked = false; lockAnswer = null; lockInput = '';
+  }
+  lastRenderedView = view;
   clearTimeout(clozeTimer);
   if(view!=='cloze' && speechOk) window.speechSynthesis.cancel();
   if(view!=='bubbles' && bubbleTimer){ clearInterval(bubbleTimer); bubbleTimer=null; }
@@ -1382,9 +1567,41 @@ function render(){
   bind();
   syncBarHeight();
   syncBottomNav();
+  syncHistory();
   window.scrollTo({top:0,behavior:'instant'});
   AudioManager.setMusicState(resolveMusicState());
 }
+
+/* ---------- Back button ----------
+   Android's hardware Back and the browser's back gesture used to leave Talki
+   entirely: the app is one page with no history, so a child who pressed Back
+   in the middle of a quiz closed the app. One history entry per screen makes
+   Back walk back up through Talki instead, on Android (Capacitor's WebView
+   goes back whenever it can) and in the browser PWA alike. Back from the home
+   screen still leaves, which is what a root screen should do. */
+let historyView = null, restoringHistory = false;
+function syncHistory(){
+  if(restoringHistory){ restoringHistory = false; historyView = view; return; }
+  if(view === historyView) return;                 // same screen, new round
+  const entry = {talki:true, view, activeCat, cardIdx};
+  try{
+    if(historyView === null) history.replaceState(entry, '');
+    else history.pushState(entry, '');
+  }catch(e){}
+  historyView = view;
+}
+window.addEventListener('popstate', e=>{
+  const st = e.state;
+  if(!st || !st.talki) return;
+  restoringHistory = true;
+  /* a half-played round is not resumable, and a child pressing Back means
+     "out of here" — so the screen comes back, the round does not */
+  game = null;
+  if(st.activeCat) activeCat = st.activeCat;
+  cardIdx = st.cardIdx || 0;
+  view = st.view;
+  render();
+});
 function syncBottomNav(){
   const nav = document.getElementById('bottomNav');
   if(!nav) return;
@@ -1487,9 +1704,25 @@ function renderHome(){
       </button>`).join('')}</div>`;
 }
 
+/* still used by the parent recording screen, which is adult UI */
 function catPicker(current){
   return allCats().filter(c=>c.items.length>=4).map(c=>
     `<option value="${c.id}" ${c.id===current?'selected':''}>${plain(c.title)}</option>`).join('');
+}
+
+/* Which words the next game is built from. This lives on the menus, not in a
+   game, so choosing never interrupts a round — and it is a row of Talki chips
+   rather than a native dropdown, so a stray toddler tap costs nothing worse
+   than a different set of animals. */
+function gameCatChips(){
+  const cats = allCats().filter(c=>c.items.length>=4);
+  if(!cats.length) return '';
+  const cur = cats.some(c=>c.id===activeCat) ? activeCat : cats[0].id;
+  const chips = cats.map(c=>
+    `<button class="v2-chip ${c.id===cur?'on':''}" data-gamecat="${c.id}">${c.icon} ${plain(c.title)}</button>`
+  ).join('');
+  return `<p class="v2-pick-label">עם אילו מילים?</p>
+    <div class="v2-filter-row">${chips}</div>`;
 }
 
 function renderCategory(){
@@ -1560,7 +1793,8 @@ function renderGamesMenu(){
     ['missing','talki-game-card-missing.png','מה נעלם?'],
     ['cards','talki-game-card-flashcards.png','כרטיסיות'],
     ['sounds','talki-game-card-animal-sounds.png','מי אמר את זה?'],
-    ['count','talki-game-card-counting.png','כמה יש?']
+    ['count','talki-game-card-counting.png','כמה יש?'],
+    ['puzzle','talki-game-card-challenge.png','שימי במקום']
   ].map(([g,img,t])=>`<button class="v2-game-card" data-game="${g}">
       <img src="assets/v2/game-menu/${img}" alt="">
       <span class="vg-label"><b>${t}</b></span>
@@ -1587,6 +1821,7 @@ function renderGamesMenu(){
         </div>
         <p class="v2h-sub">משחקים קצרים שמתרגלים כל מילה</p>
       </div></div>
+    ${gameCatChips()}
     <div class="v2-games-grid">${grid}${wide}${extras}</div>`;
 }
 
@@ -1609,6 +1844,7 @@ function renderPractice(){
         </div>
         <p class="v2h-sub">שיטות מבוססות-מחקר לתרגול הפקת מילים</p>
       </div></div>
+    ${gameCatChips()}
     <div class="v2-practice-list">${list}</div>`;
 }
 
@@ -1671,18 +1907,21 @@ function renderStickers(){
     <div class="v2-sticker-grid">${grid}</div>`;
 }
 
-function gameHeader(title, chips, noPicker){
-  const picker = noPicker ? '<span></span>'
-    : `<select id="gameCat" style="width:auto;padding:8px 12px;font-size:.85rem">${catPicker(game?game.catId:activeCat)}</select>`;
+/* No category control here on purpose. This header used to carry a native
+   <select> — an adult control sitting exactly where a toddler's hand is. It
+   opens an OS dropdown a child cannot dismiss, and picking anything silently
+   threw away the round they were in. Choosing a category happens on the Games
+   and Practice menus instead, before anyone is mid-game. */
+function gameHeader(title, chips){
   return `<div class="cat-header">
     <button class="pill-btn" data-nav="home">🏠 חזרה</button>
     <div class="cat-title">${title}</div>
-    ${picker}
+    <span class="ch-spacer"></span>
   </div>${chips||''}`;
 }
 function chips(arr){ return `<div class="quiz-stats">${arr.map(c=>`<div class="stat-chip">${c}</div>`).join('')}</div>`; }
 
-const MIN_ITEMS = {quiz:4,memory:4,match:4,missing:4,sort:4,receptive:4,sounds:4,
+const MIN_ITEMS = {quiz:4,memory:4,match:4,missing:4,sort:4,receptive:4,sounds:4,puzzle:2,
                    count:1,focus:1,temptation:1,bubbles:1,speech:2,combine:3,pairs:2,cloze:1};
 function startGame(type, catId){
   const need = MIN_ITEMS[type] || 4;
@@ -1738,6 +1977,10 @@ function startGame(type, catId){
   } else if(type==='sort'){
     game = {type,catId:cat.id,round:0,score:0,locked:false,done:false};
     setupSortRound();
+  } else if(type==='puzzle'){
+    const boards = (game && game.type==='puzzle') ? (game.boards|0) : 0;
+    game = {type,catId:cat.id,boards,done:false};
+    setupPuzzleBoard();
   }
   return true;
 }
@@ -1755,11 +1998,11 @@ function setupQuizRound(){
   game.target = target;
   game.options = shuffle([target,...others]);
   game.locked = false;
+  game.asked = false;   // bind() speaks the word for this round
 }
 function nextQuiz(){
   setupQuizRound();
   view='quiz'; render();
-  if(!game.done) setTimeout(()=>{ if(alive('quiz')) say(game.catId, game.target.word); }, 300);
 }
 function renderQuiz(){
   if(!game || game.type!=='quiz'){ if(!startGame('quiz', activeCat)) return renderHome(); }
@@ -1794,6 +2037,8 @@ function setupMissingRound(){
   game.set = shuffle(weightedPick(cat.items, cat.id, 4));
   game.missing = game.set[Math.floor(Math.random()*game.set.length)];
   game.phase = 'show';
+  game.locked = false;
+  game.asked = false;   // bind() asks out loud once the picture is gone
   game.askOrder = shuffle(game.set);
   setTimeout(()=>{ if(game && game.type==='missing' && game.phase==='show'){ game.phase='ask'; render(); } }, 2600);
 }
@@ -1900,9 +2145,9 @@ function setupSoundsRound(){
 }
 function renderSounds(){
   if(!game || game.type!=='sounds'){ if(!startGame('sounds','animals')) return renderHome(); }
-  if(game.done) return gameHeader('🐮 מי אמר את זה?', '', true) + doneCard(game.score, game.pool.length, 0);
+  if(game.done) return gameHeader('🐮 מי אמר את זה?', '') + doneCard(game.score, game.pool.length, 0);
   const opts = game.options.map(o=>`<button class="opt" data-sopt="${esc(o.word)}">${media(o)}</button>`).join('');
-  return gameHeader('🐮 מי אמר את זה?', chips([`שאלה ${game.i+1}/${game.pool.length}`,`✅ ${game.score}`]), true) +
+  return gameHeader('🐮 מי אמר את זה?', chips([`שאלה ${game.i+1}/${game.pool.length}`,`✅ ${game.score}`])) +
     `<div class="prompt-box"><p>איזו חיה עושה את הקול הזה?</p>
       <button class="big-btn b-sky" data-playsound="1">🔊 לשמוע שוב</button></div>
      <div class="opt-grid" style="grid-template-columns:repeat(3,1fr)">${opts}</div>`;
@@ -1918,7 +2163,7 @@ function setupCountRound(){
   const n = 1 + Math.floor(Math.random()*5);
   const opts = new Set([n]);
   while(opts.size<3) opts.add(1+Math.floor(Math.random()*5));
-  game.it = it; game.n = n; game.options = shuffle([...opts]); game.locked = false;
+  game.it = it; game.n = n; game.options = shuffle([...opts]); game.locked = false; game.asked = false;
 }
 function renderCount(){
   if(!game || game.type!=='count'){ if(!startGame('count', activeCat)) return renderHome(); }
@@ -1937,18 +2182,315 @@ function setupSortRound(){
   const pool = Object.values(CATEGORIES).filter(c=>c.items.length>=4);
   const [a,b] = shuffle(pool).slice(0,2);
   const it = a.items[Math.floor(Math.random()*a.items.length)];
-  game.it = it; game.right = a; game.boxes = shuffle([a,b]); game.locked = false;
+  game.it = it; game.right = a; game.boxes = shuffle([a,b]); game.locked = false; game.asked = false;
 }
 function renderSort(){
   if(!game || game.type!=='sort'){ if(!startGame('sort', activeCat)) return renderHome(); }
-  if(game.done) return gameHeader('📦 לאיזו קופסה?', '', true) + doneCard(game.score, 6, 0);
+  if(game.done) return gameHeader('📦 לאיזו קופסה?', '') + doneCard(game.score, 6, 0);
   const boxes = game.boxes.map(c=>`<button class="box" data-box="${c.id}">
       <span class="bi">${c.icon}</span>${display(c.title)}</button>`).join('');
-  return gameHeader('📦 לאיזו קופסה?', chips([`סיבוב ${game.round+1}/6`,`✅ ${game.score}`]), true) +
+  return gameHeader('📦 לאיזו קופסה?', chips([`סיבוב ${game.round+1}/6`,`✅ ${game.score}`])) +
     `<div class="prompt-box"><div style="font-size:4rem">${media(game.it)}</div>
       <div class="prompt-word">${display(game.it.word)}</div>
       <p>לאיזו קופסה זה שייך?</p></div>
      <div class="box-row">${boxes}</div>`;
+}
+
+/* ============================================================
+   MATCH & DROP PUZZLE — 🧩 שִׂימִי בַּמָּקוֹם
+
+   A physical shape-puzzle translated to a touchscreen: illustrated
+   vocabulary pieces below, their silhouettes above. Drag a piece onto its
+   shadow (or tap the piece, then tap the shadow — the same path keyboard
+   Enter takes) and Talki speaks the word.
+
+   There is no game over, no lives and no timer. A piece that lands in the
+   wrong place floats back; the second miss lights up where it belongs; from
+   the third the magnet gets stronger, so the board always ends up finished.
+============================================================ */
+const PUZZLE_STEPS = [2, 3, 4, 5, 6];
+const PUZZLE_TOGETHER = [
+  'אֶפְשָׁר לְהַגִּיד אֶת זֶה יַחַד?',
+  'אֵיפֹה יֵשׁ אֶצְלֵנוּ בַּבַּיִת אֶחָד כָּזֶה?',
+  'מִי רוֹצֶה לְסַפֵּר לְאַבָּא אוֹ לְאִמָּא מָה בָּנִינוּ?'
+];
+
+/* 5-6 pieces only when the screen comfortably has room for them — a crowded
+   board is the fastest way to lose a two-year-old. */
+function puzzleCapacity(){
+  const h = window.innerHeight, w = window.innerWidth;
+  if(h < 620 || w < 360) return 3;
+  if(h < 780) return 4;
+  return 6;
+}
+function puzzleLevel(){
+  const lv = parseInt(settings.puzzleLevel, 10);
+  return Math.min(Math.max(isNaN(lv) ? 1 : lv, 1), PUZZLE_STEPS.length);
+}
+function puzzleSize(){
+  return Math.max(2, Math.min(PUZZLE_STEPS[puzzleLevel() - 1], puzzleCapacity()));
+}
+
+/* Mostly words the child can already manage, with a little challenge mixed in
+   — never a board made entirely of their hardest words. Picks are also kept
+   visually distinct so the first rounds are not four near-identical shapes. */
+function puzzlePick(cat, n){
+  const pool = weightedPick(cat.items, cat.id, Math.min(cat.items.length, n * 3));
+  const chosen = [], initials = new Set(), shapes = new Set();
+  for(const it of pool){
+    if(chosen.length >= n) break;
+    const first = plain(it.word)[0];
+    const sh = it.shape || 'default';
+    if(initials.has(first) && pool.length - chosen.length > n) continue;
+    if(shapes.has(sh) && pool.length - chosen.length > n) continue;
+    initials.add(first);
+    shapes.add(sh);
+    chosen.push(it);
+  }
+  for(const it of pool){
+    if(chosen.length >= n) break;
+    if(!chosen.includes(it)) chosen.push(it);
+  }
+  return chosen.slice(0, n);
+}
+
+function setupPuzzleBoard(){
+  const cat = getCat(game.catId);
+  const picks = puzzlePick(cat, puzzleSize());
+  game.pieces = picks.map((it, i) => ({ id: 'p' + i, it, placed: false, misses: 0 }));
+  game.slots = shuffle(game.pieces);
+  game.tray = shuffle(game.pieces);
+  game.sel = null;
+  game.hint = null;
+  game.placed = 0;
+  game.misses = 0;
+  game.tolerance = 0.9;
+}
+
+function renderPuzzle(){
+  if(!game || game.type!=='puzzle'){ if(!startGame('puzzle', activeCat)) return renderHome(); }
+  if(game.done) return gameHeader('🧩 שִׂימִי בַּמָּקוֹם', '') + puzzleDoneCard();
+
+  const slots = game.slots.map(p=>{
+    const cls = ['pz-slot', p.placed ? 'filled' : '', game.hint===p.id ? 'hint' : ''].join(' ').trim();
+    const label = p.placed ? plain(p.it.word) : 'המקום של ' + plain(p.it.word);
+    return `<button class="${cls}" data-pz-slot="${p.id}" aria-label="${esc(label)}">
+        <span class="pz-shadow">${media(p.it)}</span>
+        ${p.placed ? `<span class="pz-fill">${media(p.it)}</span>
+                      <span class="pz-word">${display(p.it.word)}</span>` : ''}
+      </button>`;
+  }).join('');
+
+  /* until the first piece lands, the first one in the tray breathes so a child
+     who cannot read sees what to pick up */
+  const demo = game.placed===0 && game.misses===0 && !game.sel
+    ? game.tray.find(p=>!p.placed) : null;
+  const tray = game.tray.map(p=>`
+    <button class="pz-piece ${p.placed?'placed':''} ${game.sel===p.id?'sel':''} ${demo===p?'nudge':''}"
+            data-pz-piece="${p.id}" ${p.placed?'disabled':''}
+            aria-label="${esc(plain(p.it.word))}">
+      ${media(p.it)}<span class="pz-w">${display(p.it.word)}</span>
+    </button>`).join('');
+
+  const guide = game.sel
+    ? 'עַכְשָׁיו לוֹחֲצִים עַל הַצֵּל'
+    : 'גּוֹרְרִים כָּל תְּמוּנָה אֶל הַצֵּל שֶׁלָּהּ';
+
+  return gameHeader('🧩 שִׂימִי בַּמָּקוֹם', chips([`🧩 ${game.placed}/${game.pieces.length}`])) +
+    `<div class="pz-board" id="pzBoard">
+       <div class="pz-slots">${slots}</div>
+       <p class="pz-guide">${guide}</p>
+       <div class="pz-tray">${tray}</div>
+     </div>`;
+}
+
+function puzzleDoneCard(){
+  const words = game.pieces.map(p=>display(p.it.word)).join(' · ');
+  const clean = game.misses <= 1;
+  const stars = [0,1,2].map(i=>
+    `<img class="reward-star" src="assets/v2/icons/talki-ui-icon-star.png" alt=""
+       style="${i < (clean?3:game.misses<=4?2:1) ? '' : 'opacity:.3;filter:grayscale(1)'}">`).join('');
+  /* A quiet nudge to play together, not on every single board. */
+  const together = (game.boards|0) % 3 === 2
+    ? `<p class="pz-together">${PUZZLE_TOGETHER[(game.boards|0) % PUZZLE_TOGETHER.length]}</p>` : '';
+  return `<div class="done-card">${mascot('celebrate', 96)}
+    <div class="big">${stars}</div>
+    <h3>הַפָּאזֶל שָׁלֵם!</h3>
+    <p>${words}</p>${together}
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="big-btn b-grape" data-again="1">עוד פעם</button>
+      <button class="pill-btn" data-nav="home">🏠 הביתה</button></div></div>`;
+}
+
+function puzzleSelect(id){
+  if(!game || game.type!=='puzzle' || game.done) return;
+  const p = game.pieces.find(x=>x.id===id);
+  if(!p || p.placed) return;
+  game.sel = game.sel===id ? null : id;
+  AudioManager.playSfx('ui.secondaryTap');
+  render();
+}
+
+/* Forgiving hit testing: a toddler never lands a piece squarely on its
+   silhouette, so the nearest empty slot within a slot-and-a-bit of the piece
+   counts — and the reach grows every time this piece has been missed. */
+function puzzleSlotUnder(el){
+  const r = el.getBoundingClientRect();
+  const cx = r.left + r.width/2, cy = r.top + r.height/2;
+  let best = null, bestD = Infinity;
+  document.querySelectorAll('.pz-slot').forEach(s=>{
+    if(s.classList.contains('filled')) return;
+    const q = s.getBoundingClientRect();
+    const d = Math.hypot(cx - (q.left + q.width/2), cy - (q.top + q.height/2));
+    const reach = Math.max(q.width, q.height) * game.tolerance;
+    const overlaps = r.right > q.left && r.left < q.right && r.bottom > q.top && r.top < q.bottom;
+    if((d <= reach || overlaps) && d < bestD){ bestD = d; best = s.dataset.pzSlot; }
+  });
+  return best;
+}
+
+function puzzleDrop(pieceId, slotId, el){
+  if(!game || game.type!=='puzzle' || game.done) return;
+  const piece = game.pieces.find(p=>p.id===pieceId);
+  if(!piece || piece.placed) return;
+
+  if(pieceId === slotId){
+    piece.placed = true;
+    game.placed++;
+    game.sel = null;
+    game.hint = null;
+    const complete = game.placed >= game.pieces.length;
+    AudioManager.playSfx(complete ? 'interaction.dragDrop' : 'interaction.correctMatch');
+    const k = key(game.catId, piece.it.word);
+    if(!learned.has(k)){ learned.add(k); saveProgress(); }
+    markSeen(game.catId, piece.it.word, false);
+    render();
+    /* the recorded family voice when there is one, otherwise Hebrew TTS */
+    say(game.catId, piece.it.word);
+    if(complete) puzzleFinish();
+    return;
+  }
+
+  /* A miss is support, never punishment: the piece floats home, the sound is
+     the soft "not there" cue, and Talki starts helping. */
+  piece.misses++;
+  game.misses++;
+  AudioManager.playSfx('interaction.invalidMove');
+  const wantHint = piece.misses >= 2;
+  if(piece.misses >= 3) game.tolerance = Math.min(2.2, game.tolerance + 0.4);
+  if(el){
+    el.classList.add('pz-return');
+    setTimeout(()=>el.classList.remove('pz-return'), 320);
+  }
+  if(wantHint && game.hint !== pieceId){
+    game.hint = pieceId;
+    setTimeout(()=>{ if(game && game.type==='puzzle' && !game.done) render(); }, 340);
+    say(game.catId, piece.it.word);
+  }
+}
+
+function puzzleFinish(){
+  game.finishing = true;
+  setTimeout(()=>{
+    if(!game || game.type!=='puzzle' || !game.finishing) return;
+    game.finishing = false;
+    game.done = true;
+    game.boards = (game.boards|0) + 1;
+    puzzleAdvance();
+    AudioManager.playSfx('game.levelComplete');
+    if(settings.effects) confetti(24);
+    render();
+  }, 1100);
+}
+
+/* Difficulty follows the child, in one step at a time, and never below two
+   pieces — a board they can finish is always available. */
+function puzzleAdvance(){
+  const lv = puzzleLevel();
+  const next = game.misses <= 1 ? Math.min(lv + 1, PUZZLE_STEPS.length)
+             : game.misses >= 5 ? Math.max(lv - 1, 1)
+             : lv;
+  if(next !== lv){ settings.puzzleLevel = next; saveSettings(); }
+}
+
+/* Pointer-events drag. Pointer capture keeps the drag alive when a small
+   finger wanders off the piece, and pointercancel (a system gesture, an
+   incoming call, the browser taking the gesture for a scroll) puts the piece
+   back instead of leaving it stranded mid-air. */
+function puzzleAttachDrag(el){
+  let id = null, sx = 0, sy = 0, dx = 0, dy = 0, moved = false, raf = 0;
+
+  const paint = ()=>{ raf = 0; el.style.transform = `translate3d(${dx}px,${dy}px,0)`; };
+
+  const release = ()=>{
+    if(raf){ cancelAnimationFrame(raf); raf = 0; }
+    if(id !== null){ try{ el.releasePointerCapture(id); }catch(e){} }
+    id = null;
+    el.classList.remove('pz-dragging');
+    el.style.transform = '';
+  };
+
+  el.addEventListener('pointerdown', e=>{
+    if(id !== null || !game || game.type!=='puzzle' || game.done) return;
+    if(el.classList.contains('placed')) return;
+    id = e.pointerId; sx = e.clientX; sy = e.clientY; dx = dy = 0; moved = false;
+    try{ el.setPointerCapture(id); }catch(err){}
+    el.classList.remove('nudge');
+    el.classList.add('pz-dragging');
+    AudioManager.playSfx('interaction.dragPickup');
+  });
+
+  el.addEventListener('pointermove', e=>{
+    if(e.pointerId !== id) return;
+    dx = e.clientX - sx; dy = e.clientY - sy;
+    if(!moved && Math.hypot(dx, dy) > 8) moved = true;
+    if(!raf) raf = requestAnimationFrame(paint);   // never touch layout per move
+  });
+
+  el.addEventListener('pointerup', e=>{
+    if(e.pointerId !== id) return;
+    const slot = moved ? puzzleSlotUnder(el) : null;
+    const wasMoved = moved;
+    release();
+    if(!wasMoved) return;               // a tap — the click handler selects
+    el.dataset.pzDragged = '1';         // and must not also count as a tap
+    setTimeout(()=>{ delete el.dataset.pzDragged; }, 0);
+    if(slot) puzzleDrop(el.dataset.pzPiece, slot, el);
+    else {                              // dropped on empty board: just float back
+      el.classList.add('pz-return');
+      setTimeout(()=>el.classList.remove('pz-return'), 320);
+    }
+  });
+
+  ['pointercancel','lostpointercapture'].forEach(ev=>
+    el.addEventListener(ev, e=>{
+      if(e.pointerId !== id) return;
+      release();
+      el.classList.add('pz-return');
+      setTimeout(()=>el.classList.remove('pz-return'), 320);
+    }));
+}
+
+function bindPuzzle(){
+  const board = document.getElementById('pzBoard');
+  if(!board || !game || game.type!=='puzzle' || game.done) return;
+  board.querySelectorAll('.pz-piece').forEach(el=>{
+    if(el.classList.contains('placed')) return;
+    puzzleAttachDrag(el);
+    /* tap -> tap, which is also what keyboard Enter/Space does on a <button>:
+       an alternative to dragging for small hands and for anyone who cannot
+       drag at all */
+    el.addEventListener('click', ()=>{
+      if(el.dataset.pzDragged) return;
+      puzzleSelect(el.dataset.pzPiece);
+    });
+  });
+  board.querySelectorAll('.pz-slot').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      if(!game.sel) return;
+      puzzleDrop(game.sel, el.dataset.pzSlot, null);
+    });
+  });
 }
 
 /* ============ evidence-based practice modes ============ */
@@ -1978,7 +2520,7 @@ function renderFocus(){
 /* B. Cloze + expectant pause — 5 silent seconds, then model */
 function renderCloze(){
   if(!game || game.type!=='cloze'){ if(!startGame('cloze', activeCat)) return renderHome(); }
-  if(game.done) return gameHeader('⏸️ משלימים ביחד','',true) +
+  if(game.done) return gameHeader('⏸️ משלימים ביחד','') +
     doneCard(game.score, game.pool.length, 0, 'כל השלמה נחשבת');
   const it = game.pool[game.i];
   const body = game.phase==='wait'
@@ -1986,7 +2528,7 @@ function renderCloze(){
     : game.phase==='model'
       ? `<div style="font-size:4rem">${media(it)}</div><div class="prompt-word">${display(it.answer)}</div>`
       : `<div style="font-size:3.4rem">🗣️</div><p>מקשיבים למשפט...</p>`;
-  return gameHeader('⏸️ משלימים ביחד', chips([`${game.i+1}/${game.pool.length}`,`✅ ${game.score}`]), true) +
+  return gameHeader('⏸️ משלימים ביחד', chips([`${game.i+1}/${game.pool.length}`,`✅ ${game.score}`])) +
     `<div class="prompt-box"><div class="prompt-word">${display(it.phrase)}</div>${body}
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px">
         <button class="big-btn b-leaf" data-clozeyes="1">✅ היא אמרה!</button>
@@ -2008,6 +2550,7 @@ function runCloze(){
   }});
 }
 function clozeNext(scored){
+  if(!game) return;
   clearTimeout(clozeTimer);
   if(view!=='cloze' && speechOk) window.speechSynthesis.cancel();
   if(scored) game.score++;
@@ -2068,10 +2611,10 @@ function setupPairsRound(){
 }
 function renderPairs(){
   if(!game || game.type!=='pairs'){ if(!startGame('pairs', activeCat)) return renderHome(); }
-  if(game.done) return gameHeader('👂 דומה אבל לא','',true) + doneCard(game.score, game.pool.length, 0);
+  if(game.done) return gameHeader('👂 דומה אבל לא','') + doneCard(game.score, game.pool.length, 0);
   const opts = game.shown.map(o=>`<button class="opt" data-pair="${esc(o.word)}" style="font-size:2.6rem">
       ${media(o)}<div style="font-size:1rem;font-weight:900;margin-top:6px">${display(o.word)}</div></button>`).join('');
-  return gameHeader('👂 דומה אבל לא', chips([`${game.i+1}/${game.pool.length}`,`✅ ${game.score}`]), true) +
+  return gameHeader('👂 דומה אבל לא', chips([`${game.i+1}/${game.pool.length}`,`✅ ${game.score}`])) +
     `<div class="prompt-box"><p>שתי מילים כמעט זהות — איזו נשמעה?</p>
       <button class="big-btn b-sky" data-pairsay="1">🔊 לשמוע שוב</button></div>
      <div class="opt-grid">${opts}</div>`;
@@ -2272,7 +2815,7 @@ function parentReport(){
 /* Scoped to #app: view content is fully replaced every render(), so it is
    safe to rebind here each time. Persistent chrome (the bottom nav, and the
    topbar's own dedicated listeners) lives outside #app and must never be
-   queried by on() - see navigateTo() + the one-time bottomNav listener below,
+   queried by on() - see navTo() + the one-time bottomNav listener below,
    which is what actually fixes the old duplicate-listener leak. */
 function on(sel, fn){
   const app = document.getElementById('app');
@@ -2285,19 +2828,33 @@ const alive = t => !!game && game.type===t && view===t && !game.done;
 /* Shared by both the in-#app [data-nav] handler (gift button, "הכל" pills,
    back buttons - all re-rendered every time) and the persistent bottom nav's
    one-time delegated listener below. */
-function navigateTo(v){
+function navTo(v){
   game = null;
   if(v==='parent'){ view='parent'; render(); preloadRecs(activeCat||'animals').then(()=>{ if(view==='parent') render(); }); return; }
   view = v; render();
 }
 
 function bind(){
-  on('[data-nav]', el=> navigateTo(el.dataset.nav));
+  /* Which round this DOM was rendered for. A toddler pats a picture two or
+     three times, and every one of those taps re-runs the handler that was
+     bound for the round that has already been answered — scoring again and
+     skipping the next round. Handlers that advance the game check this
+     first and ignore anything that arrives after the round moved on. */
+  const roundTag = ()=> game ? [game.i|0, game.round|0, game.step|0].join(':') : '-';
+  const boundRound = roundTag();
+  const sameRound = ()=> !!game && roundTag() === boundRound;
+
+  on('[data-nav]', el=> navTo(el.dataset.nav));
   on('[data-cat]', el=>{ activeCat=el.dataset.cat; view='category'; render(); });
   on('[data-cards]', el=>{ activeCat=el.dataset.cards; cardIdx=0; view='cards'; render(); });
   on('[data-play]', el=>{ launch('quiz', el.dataset.play); });
   on('[data-practice]', el=>{ activeCat=el.dataset.practice; view='practice'; render(); });
   on('[data-stickerfilter]', el=>{ stickerFilter=el.dataset.stickerfilter; render(); });
+  on('[data-gamecat]', el=>{
+    activeCat = el.dataset.gamecat;
+    AudioManager.playSfx('ui.secondaryTap');
+    render();
+  });
   on('[data-game]', el=>{
     const g = el.dataset.game;
     const fallback = (allCats().find(c=>c.items.length>=4) || allCats()[0]).id;
@@ -2351,15 +2908,19 @@ function bind(){
   }
 
   /* shared game controls */
-  const gc = document.getElementById('gameCat');
-  if(gc) gc.addEventListener('change', ()=> launch(game.type, gc.value));
   on('[data-say]', ()=>{
     if(game && game.type==='quiz') say(game.catId, game.target.word);
     else if(game && game.type==='speech') say(game.catId, game.pool[game.i].word);
   });
   on('[data-again]', ()=> launch(game.type, game.catId));
 
-  /* quiz */
+  /* quiz — "איפה ה...?" has no question until the word is spoken, and the
+     first round used to open in silence: only nextQuiz() spoke, so a child
+     starting the game had nothing to go on but a guess. */
+  if(view==='quiz' && game && !game.done && !game.asked){
+    game.asked = true;
+    setTimeout(()=>{ if(alive('quiz')) say(game.catId, game.target.word); }, 350);
+  }
   on('[data-opt]', el=>{
     if(game.locked) return;
     const word = el.dataset.opt, ok = word===game.target.word;
@@ -2400,8 +2961,17 @@ function bind(){
     }
   });
 
-  /* what's missing */
+  /* what's missing — ask out loud when the picture disappears, so a child
+     who cannot read the line above still knows what just happened */
+  if(view==='missing' && game && !game.done && game.phase==='ask' && !game.asked){
+    game.asked = true;
+    setTimeout(()=>{ if(alive('missing')) speakTTS('מָה נֶעֱלַם?', {}); }, 250);
+  }
   on('[data-guess]', el=>{
+    /* the board stays on screen for up to 900ms after an answer, so without
+       this a child patting the picture scores and advances once per pat */
+    if(game.locked) return;
+    game.locked = true;
     const ok = el.dataset.guess === game.missing.word;
     markSeen(game.catId, game.missing.word, !ok);
     if(ok){
@@ -2420,6 +2990,7 @@ function bind(){
   on('[data-mleft]', el=>{ game.sel = el.dataset.mleft; say(game.catId, game.sel); render(); });
   on('[data-mright]', el=>{
     if(!game.sel){ toast('קודם בוחרים מילה'); return; }
+    if(game.matched.includes(el.dataset.mright)) return;
     const ok = el.dataset.mright === game.sel;
     markSeen(game.catId, game.sel, !ok);
     if(ok){
@@ -2434,9 +3005,23 @@ function bind(){
     }
   });
 
+  /* match & drop puzzle: pointer drag + tap-to-tap, bound to this render */
+  if(view==='puzzle'){
+    bindPuzzle();
+    /* one short spoken instruction per board — a toddler cannot read the line
+       under the shadows, and this is how the other Talki games open too */
+    if(game && !game.done && !game.told){
+      game.told = true;
+      setTimeout(()=>{ if(alive('puzzle')) speakTTS('שִׂימִי כָּל תְּמוּנָה בַּמָּקוֹם שֶׁלָּהּ', {}); }, 400);
+    }
+  }
+
   /* speech recognition */
   on('[data-mic]', ()=>startListening());
-  on('[data-skip]', ()=>{ game.i++; if(game.i>=game.pool.length) game.done=true; game.feedback=''; render(); });
+  on('[data-skip]', ()=>{
+    if(!sameRound()) return;
+    game.i++; if(game.i>=game.pool.length) game.done=true; game.feedback=''; render();
+  });
 
   /* bubbles */
   if(view==='bubbles' && game && !game.done){
@@ -2464,7 +3049,11 @@ function bind(){
     }else{ el.classList.add('wrong'); chime(false); setTimeout(()=>el.classList.remove('wrong'),420); }
   });
 
-  /* counting */
+  /* counting — say the question, which also models the word being counted */
+  if(view==='count' && game && !game.done && !game.asked){
+    game.asked = true;
+    setTimeout(()=>{ if(alive('count')) speakTTS('כַּמָּה ' + plain(game.it.word) + ' יֵשׁ?', {}); }, 350);
+  }
   on('[data-count]', el=>{
     if(game.locked) return;
     const ok = +el.dataset.count === game.n;
@@ -2475,7 +3064,12 @@ function bind(){
     }else{ el.classList.add('wrong'); chime(false); setTimeout(()=>el.classList.remove('wrong'),420); }
   });
 
-  /* sorting */
+  /* sorting — name the thing being sorted, in the family voice when there
+     is a recording for it */
+  if(view==='sort' && game && !game.done && !game.asked){
+    game.asked = true;
+    setTimeout(()=>{ if(alive('sort')) say(game.right.id, game.it.word); }, 350);
+  }
   on('[data-box]', el=>{
     if(game.locked) return;
     const ok = el.dataset.box === game.right.id;
@@ -2498,6 +3092,7 @@ function bind(){
   }
   const fc = document.getElementById('focusCard');
   if(fc) fc.addEventListener('click', ()=>{
+    if(!sameRound()) return;
     const k = key(game.catId, game.it.word);
     if(!learned.has(k)){ learned.add(k); saveProgress(); }
     game.step++;
@@ -2509,12 +3104,13 @@ function bind(){
   /* B. cloze */
   if(view==='cloze' && game && !game.done && !game.started){ game.started = true; setTimeout(runCloze, 250); }
   on('[data-clozeyes]', ()=>{
+    if(!sameRound()) return;
     const willComplete = game.i+1 >= game.pool.length;
     chime(true, {isLevelComplete: willComplete});
     if(!willComplete) confetti(18);
     clozeNext(true);
   });
-  on('[data-clozenext]', ()=> clozeNext(false));
+  on('[data-clozenext]', ()=>{ if(sameRound()) clozeNext(false); });
 
   /* C. communication temptation */
   if(view==='temptation' && game && !game.done && !game.asked){
@@ -2524,6 +3120,7 @@ function bind(){
   on('[data-temptopen]', ()=> openJar());
   on('[data-temptmic]', ()=> listenForAnything());
   on('[data-temptnext]', ()=>{
+    if(!sameRound()) return;
     game.i++; game.opened=false; game.asked=false;
     if(game.i>=game.pool.length){ game.done=true; confetti(30); AudioManager.playSfx('game.levelComplete'); }
     render();
@@ -2577,6 +3174,7 @@ function bind(){
   /* F. two-word combinations */
   on('[data-mod]', el=>{ game.mod = el.dataset.mod; game.phrase=''; speakTTS(plain(game.mod),{}); render(); });
   on('[data-combine]', el=>{
+    if(!sameRound()) return;
     const word = el.dataset.combine;
     const mod = MODIFIERS.find(m=>m.w===(game.mod||MODIFIERS[0].w));
     game.mod = mod.w;
@@ -2848,17 +3446,6 @@ if('serviceWorker' in navigator){
   });
 }
 
-/* ---------- Persistent bottom nav ----------
-   Registered ONCE here (not inside bind(), which reruns every render()) so
-   these buttons never accumulate duplicate click listeners. */
-const bottomNavEl = document.getElementById('bottomNav');
-if(bottomNavEl){
-  bottomNavEl.addEventListener('click', e=>{
-    const el = e.target.closest('[data-nav]');
-    if(el) navigateTo(el.dataset.nav);
-  });
-}
-
 /* ---------- Header buttons ---------- */
 /* single source of truth for --barh: guarded so it only ever touches the
    DOM when the measured height actually changed, instead of writing (and
@@ -2879,6 +3466,11 @@ if(window.visualViewport) window.visualViewport.addEventListener('resize', syncB
 if(window.ResizeObserver){
   try{ new ResizeObserver(syncBarHeight).observe(document.querySelector('.topbar')); }catch(e){}
 }
+
+/* The bottom nav lives outside #app and survives every render, so it is bound
+   exactly once here rather than from bind(). */
+document.querySelectorAll('#bottomNav [data-nav]')
+  .forEach(el=>el.addEventListener('click', ()=>navTo(el.dataset.nav)));
 
 function syncSpeedIcon(){
   const needle = document.getElementById('speedNeedle');
