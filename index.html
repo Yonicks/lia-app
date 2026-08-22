@@ -38,7 +38,30 @@
     --v2-purple:#6D3BA6; --v2-purple-bright:#7C4CD6; --v2-mint:#8FD3C1;
     --v2-peach:#FFCDA1; --v2-gold:#FFD75A; --v2-pink:#FFD9E6; --v2-pink-dark:#F2A8C4;
     --v2-radius-card:18px; --v2-radius-btn:16px; --v2-radius-hero:24px;
+
+    /* ---- Talki Home V3 design tokens (additive - legacy tokens above stay in use) ---- */
+    --talki-purple-900:#44206F; --talki-purple-800:#542780; --talki-purple-700:#6D3BA6;
+    --talki-purple-600:#7C4CD6; --talki-purple-500:#9366E5; --talki-purple-200:#DED0FA;
+    --talki-purple-100:#EEE6FF; --talki-purple-050:#F7F2FF;
+    --talki-mint-500:#8FD3C1; --talki-mint-200:#CFEDE5; --talki-mint-100:#EAF8F4;
+    --talki-pink-500:#F46B91; --talki-pink-300:#FFA8C2; --talki-pink-200:#FFD9E6; --talki-pink-100:#FFF0F5;
+    --talki-peach-500:#FFB977; --talki-peach-300:#FFCDA1; --talki-peach-100:#FFF1E2;
+    --talki-gold-500:#FFD75A; --talki-gold-300:#FFE796; --talki-gold-100:#FFF8DC;
+    --talki-blue-500:#69B7EF; --talki-blue-200:#CFEAFB; --talki-blue-100:#EEF8FF;
+    --talki-green-500:#79CFAE; --talki-green-100:#EAF8F1;
+    --talki-bg:#FFF9EF; --talki-surface:#FFFFFF; --talki-surface-soft:#FFFCF8;
+    --talki-text-primary:#241735; --talki-text-heading:#4E2A72;
+    --talki-text-secondary:#746887; --talki-text-muted:#9B91A7;
+    --talki-border-soft:#F1E7D7; --talki-track:#F3EEE6;
+
+    --shadow-sm:0 2px 6px rgba(65,39,26,.06);
+    --shadow-card:0 6px 16px rgba(73,46,25,.09);
+    --shadow-floating:0 10px 28px rgba(73,46,25,.13);
+
+    --home-padding-inline:16px; --home-section-gap:28px; --home-grid-gap:12px;
   }
+  @media(min-width:430px){ :root{ --home-padding-inline:18px; --home-grid-gap:14px; } }
+  @media(min-width:768px){ :root{ --home-padding-inline:24px; } }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;overscroll-behavior:none}
   html{-webkit-text-size-adjust:100%}
@@ -59,38 +82,47 @@
   button{font-family:inherit;cursor:pointer}
   button:focus-visible,.tile:focus-visible{outline:3px solid var(--sky-dark);outline-offset:3px}
 
-  .topbar{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:3px solid var(--line);
-    padding:clamp(8px,1.4vw,16px) clamp(12px,2.5vw,32px);
-    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-  .brand-text h1{font-size:clamp(.95rem,2.2vw,1.35rem)}
-  .brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1;overflow:hidden}
-  .brand-text{min-width:0;overflow:hidden}
-  .bar-right{flex:none}
-  .brand-mark{width:42px;height:42px;border-radius:14px;background:linear-gradient(155deg,var(--grape),var(--grape-dark));
-    display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:var(--shadow);transform:rotate(-6deg);flex:none}
-  .brand-text h1{margin:0;font-size:1.05rem;font-weight:900;color:var(--grape-dark);line-height:1.1;white-space:nowrap}
-  .brand-text span{font-size:.68rem;color:var(--ink-soft);font-weight:600}
+  /* ================================================================
+     TOPBAR — approved redesign (persistent across every screen).
+     3-column grid keeps the points badge truly centred regardless of
+     how wide the brand block or utility cluster end up being.
+  ================================================================ */
+  .topbar{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--talki-border-soft);
+    padding:10px clamp(12px,2.2vw,26px);
+    display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+  .tb-brand{display:flex;align-items:center;gap:6px;justify-self:start;min-width:0;overflow:hidden}
+  .tb-star-btn{border:none;background:transparent;padding:2px;border-radius:14px;display:flex;flex:none}
+  .tb-star{width:42px;height:42px;object-fit:contain;flex:none}
+  .tb-brand-text{min-width:0;overflow:hidden}
+  .tb-brand-text h1{margin:0;font-size:1.5rem;font-weight:800;color:var(--talki-purple-700);line-height:1.05;white-space:nowrap}
+  .tb-brand-text span{display:block;font-size:.64rem;font-weight:500;color:var(--talki-text-secondary);white-space:nowrap}
+  .tb-points{display:flex;align-items:center;justify-content:center;gap:6px;justify-self:center;flex:none;
+    min-width:72px;height:46px;padding:0 14px;border-radius:18px;background:var(--talki-surface);
+    border:1px solid var(--talki-border-soft);box-shadow:var(--shadow-sm)}
+  .tb-points img{width:20px;height:20px;flex:none}
+  .tb-points .tb-points-txt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
+  .tb-points b{font-size:.92rem;font-weight:900;color:var(--talki-text-primary)}
+  .tb-points small{font-size:.6rem;font-weight:700;color:var(--talki-text-secondary)}
+  .tb-utils{display:flex;align-items:center;gap:6px;justify-self:end;flex:none}
+  .tb-util-btn{width:44px;height:44px;border-radius:14px;border:none;background:var(--talki-surface);
+    box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;flex:none;padding:0;
+    color:var(--talki-purple-700)}
+  .tb-util-btn:active{transform:translateY(2px);box-shadow:none}
+  .tb-util-btn img,.tb-util-btn svg{width:24px;height:24px}
+  #speedNeedle{transition:transform .2s ease;transform-origin:12px 16px}
   @media(max-width:430px){
-    .brand-text span{display:none}
-    .brand-text h1{font-size:.84rem;line-height:1.12;white-space:normal;
-      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    .brand{flex:1;min-width:0;gap:7px}
-    .brand-mark{width:34px;height:34px;border-radius:11px;font-size:17px}
-    .topbar{padding:7px 9px;gap:5px}
-    .icon-btn{width:36px;height:36px;font-size:15px;border-radius:10px}
-    .progress-pill{padding:3px 7px;gap:5px}
-    .progress-ring{width:24px;height:24px}
-    .progress-pill b{font-size:.74rem}
-    .progress-pill small{display:none}
+    .topbar{padding:8px 10px;gap:4px}
+    .tb-star{width:32px;height:32px}
+    .tb-brand-text h1{font-size:1.16rem}
+    .tb-brand-text span{font-size:.56rem}
+    .tb-points{min-width:58px;height:38px;padding:0 9px;gap:4px}
+    .tb-points img{width:16px;height:16px}
+    .tb-points b{font-size:.78rem}
+    .tb-points small{font-size:.52rem}
+    .tb-utils{gap:4px}
+    .tb-util-btn{width:36px;height:36px;border-radius:11px}
+    .tb-util-btn img,.tb-util-btn svg{width:19px;height:19px}
   }
-  .bar-right{display:flex;align-items:center;gap:7px}
-  .progress-pill{display:none}
-  .progress-ring{width:28px;height:28px}
-  .progress-pill b{font-size:.82rem}
-  .progress-pill small{display:block;font-size:.6rem;color:var(--ink-soft);font-weight:600}
-  .icon-btn{width:40px;height:40px;border-radius:12px;border:2px solid var(--line);background:var(--paper);
-    display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 3px 0 rgba(51,38,61,.08);flex:none}
-  .icon-btn:active{transform:translateY(2px);box-shadow:none}
 
   main{max-width:1080px;margin:0 auto;padding:18px 14px calc(70px + env(safe-area-inset-bottom) + var(--ad-h,0px));
     padding-inline:max(14px,env(safe-area-inset-left),env(safe-area-inset-right))}
@@ -147,7 +179,10 @@
   /* ---- per-screen scenic backdrops (illustrated game environments) ---- */
   body[data-view]{background-repeat:no-repeat;background-position:top center;background-size:cover;
     background-image:linear-gradient(180deg,rgba(255,248,234,.6),rgba(255,248,234,.96) 45%)}
-  body[data-view="home"]{background-image:linear-gradient(180deg,rgba(255,248,234,.35),rgba(255,248,234,.97) 40%),url('assets/v2/backgrounds/talki-bg-home-hero.png')}
+  /* Home V3: the hero landscape is now a discrete rounded card (see .home-hero),
+     so the page background behind it is flat cream, not the full-bleed photo. */
+  body[data-view="home"]{background-image:radial-gradient(circle at 50% 0%,
+      rgba(255,255,255,.92) 0%, rgba(255,249,239,.96) 34%, #FFF9EF 100%)}
   body[data-view="category"]{background-image:linear-gradient(180deg,rgba(255,248,234,.4),rgba(255,248,234,.97) 38%),url('assets/v2/backgrounds/talki-bg-category-header.png')}
   body[data-view="practice"]{background-image:linear-gradient(180deg,rgba(255,248,234,.4),rgba(255,248,234,.97) 38%),url('assets/v2/backgrounds/talki-bg-practice-header.png')}
   body[data-view="games"]{background-image:linear-gradient(180deg,rgba(255,248,234,.4),rgba(255,248,234,.97) 38%),url('assets/v2/backgrounds/talki-bg-games-header.png')}
@@ -420,13 +455,15 @@
   /* ---- tablet (iPad portrait and up) ---- */
   @media(min-width:768px){
     .topbar{padding:16px 26px}
-    .brand-mark{width:52px;height:52px;font-size:26px;border-radius:17px}
-    .brand-text h1{font-size:1.4rem}
-    .brand-text span{font-size:.82rem}
-    .icon-btn{width:48px;height:48px;font-size:20px}
-    .progress-pill{padding:7px 12px}
-    .progress-ring{width:34px;height:34px}
-    .progress-pill b{font-size:.95rem}
+    .tb-star{width:50px;height:50px}
+    .tb-brand-text h1{font-size:1.75rem}
+    .tb-brand-text span{font-size:.78rem}
+    .tb-points{min-width:82px;height:52px;padding:0 18px}
+    .tb-points img{width:24px;height:24px}
+    .tb-points b{font-size:1.05rem}
+    .tb-points small{font-size:.68rem}
+    .tb-util-btn{width:50px;height:50px}
+    .tb-util-btn img,.tb-util-btn svg{width:26px;height:26px}
     .hero h2{font-size:2.2rem}
     .hero p{font-size:1.1rem}
     .section-label{font-size:1.25rem;margin:34px 4px 16px}
@@ -509,8 +546,8 @@
   /* ---- phone landscape: keep the stage visible ---- */
   @media(max-height:520px) and (orientation:landscape){
     .topbar{padding:8px 14px}
-    .brand-text span{display:none}
-    .brand-mark{width:34px;height:34px;font-size:17px}
+    .tb-brand-text span{display:none}
+    .tb-star{width:32px;height:32px}
     .hero{margin:2px 0 10px}
     .hero h2{font-size:1.2rem}
     .hero p{display:none}
@@ -538,13 +575,13 @@
   /* ---- device adaptations ---- */
   @media (pointer:coarse){
     .pill-btn{padding:11px 16px}
-    .icon-btn{width:44px;height:44px}
+    .tb-util-btn{width:44px;height:44px}
     .opt,.tile,.mem,.box{touch-action:manipulation}
   }
   /* phone landscape: shorter chrome, side-by-side stage */
   @media (max-height:560px) and (orientation:landscape){
     .topbar{padding:6px 12px}
-    .brand-text span{display:none}
+    .tb-brand-text span{display:none}
     .hero{margin:2px 0 10px}
     .hero h2{font-size:1.15rem}
     .flashcard{padding:16px}
@@ -625,9 +662,6 @@
   .v2-star-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.94);color:var(--v2-purple);
     border-radius:999px;padding:6px 10px;font-weight:900;font-size:.9rem;box-shadow:0 4px 10px rgba(58,42,82,.16)}
   .v2-star-pill img{width:20px;height:20px}
-  .v2-gift-btn{width:40px;height:40px;border-radius:12px;border:none;background:rgba(255,255,255,.94);
-    display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(58,42,82,.16);flex:none}
-  .v2-gift-btn img{width:22px;height:22px}
   .v2-cta{display:block;width:100%;border:none;border-radius:999px;padding:15px 20px;font-weight:900;font-size:1.02rem;
     color:#fff;background:linear-gradient(135deg,var(--v2-purple-bright),var(--v2-purple));
     box-shadow:0 8px 18px rgba(109,59,166,.32);margin:14px 0}
@@ -720,30 +754,54 @@
 
   /* ---- V2 mascot sizing guard: never stretch, keep intrinsic aspect ---- */
   .mascot-wrap img{width:100%;height:100%;object-fit:contain}
+
+  /* ================================================================
+     TALKI HOME V3 — approved redesign. All classes are prefixed
+     .home- and are exclusive to renderHome(); the .v2-* classes above
+     remain untouched and still serve category/practice/games/stickers.
+  ================================================================ */
+  .home-container{max-width:760px;margin-inline:auto}
+  .home-section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    font-size:22px;font-weight:800;line-height:1.2;color:var(--talki-text-heading);
+    margin:var(--home-section-gap) 0 12px}
+  .home-section-heading .hsh-icon{flex:none;display:flex;align-items:center;justify-content:center}
+  .home-section-heading .hsh-link{font-size:.74rem;padding:6px 12px}
+  .home-card{background:var(--talki-surface);border:1px solid var(--talki-border-soft);
+    border-radius:22px;box-shadow:var(--shadow-card)}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="brand">
-    <div class="brand-mark"><img src="assets/v2/brand/talki-star-mark.png" alt="" style="width:78%;height:78%;object-fit:contain"></div>
-    <div class="brand-text">
+  <div class="tb-brand">
+    <button class="tb-star-btn" id="parentBtn" type="button" title="מסך הורים" aria-label="מסך הורים (לחיצה ארוכה)">
+      <img class="tb-star" src="assets/v2/brand/talki-star-mark.png" alt="">
+    </button>
+    <div class="tb-brand-text">
       <h1>Talki</h1>
-      <span>לוחצים, שומעים ולומדים לדבר</span>
+      <span>לומדים, מדברים ובטוחים</span>
     </div>
   </div>
-  <div class="bar-right">
-    <div class="progress-pill">
-      <svg class="progress-ring" viewBox="0 0 36 36" aria-hidden="true">
-        <circle cx="18" cy="18" r="15.5" fill="none" stroke="#F1E4CE" stroke-width="4"/>
-        <circle id="ringFill" cx="18" cy="18" r="15.5" fill="none" stroke="#7C4CD6" stroke-width="4"
-                stroke-linecap="round" stroke-dasharray="97.4" stroke-dashoffset="97.4" transform="rotate(-90 18 18)"/>
+  <div class="tb-points" aria-label="נקודות שנצברו">
+    <img src="assets/v2/icons/talki-ui-icon-star.png" alt="">
+    <div class="tb-points-txt"><b id="progressCount">0</b><small>נקודות</small></div>
+  </div>
+  <div class="tb-utils">
+    <button class="tb-util-btn" id="speedBtn" title="מהירות דיבור" aria-label="מהירות דיבור">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 16a8 8 0 1 1 16 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <line id="speedNeedle" x1="12" y1="16" x2="12" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="12" cy="16" r="1.6" fill="currentColor"/>
       </svg>
-      <div><b id="progressCount">0/0</b><small>מדבקות</small></div>
-    </div>
-    <button class="icon-btn" id="musicBtn" title="מוזיקת רקע" aria-label="מוזיקת רקע">🎵</button>
-    <button class="icon-btn" id="speedBtn" title="מהירות דיבור" aria-label="מהירות דיבור">🐇</button>
-    <button class="icon-btn" id="parentBtn" title="מסך הורים" aria-label="מסך הורים">👤</button>
+    </button>
+    <button class="tb-util-btn" id="musicBtn" title="מוזיקת רקע" aria-label="מוזיקת רקע">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M9 18V5l10-2v13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="16" cy="16" r="3" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+    </button>
+    <button class="tb-util-btn" data-nav="stickers" aria-label="מדבקות ופרסים"><img src="assets/v2/icons/talki-ui-icon-gift.png" alt=""></button>
   </div>
 </div>
 
@@ -1260,7 +1318,7 @@ function setMusic(on){
 }
 function syncMusicIcon(){
   const b=document.getElementById('musicBtn');
-  if(b){ b.textContent = settings.music ? '🎵' : '🔇'; b.style.opacity = settings.music ? '1' : '.5'; }
+  if(b){ b.style.opacity = settings.music ? '1' : '.5'; b.setAttribute('aria-pressed', settings.music ? 'false' : 'true'); }
 }
 
 function confetti(n){
@@ -1302,12 +1360,7 @@ function media(item, cls){
 }
 
 function updateHeader(){
-  const total = totalWords(), count = learned.size;
-  document.getElementById('progressCount').textContent = count+'/'+total;
-  const c = 2*Math.PI*15.5;
-  const ring = document.getElementById('ringFill');
-  ring.setAttribute('stroke-dasharray', c.toFixed(1));
-  ring.setAttribute('stroke-dashoffset', (c*(1-(total?count/total:0))).toFixed(1));
+  document.getElementById('progressCount').textContent = learned.size;
 }
 
 function render(){
@@ -1399,7 +1452,6 @@ function renderHome(){
         <div class="v2h-top">
           ${mascot('wave', 46)}
           <div class="v2-star-pill"><img src="assets/v2/icons/talki-ui-icon-star.png" alt="">${learned.size}</div>
-          <button class="v2-gift-btn" data-nav="stickers" aria-label="מדבקות ופרסים"><img src="assets/v2/icons/talki-ui-icon-gift.png" alt=""></button>
         </div>
         <div class="v2-greet" style="margin-top:10px">
           <div class="g-txt"><h2>היי! בואו נדבר</h2>
@@ -2217,17 +2269,30 @@ function parentReport(){
 /* ============================================================
    7. EVENTS
 ============================================================ */
-function on(sel, fn){ document.querySelectorAll(sel).forEach(el=>el.addEventListener('click', ()=>fn(el))); }
+/* Scoped to #app: view content is fully replaced every render(), so it is
+   safe to rebind here each time. Persistent chrome (the bottom nav, and the
+   topbar's own dedicated listeners) lives outside #app and must never be
+   queried by on() - see navigateTo() + the one-time bottomNav listener below,
+   which is what actually fixes the old duplicate-listener leak. */
+function on(sel, fn){
+  const app = document.getElementById('app');
+  if(!app) return;
+  app.querySelectorAll(sel).forEach(el=>el.addEventListener('click', ()=>fn(el)));
+}
 
 const alive = t => !!game && game.type===t && view===t && !game.done;
 
+/* Shared by both the in-#app [data-nav] handler (gift button, "הכל" pills,
+   back buttons - all re-rendered every time) and the persistent bottom nav's
+   one-time delegated listener below. */
+function navigateTo(v){
+  game = null;
+  if(v==='parent'){ view='parent'; render(); preloadRecs(activeCat||'animals').then(()=>{ if(view==='parent') render(); }); return; }
+  view = v; render();
+}
+
 function bind(){
-  on('[data-nav]', el=>{
-    const v = el.dataset.nav;
-    game = null;
-    if(v==='parent'){ view='parent'; render(); preloadRecs(activeCat||'animals').then(()=>{ if(view==='parent') render(); }); return; }
-    view = v; render();
-  });
+  on('[data-nav]', el=> navigateTo(el.dataset.nav));
   on('[data-cat]', el=>{ activeCat=el.dataset.cat; view='category'; render(); });
   on('[data-cards]', el=>{ activeCat=el.dataset.cards; cardIdx=0; view='cards'; render(); });
   on('[data-play]', el=>{ launch('quiz', el.dataset.play); });
@@ -2783,6 +2848,17 @@ if('serviceWorker' in navigator){
   });
 }
 
+/* ---------- Persistent bottom nav ----------
+   Registered ONCE here (not inside bind(), which reruns every render()) so
+   these buttons never accumulate duplicate click listeners. */
+const bottomNavEl = document.getElementById('bottomNav');
+if(bottomNavEl){
+  bottomNavEl.addEventListener('click', e=>{
+    const el = e.target.closest('[data-nav]');
+    if(el) navigateTo(el.dataset.nav);
+  });
+}
+
 /* ---------- Header buttons ---------- */
 /* single source of truth for --barh: guarded so it only ever touches the
    DOM when the measured height actually changed, instead of writing (and
@@ -2805,7 +2881,11 @@ if(window.ResizeObserver){
 }
 
 function syncSpeedIcon(){
-  document.getElementById('speedBtn').textContent = settings.rate<=0.6 ? '🐢' : settings.rate>=1 ? '⚡' : '🐇';
+  const needle = document.getElementById('speedNeedle');
+  if(!needle) return;
+  const deg = settings.rate<=0.6 ? -40 : settings.rate>=1 ? 40 : 0;
+  needle.style.transform = `rotate(${deg}deg)`;
+  document.getElementById('speedBtn').title = settings.rate<=0.6 ? 'מהירות: איטית' : settings.rate>=1 ? 'מהירות: מהירה' : 'מהירות: רגילה';
 }
 document.getElementById('musicBtn').addEventListener('click', ()=> setMusic(!settings.music));
 document.getElementById('speedBtn').addEventListener('click', ()=>{

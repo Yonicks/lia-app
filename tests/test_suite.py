@@ -108,8 +108,8 @@ def test_rtl(b):
         return r.left + r.width / 2;
       };
       return {
-        brand: center('.brand'),
-        actions: center('.bar-right'),
+        brand: center('.tb-brand'),
+        actions: center('.tb-utils'),
         homeTab: center('[data-nav="home"].bn-item'),
         parentTab: center('[data-nav="parent"].bn-item'),
         category1: center('.v2-cat-card:nth-child(1)'),
@@ -121,7 +121,7 @@ def test_rtl(b):
       };
     }""")
     pairs = [
-        ("header brand", positions["brand"], positions["actions"]),
+        ("header brand", positions["brand"], positions["actions"]),  # brand sits inline-start (right); utility icons sit inline-end (left)
         ("bottom navigation", positions["homeTab"], positions["parentTab"]),
         ("category grid", positions["category1"], positions["category2"]),
         ("continue card", positions["continueArt"], positions["continueChevron"]),

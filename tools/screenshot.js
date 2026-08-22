@@ -18,7 +18,8 @@ async function main() {
   page.on('console', msg => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
   page.on('pageerror', err => consoleErrors.push(String(err)));
 
-  await page.goto('http://localhost:5173', { waitUntil: 'networkidle' });
+  const baseUrl = process.env.BASE_URL || 'http://localhost:8000';
+  await page.goto(baseUrl, { waitUntil: 'networkidle' });
   // dismiss the start gate (also unlocks audio) unless caller wants the gate itself
   const gateBtn = await page.$('#gateBtn');
   if (gateBtn && !rest.includes('--keep-gate')) {
