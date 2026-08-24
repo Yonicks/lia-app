@@ -3,7 +3,7 @@
    server data at all), and refresh the HTML in the background so a new
    deploy is picked up on the next launch. */
 
-const VERSION = 'talki-v4';
+const VERSION = 'talki-v6';
 const SHELL = [
   './',
   './index.html',

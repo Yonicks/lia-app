@@ -115,12 +115,12 @@ def test_rtl(b):
         actions: center('.tb-utils'),
         homeTab: center('[data-nav="home"].bn-item'),
         parentTab: center('[data-nav="parent"].bn-item'),
-        category1: center('.v2-cat-card:nth-child(1)'),
-        category2: center('.v2-cat-card:nth-child(2)'),
-        continueArt: center('.v2-continue .v2c-art'),
-        continueChevron: center('.v2-continue .v2c-chev'),
-        practiceIcon: center('.v2-practice-card .pc-icon'),
-        practiceChevron: center('.v2-practice-card .pc-chev')
+        category1: center('.home-cat-card:nth-child(1)'),
+        category2: center('.home-cat-card:nth-child(2)'),
+        continueArt: center('.home-continue .home-continue-icon'),
+        continueChevron: center('.home-continue .home-chevron'),
+        practiceIcon: center('.home-practice-card .home-practice-icon'),
+        practiceChevron: center('.home-practice-card .home-chevron')
       };
     }""")
     pairs = [
@@ -137,13 +137,14 @@ def test_rtl(b):
             ok(f"{name} follows RTL visual order")
 
     labels = page.evaluate("""()=>({
-      cta: document.querySelector('.v2-cta')?.textContent.trim(),
-      continueChevron: document.querySelector('.v2c-chev')?.textContent.trim(),
-      practiceChevron: document.querySelector('.pc-chev')?.textContent.trim()
+      cta: document.querySelector('.home-hero-cta-label')?.textContent.trim(),
+      ctaArrow: !!document.querySelector('.home-hero-cta-arrow-icon'),
+      continueChevron: !!document.querySelector('.home-continue .home-chevron svg'),
+      practiceChevron: !!document.querySelector('.home-practice-card .home-chevron svg')
     })""")
-    if not labels["cta"] or not labels["cta"].endswith("◀"):
-        fail("rtl-chevron", f"forward CTA has wrong chevron: {labels['cta']!r}")
-    elif labels["continueChevron"] != "◀" or labels["practiceChevron"] != "◀":
+    if labels["cta"] != "המשך ללמידה" or not labels["ctaArrow"]:
+        fail("rtl-chevron", f"hero CTA label/arrow wrong: {labels!r}")
+    elif not labels["continueChevron"] or not labels["practiceChevron"]:
         fail("rtl-chevron", f"inconsistent forward chevrons: {labels}")
     else:
         ok("forward actions consistently use left-pointing RTL chevrons")

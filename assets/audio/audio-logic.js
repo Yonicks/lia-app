@@ -9,9 +9,14 @@
 
   var MUSIC_FILES = {
     home: 'music/01_main_menu_welcome.mp3',
-    gameplay_bouncy: 'music/02_gameplay_bouncy.mp3',
-    gameplay_curious: 'music/03_gameplay_curious.mp3',
-    gameplay_gentle: 'music/04_gameplay_gentle.mp3',
+    gameplay_playroom_a: 'music/06_talki_playroom.mp3',
+    gameplay_playroom_b: 'music/07_talki_playroom_b.mp3',
+    gameplay_discoveries_a: 'music/08_little_discoveries_a.mp3',
+    gameplay_discoveries_b: 'music/09_little_discoveries_b.mp3',
+    gameplay_parade_a: 'music/10_sunny_card_parade_a.mp3',
+    gameplay_parade_b: 'music/11_sunny_card_parade_b.mp3',
+    gameplay_carousel_a: 'music/12_warm_card_carousel_a.mp3',
+    gameplay_carousel_b: 'music/13_warm_card_carousel_b.mp3',
     speechOrListeningTask: 'music/05_listening_focus.mp3'
   };
 

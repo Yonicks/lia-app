@@ -21,11 +21,16 @@ test('every SfxEvent from the audio map resolves to a real filename', () => {
   assert.equal(Object.keys(L.SFX_FILES).length, expected.length);
 });
 
-test('music states resolve to the tracks specified in the integration pack', () => {
+test('all supplied gameplay tracks resolve to their music files', () => {
   assert.equal(L.resolveMusicFile('home'), 'music/01_main_menu_welcome.mp3');
-  assert.equal(L.resolveMusicFile('gameplay_bouncy'), 'music/02_gameplay_bouncy.mp3');
-  assert.equal(L.resolveMusicFile('gameplay_curious'), 'music/03_gameplay_curious.mp3');
-  assert.equal(L.resolveMusicFile('gameplay_gentle'), 'music/04_gameplay_gentle.mp3');
+  assert.equal(L.resolveMusicFile('gameplay_playroom_a'), 'music/06_talki_playroom.mp3');
+  assert.equal(L.resolveMusicFile('gameplay_playroom_b'), 'music/07_talki_playroom_b.mp3');
+  assert.equal(L.resolveMusicFile('gameplay_discoveries_a'), 'music/08_little_discoveries_a.mp3');
+  assert.equal(L.resolveMusicFile('gameplay_discoveries_b'), 'music/09_little_discoveries_b.mp3');
+  assert.equal(L.resolveMusicFile('gameplay_parade_a'), 'music/10_sunny_card_parade_a.mp3');
+  assert.equal(L.resolveMusicFile('gameplay_parade_b'), 'music/11_sunny_card_parade_b.mp3');
+  assert.equal(L.resolveMusicFile('gameplay_carousel_a'), 'music/12_warm_card_carousel_a.mp3');
+  assert.equal(L.resolveMusicFile('gameplay_carousel_b'), 'music/13_warm_card_carousel_b.mp3');
   assert.equal(L.resolveMusicFile('speechOrListeningTask'), 'music/05_listening_focus.mp3');
   assert.equal(L.resolveMusicFile(null), null);
   assert.equal(L.resolveMusicFile('nonsense'), null);

@@ -26,7 +26,8 @@ async function main() {
   console.log('after gate:', JSON.stringify(afterGate));
   if (!afterGate) throw new Error('AudioManager missing');
   if (!afterGate.unlocked) throw new Error('AudioManager not unlocked after gate click');
-  if (afterGate.musicKey !== 'home') throw new Error('expected home music after gate, got ' + afterGate.musicKey);
+  const welcomeProfiles = await page.evaluate(() => WELCOME_MUSIC_PROFILES);
+  if (!welcomeProfiles.includes(afterGate.musicKey)) throw new Error('expected supplied welcome music after gate, got ' + afterGate.musicKey);
 
   // navigate into a gameplay-active game, check per-game track resolves and stays fixed across re-renders
   await page.evaluate(() => { activeCat = 'animals'; view = 'quiz'; render(); });
@@ -35,7 +36,7 @@ async function main() {
   await page.evaluate(() => { render(); render(); }); // simulate rapid re-renders
   const quizState2 = await page.evaluate(() => AudioManager._debugState());
   console.log('quiz music before/after re-render:', quizState1.musicKey, quizState2.musicKey);
-  if (quizState1.musicKey !== 'gameplay_curious') throw new Error('quiz expected gameplay_curious, got ' + quizState1.musicKey);
+  if (quizState1.musicKey !== 'gameplay_playroom_a') throw new Error('quiz expected gameplay_playroom_a, got ' + quizState1.musicKey);
   if (quizState2.musicKey !== quizState1.musicKey) throw new Error('music restarted on re-render (should be a no-op)');
 
   // speech-first ducking: simulate a voice prompt playing

@@ -121,8 +121,8 @@
   }
 
   /**
-   * @param {string} stateKey one of 'home' | 'gameplay_bouncy' | 'gameplay_curious' |
-   *   'gameplay_gentle' | 'speechOrListeningTask' | 'rewardScreen' | null
+   * @param {string} stateKey one of the keys in TalkiAudioLogic.MUSIC_FILES,
+   *   plus 'rewardScreen' or null
    * @param {{fadeInMs?:number, fadeOutMs?:number}} [opts]
    */
   function setMusicState(stateKey, opts) {

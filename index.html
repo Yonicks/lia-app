@@ -57,6 +57,10 @@
     --shadow-sm:0 2px 6px rgba(65,39,26,.06);
     --shadow-card:0 6px 16px rgba(73,46,25,.09);
     --shadow-floating:0 10px 28px rgba(73,46,25,.13);
+    /* Topbar chrome — warm diffuse lift matching the approved mockup */
+    --shadow-topbar:0 6px 18px -6px rgba(109,59,96,.10),0 2px 8px -2px rgba(160,120,90,.08);
+    --shadow-topbar-btn:0 1px 0 rgba(255,255,255,.95) inset,0 4px 12px rgba(109,59,96,.09),0 2px 5px rgba(190,155,120,.10);
+    --shadow-topbar-btn-active:0 1px 3px rgba(109,59,96,.07);
 
     --home-padding-inline:16px; --home-section-gap:28px; --home-grid-gap:12px;
   }
@@ -84,43 +88,41 @@
 
   /* ================================================================
      TOPBAR — approved redesign (persistent across every screen).
-     3-column grid keeps the points badge truly centred regardless of
-     how wide the brand block or utility cluster end up being.
+     RTL flex: utils cluster on the left (inline-end), brand + points
+     clustered on the right (inline-start) with a tight gap between them.
   ================================================================ */
-  .topbar{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--talki-border-soft);
-    padding:10px clamp(12px,2.2vw,26px);
-    display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
-  .tb-brand{display:flex;align-items:center;gap:6px;justify-self:start;min-width:0;overflow:hidden}
-  .tb-star-btn{border:none;background:transparent;padding:2px;border-radius:14px;display:flex;flex:none}
-  .tb-star{width:42px;height:42px;object-fit:contain;flex:none}
-  .tb-brand-text{min-width:0;overflow:hidden}
-  .tb-brand-text h1{margin:0;font-size:1.5rem;font-weight:800;color:var(--talki-purple-700);line-height:1.05;white-space:nowrap}
-  .tb-brand-text span{display:block;font-size:.64rem;font-weight:500;color:var(--talki-text-secondary);white-space:nowrap}
-  .tb-points{display:flex;align-items:center;justify-content:center;gap:6px;justify-self:center;flex:none;
-    min-width:72px;height:46px;padding:0 14px;border-radius:18px;background:var(--talki-surface);
-    border:1px solid var(--talki-border-soft);box-shadow:var(--shadow-sm)}
-  .tb-points img{width:20px;height:20px;flex:none}
-  .tb-points .tb-points-txt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
-  .tb-points b{font-size:.92rem;font-weight:900;color:var(--talki-text-primary)}
-  .tb-points small{font-size:.6rem;font-weight:700;color:var(--talki-text-secondary)}
-  .tb-utils{display:flex;align-items:center;gap:6px;justify-self:end;flex:none}
-  .tb-util-btn{width:44px;height:44px;border-radius:14px;border:none;background:var(--talki-surface);
-    box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;flex:none;padding:0;
-    color:var(--talki-purple-700)}
-  .tb-util-btn:active{transform:translateY(2px);box-shadow:none}
-  .tb-util-btn img,.tb-util-btn svg{width:24px;height:24px}
+  .topbar{position:sticky;top:0;z-index:30;background:var(--talki-bg);
+    min-height:64px;padding:10px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+    border-bottom:1px solid rgba(241,231,215,.55);box-shadow:var(--shadow-topbar)}
+  .tb-head-cluster{display:flex;align-items:center;gap:8px;min-width:0;flex:none}
+  .tb-brand{display:flex;align-items:center;min-width:0;overflow:hidden;flex:none}
+  .tb-brand-btn{border:none;background:transparent;padding:0;display:flex;flex:none;border-radius:12px}
+  .tb-logo{height:44px;width:auto;max-width:154px;object-fit:contain;object-position:right center;display:block}
+  .tb-points{display:flex;align-items:center;justify-content:center;gap:5px;flex:none;
+    min-width:72px;height:44px;padding:0 15px;border-radius:14px;
+    background:var(--talki-surface);border:1px solid rgba(241,231,215,.85);box-shadow:var(--shadow-topbar-btn)}
+  .tb-points img{width:36px;height:36px;flex:none;object-fit:contain}
+  .tb-points .tb-points-txt{display:flex;flex-direction:column;justify-content:center;
+    line-height:1;min-width:28px;flex:1 1 auto}
+  .tb-points b{font-size:1.0625rem;font-weight:800;color:var(--talki-text-primary);letter-spacing:-.02em}
+  .tb-points small{font-size:.625rem;font-weight:600;color:var(--talki-purple-700);margin-top:2px}
+  .tb-utils{display:flex;align-items:center;gap:6px;flex:none}
+  .tb-util-btn{width:44px;height:44px;border-radius:14px;border:1px solid rgba(241,231,215,.85);
+    background:#fff;box-shadow:var(--shadow-topbar-btn);display:flex;align-items:center;
+    justify-content:center;flex:none;padding:3px;transition:transform .15s ease,box-shadow .15s ease}
+  .tb-util-btn:active{transform:translateY(2px);box-shadow:var(--shadow-topbar-btn-active)}
+  .tb-util-btn img{width:32px;height:32px;object-fit:contain}
   @media(max-width:430px){
-    .topbar{padding:8px 10px;gap:4px}
-    .tb-star{width:32px;height:32px}
-    .tb-brand-text h1{font-size:1.16rem}
-    .tb-brand-text span{font-size:.56rem}
-    .tb-points{min-width:58px;height:38px;padding:0 9px;gap:4px}
-    .tb-points img{width:16px;height:16px}
-    .tb-points b{font-size:.78rem}
-    .tb-points small{font-size:.52rem}
-    .tb-utils{gap:4px}
-    .tb-util-btn{width:36px;height:36px;border-radius:11px}
-    .tb-util-btn img,.tb-util-btn svg{width:19px;height:19px}
+    .topbar{padding:10px 8px;gap:6px}
+    .tb-head-cluster{gap:8px}
+    .tb-logo{height:42px;max-width:136px}
+    .tb-points{min-width:68px;height:42px}
+    .tb-points img{width:32px;height:32px}
+    .tb-points b{font-size:1rem}
+    .tb-points small{font-size:.5625rem;margin-top:1px}
+    .tb-utils{gap:5px}
+    .tb-util-btn{width:42px;height:42px;padding:2px}
+    .tb-util-btn img{width:30px;height:30px}
   }
 
   main{max-width:1080px;margin:0 auto;padding:18px 14px calc(70px + env(safe-area-inset-bottom) + var(--ad-h,0px));
@@ -455,16 +457,15 @@
 
   /* ---- tablet (iPad portrait and up) ---- */
   @media(min-width:768px){
-    .topbar{padding:16px 26px}
-    .tb-star{width:50px;height:50px}
-    .tb-brand-text h1{font-size:1.75rem}
-    .tb-brand-text span{font-size:.78rem}
-    .tb-points{min-width:82px;height:52px;padding:0 18px}
-    .tb-points img{width:24px;height:24px}
-    .tb-points b{font-size:1.05rem}
-    .tb-points small{font-size:.68rem}
-    .tb-util-btn{width:50px;height:50px}
-    .tb-util-btn img,.tb-util-btn svg{width:26px;height:26px}
+    .topbar{padding:12px 16px}
+    .tb-logo{height:48px;max-width:168px}
+    .tb-head-cluster{gap:12px}
+    .tb-points{min-width:80px;height:48px}
+    .tb-points img{width:38px;height:38px}
+    .tb-points b{font-size:1.125rem}
+    .tb-points small{font-size:.6875rem;margin-top:2px}
+    .tb-util-btn{width:48px;height:48px;padding:4px}
+    .tb-util-btn img{width:34px;height:34px}
     .hero h2{font-size:2.2rem}
     .hero p{font-size:1.1rem}
     .section-label{font-size:1.25rem;margin:34px 4px 16px}
@@ -546,9 +547,8 @@
 
   /* ---- phone landscape: keep the stage visible ---- */
   @media(max-height:520px) and (orientation:landscape){
-    .topbar{padding:8px 14px}
-    .tb-brand-text span{display:none}
-    .tb-star{width:32px;height:32px}
+    .topbar{padding:8px 10px}
+    .tb-logo{height:34px;max-width:140px}
     .hero{margin:2px 0 10px}
     .hero h2{font-size:1.2rem}
     .hero p{display:none}
@@ -581,8 +581,8 @@
   }
   /* phone landscape: shorter chrome, side-by-side stage */
   @media (max-height:560px) and (orientation:landscape){
-    .topbar{padding:6px 12px}
-    .tb-brand-text span{display:none}
+    .topbar{padding:6px 8px}
+    .tb-logo{height:32px;max-width:130px}
     .hero{margin:2px 0 10px}
     .hero h2{font-size:1.15rem}
     .flashcard{padding:16px}
@@ -620,23 +620,24 @@
      above; existing screens (games, parent) inherit the new palette
      automatically through the redefined CSS variables.
   ================================================================ */
-  main{padding-bottom:calc(78px + env(safe-area-inset-bottom) + var(--ad-h,0px))}
-  @media(min-width:768px){ main{padding-bottom:calc(86px + var(--ad-h,0px))} }
+  main{padding-bottom:calc(96px + env(safe-area-inset-bottom) + var(--ad-h,0px))}
+  @media(min-width:768px){ main{padding-bottom:calc(100px + var(--ad-h,0px))} }
 
   .bottom-nav{position:fixed;inset-inline:0;bottom:0;z-index:40;display:flex;justify-content:center;
     padding:0 max(10px,env(safe-area-inset-left)) env(safe-area-inset-bottom) max(10px,env(safe-area-inset-right));
     pointer-events:none}
-  .bottom-nav .bn-inner{pointer-events:auto;width:100%;max-width:640px;background:var(--paper);
-    border-top:1px solid var(--line);box-shadow:0 -8px 20px rgba(109,59,166,.10);
+  .bottom-nav .bn-inner{pointer-events:auto;width:100%;max-width:640px;min-height:72px;
+    background:rgba(255,255,255,.96);border:1px solid var(--talki-border-soft);
+    box-shadow:0 -8px 26px rgba(73,46,25,.10);
     border-radius:22px 22px 0 0;display:flex;align-items:stretch;justify-content:space-around;
-    padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:2px}
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom));gap:4px}
   .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-    border:none;background:transparent;padding:6px 4px 5px;border-radius:14px;color:var(--ink-soft);
-    font-size:.68rem;font-weight:800;min-height:52px}
-  .bn-item img{width:24px;height:24px;object-fit:contain;opacity:.55;filter:grayscale(1)}
-  .bn-item.active{color:var(--v2-purple)}
-  .bn-item.active img{opacity:1;filter:none}
-  .bn-item.active{background:linear-gradient(180deg,rgba(124,76,214,.10),rgba(124,76,214,.03))}
+    border:none;background:transparent;padding:6px 4px 5px;border-radius:18px;color:var(--talki-text-muted);
+    font-size:.7rem;font-weight:700;min-height:52px}
+  .bn-item img{width:24px;height:24px;object-fit:contain;opacity:.72}
+  .bn-item.active{color:var(--talki-purple-700);background:var(--talki-purple-100)}
+  .bn-item.active img{opacity:1}
+  .bn-item.active span{font-size:.75rem;font-weight:700}
   .bn-item:active{transform:translateY(1px)}
   @media(min-width:768px){ .bn-item img{width:27px;height:27px} .bn-item{font-size:.74rem} }
 
@@ -770,6 +771,172 @@
   .home-section-heading .hsh-link{font-size:.74rem;padding:6px 12px}
   .home-card{background:var(--talki-surface);border:1px solid var(--talki-border-soft);
     border-radius:22px;box-shadow:var(--shadow-card)}
+
+  /* ---- Home Welcome Hero (approved 3.045:1 banner) ---- */
+  .home-hero{width:calc(100% + 6px);max-width:888px;margin:1px -3px 16px;aspect-ratio:3.045/1;
+    display:flex;align-items:center;direction:rtl;overflow:hidden;padding-top:12px;
+    border-radius:clamp(20px,3.6vw,34px);
+    background:#9ed8f7 url('assets/v2/talki-welcome-banner.png') center/cover no-repeat;
+    box-shadow:0 8px 22px rgba(76,48,24,.11),0 2px 5px rgba(76,48,24,.06)}
+  .home-hero-content{width:43%;max-width:390px;margin-inline-start:15.7%;
+    display:flex;flex-direction:column;align-items:center;text-align:center}
+  .home-hero-title{margin:0;color:#432064;font:900 clamp(25px,6.4vw,46px)/1.02 'Rubik',sans-serif;
+    letter-spacing:-.02em;white-space:nowrap;transform:translateY(-4px)}
+  .home-hero-subtitle{margin:2px 0 0;color:#56366F;font-family:'Rubik',sans-serif;
+    font-size:clamp(13px,2.66vw,25px);font-weight:400;line-height:1.08;letter-spacing:.2px;
+    transform:translateY(-3px)}
+  .home-hero-cta{position:relative;width:min(340px,90%);height:clamp(47px,8.3vw,76px);
+    margin-top:8px;padding:0 clamp(44px,7.65vw,72px);display:flex;align-items:center;
+    justify-content:center;overflow:hidden;border:0;border-radius:999px;direction:rtl;
+    background:linear-gradient(180deg,#A64FEA 0%,#963FDF 28%,#8233CF 65%,#7028B8 100%);
+    color:#fff;box-shadow:0 10px 20px rgba(90,39,145,.22),0 3px 7px rgba(80,29,132,.13),
+      inset 0 1px 1px rgba(255,255,255,.28),inset 0 -2px 2px rgba(74,20,119,.1);
+    font-family:'Rubik',sans-serif;font-size:clamp(15px,2.66vw,25px);font-weight:700;
+    line-height:1;letter-spacing:-.3px;
+    cursor:pointer;-webkit-tap-highlight-color:transparent;
+    transition:transform .14s ease,box-shadow .14s ease,filter .14s ease}
+  .home-hero-cta::before{content:"";position:absolute;top:1px;left:14px;right:14px;height:48%;
+    border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.14),transparent);
+    pointer-events:none}
+  @media(hover:hover){
+    .home-hero-cta:hover{transform:translateY(-2px);filter:brightness(1.025);
+      box-shadow:0 13px 24px rgba(90,39,145,.25),0 4px 8px rgba(80,29,132,.14),
+        inset 0 1px 1px rgba(255,255,255,.3)}
+  }
+  .home-hero-cta:active{transform:translateY(1px) scale(.99);
+    box-shadow:0 5px 11px rgba(90,39,145,.19),inset 0 2px 3px rgba(76,19,122,.12)}
+  .home-hero-cta:focus-visible{outline:4px solid rgba(141,74,218,.25);outline-offset:4px}
+  .home-hero-cta-label{position:relative;z-index:2;color:#FFF;font:inherit;white-space:nowrap;
+    transform:translateY(-1px)}
+  .home-hero-cta-arrow{position:absolute;left:clamp(9px,1.8vw,17px);top:50%;
+    width:clamp(30px,4.57vw,43px);height:clamp(30px,4.57vw,43px);
+    transform:translateY(-50%);display:flex;align-items:center;justify-content:center;border-radius:50%;
+    background:linear-gradient(180deg,#FFF,#FAF8FF);color:#66359E;
+    box-shadow:0 2px 6px rgba(65,27,101,.1),inset 0 1px 1px rgba(255,255,255,.8);z-index:3}
+  .home-hero-cta-arrow-icon{width:55%;height:55%;display:block}
+  .home-hero-cta-sparkles{position:absolute;right:clamp(9px,2.13vw,20px);top:50%;
+    width:clamp(24px,3.72vw,35px);transform:translateY(-50%);color:#C999FF;
+    pointer-events:none;z-index:3}
+  .home-hero-cta-sparkles svg{width:100%;height:auto;display:block}
+  @media (prefers-reduced-motion:reduce){
+    .home-hero-cta{transition:none}
+    .home-hero-cta:hover,.home-hero-cta:active{transform:none}
+  }
+  @media(min-width:768px){.home-hero{margin-top:25px;margin-bottom:20px}}
+  @media(max-width:520px){
+    .home-hero{aspect-ratio:2.65/1;background-position:46% center}
+    .home-hero-content{width:53%;margin-inline-start:7.5%}
+  }
+
+  /* ---- Home content cards ---- */
+  body[data-view="home"] main{max-width:760px;padding-top:10px;padding-inline:var(--home-padding-inline)}
+  .home-container{width:100%}
+  .home-container button{text-align:start;color:inherit}
+  .home-container button:active{transform:translateY(1px)}
+  .home-container svg{display:block}
+  .home-section-heading{justify-content:flex-start}
+  .home-section-heading .hsh-icon{width:25px;height:25px;color:var(--talki-purple-600)}
+  .home-section-heading .hsh-title{flex:1}
+  .home-section-heading .hsh-link{min-height:36px;border:0;border-radius:999px;
+    padding:7px 13px;background:var(--talki-purple-050);color:var(--talki-purple-700);
+    font-weight:800;text-align:center}
+
+  .home-continue{width:100%;min-height:104px;margin-top:16px;padding:16px 18px;
+    display:flex;align-items:center;gap:12px;border:1px solid var(--talki-border-soft);
+    border-radius:24px;background:#fff;box-shadow:var(--shadow-card)}
+  .home-continue-icon{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;
+    overflow:hidden;flex:none}
+  .home-continue-icon img{width:42px;height:42px;object-fit:contain}
+  .home-continue-copy{flex:1;min-width:0}
+  .home-continue-eyebrow{display:block;color:var(--talki-text-secondary);font-size:.75rem;
+    font-weight:700;line-height:1.15}
+  .home-continue-title{display:block;margin-top:2px;color:var(--talki-text-primary);
+    font-family:'Rubik',sans-serif;font-size:1.28rem;font-weight:800;line-height:1.2;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .home-continue-support{display:block;margin-top:4px;color:var(--talki-text-secondary);
+    font-size:.75rem;font-weight:500;line-height:1.2}
+  .home-progress-ring{position:relative;width:64px;height:64px;display:grid;place-items:center;flex:none}
+  .home-progress-ring svg{position:absolute;inset:0;width:64px;height:64px;transform:rotate(-90deg)}
+  .home-progress-ring circle{fill:none;stroke-width:7.5}
+  .home-progress-ring .ring-track{stroke:#EEEAF3}
+  .home-progress-ring .ring-value{stroke:#A882EB;stroke-linecap:round}
+  .home-progress-ring span{position:relative;color:var(--talki-purple-800);font-size:1rem;font-weight:800}
+  .home-chevron{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
+    flex:none;background:var(--talki-purple-050);color:var(--talki-purple-700)}
+  .home-chevron svg{width:17px;height:17px}
+
+  .home-cat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--home-grid-gap)}
+  .home-cat-card{position:relative;min-height:96px;padding:12px 14px 10px;display:flex;
+    align-items:center;gap:11px;border:1px solid var(--talki-border-soft);border-radius:20px;
+    background:#fff;box-shadow:var(--shadow-card);overflow:hidden}
+  .home-cat-card::after{content:"";position:absolute;inset-inline:14px;bottom:9px;height:4px;
+    border-radius:999px;background:var(--talki-track)}
+  .home-cat-card.mine{grid-column:1/-1;min-height:86px}
+  .home-cat-icon{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;flex:none}
+  .home-cat-icon img{width:36px;height:36px;object-fit:contain}
+  .home-cat-copy{min-width:0;flex:1;align-self:stretch;display:flex;flex-direction:column;
+    justify-content:center;padding-bottom:8px}
+  .home-cat-title{color:var(--talki-text-primary);font-family:'Rubik',sans-serif;
+    font-size:clamp(.91rem,3.8vw,1.06rem);font-weight:800;line-height:1.2;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .home-cat-meta{display:flex;align-items:center;gap:3px;margin-top:7px;color:var(--talki-text-secondary);
+    font-size:.69rem;font-weight:600;direction:ltr;justify-content:flex-end}
+  .home-cat-meta svg{width:13px;height:13px;color:var(--talki-gold-500)}
+  .home-cat-fill{position:absolute;z-index:1;inset-inline-start:14px;bottom:9px;height:4px;
+    max-width:calc(100% - 28px);border-radius:999px;background:var(--cat-accent);
+    transition:width .25s ease}
+
+  .home-practice-row,.home-games-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .home-practice-card{position:relative;min-height:118px;padding:12px;border:0;border-radius:22px;
+    background:var(--practice-bg);box-shadow:var(--shadow-card);display:block;overflow:hidden}
+  .home-practice-icon{position:absolute;top:12px;right:12px;width:42px;height:42px;border-radius:14px;
+    display:grid;place-items:center;background:rgba(255,255,255,.76);color:var(--practice-accent)}
+  .home-practice-icon svg{width:29px;height:29px}
+  .home-practice-title{display:block;min-height:42px;padding-right:47px;color:var(--talki-text-primary);
+    font-size:.9rem;font-weight:800;line-height:1.15}
+  .home-practice-desc{display:block;margin-top:5px;padding-left:18px;color:#463A52;
+    font-size:.67rem;font-weight:600;line-height:1.28}
+  .home-practice-card .home-chevron{position:absolute;left:12px;bottom:11px;width:28px;height:28px;
+    background:rgba(255,255,255,.86);color:var(--practice-accent)}
+  .home-practice-card .home-chevron svg{width:14px;height:14px}
+
+  .home-games-row{padding-bottom:4px}
+  .home-game-card{position:relative;aspect-ratio:1.55/1;border:0;border-radius:18px;
+    overflow:hidden;background:#fff;box-shadow:var(--shadow-card);padding:0}
+  .home-game-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .home-game-title{position:absolute;z-index:1;inset-inline:0;bottom:0;min-height:52%;
+    display:flex;align-items:flex-end;padding:7px 9px;color:#fff;font-size:.86rem;font-weight:800;
+    line-height:1.15;text-shadow:0 1px 3px rgba(0,0,0,.2);
+    background:linear-gradient(to top,rgba(25,18,35,.60),rgba(25,18,35,.18) 48%,rgba(25,18,35,0))}
+  .home-games-icon{width:25px;height:25px;object-fit:contain}
+
+  @media(min-width:430px){
+    .home-practice-card{min-height:126px;padding:13px}
+    .home-practice-title{font-size:.96rem}
+    .home-practice-desc{font-size:.72rem}
+    .home-game-title{font-size:.95rem;padding:8px 10px}
+  }
+  @media(min-width:600px){
+    .home-cat-card{min-height:106px;padding-inline:16px}
+    .home-cat-icon{width:56px;height:56px}.home-cat-icon img{width:40px;height:40px}
+    .home-practice-card{min-height:144px}
+    .home-practice-icon{width:48px;height:48px}.home-practice-icon svg{width:34px;height:34px}
+    .home-practice-title{font-size:1.05rem;padding-right:54px}.home-practice-desc{font-size:.82rem}
+    .home-game-title{font-size:1rem}
+  }
+  @media(max-width:374px){
+    .home-continue{padding-inline:12px;gap:8px}
+    .home-continue-icon{width:52px;height:52px}.home-continue-icon img{width:38px;height:38px}
+    .home-progress-ring,.home-progress-ring svg{width:56px;height:56px}
+    .home-continue-title{font-size:1.05rem}
+    .home-cat-card{padding-inline:10px;gap:8px}.home-cat-icon{width:44px;height:44px}
+    .home-cat-icon img{width:33px;height:33px}
+    .home-practice-row,.home-games-row{gap:7px}
+    .home-practice-card{padding:9px}
+    .home-practice-icon{top:9px;right:9px;width:36px;height:36px}.home-practice-icon svg{width:25px;height:25px}
+    .home-practice-title{font-size:.79rem;padding-right:41px}.home-practice-desc{font-size:.62rem}
+    .home-practice-card .home-chevron{left:9px;bottom:9px}
+  }
 
   /* ================================================================
      MATCH & DROP PUZZLE — 🧩 שִׂימִי בַּמָּקוֹם
@@ -928,18 +1095,16 @@
 <body>
 
 <div class="topbar">
-  <div class="tb-brand">
-    <button class="tb-star-btn" id="parentBtn" type="button" title="מסך הורים" aria-label="מסך הורים (לחיצה ארוכה)">
-      <img class="tb-star" src="assets/v2/brand/talki-star-mark.png" alt="">
-    </button>
-    <div class="tb-brand-text">
-      <h1>Talki</h1>
-      <span>לומדים, מדברים ובטוחים</span>
+  <div class="tb-head-cluster">
+    <div class="tb-brand">
+      <button class="tb-brand-btn" id="parentBtn" type="button" title="מסך הורים" aria-label="מסך הורים (לחיצה ארוכה)">
+        <img class="tb-logo" src="assets/v2/brand/talki-header-logo.png" alt="Talki">
+      </button>
     </div>
-  </div>
-  <div class="tb-points" aria-label="נקודות שנצברו">
-    <img src="assets/v2/icons/talki-ui-icon-star.png" alt="">
-    <div class="tb-points-txt"><b id="progressCount">0</b><small>נקודות</small></div>
+    <div class="tb-points" aria-label="נקודות שנצברו">
+      <img src="assets/v2/icons/talki-ui-icon-star-3d.png" alt="">
+      <div class="tb-points-txt"><b id="progressCount">0</b><small>נקודות</small></div>
+    </div>
   </div>
   <div class="tb-utils">
     <button class="tb-util-btn" id="speedBtn" title="מהירות דיבור" aria-label="מהירות דיבור">
@@ -967,8 +1132,8 @@
   <div class="bn-inner">
     <button class="bn-item" data-nav="home"><img src="assets/v2/icons/talki-ui-icon-home.png" alt=""><span>בית</span></button>
     <button class="bn-item" data-nav="games"><img src="assets/v2/icons/talki-ui-icon-games.png" alt=""><span>משחקים</span></button>
-    <button class="bn-item" data-nav="stickers"><img src="assets/v2/icons/talki-ui-icon-star.png" alt=""><span>מדבקות</span></button>
-    <button class="bn-item" data-nav="parent"><img src="assets/v2/icons/talki-ui-icon-settings.png" alt=""><span>הורה</span></button>
+    <button class="bn-item" data-nav="stickers"><img src="assets/v2/icons/talki-ui-icon-star.png" alt=""><span>הישגים</span></button>
+    <button class="bn-item" data-nav="parent"><img src="assets/v2/icons/talki-ui-icon-settings.png" alt=""><span>הגדרות</span></button>
   </div>
 </nav>
 
@@ -989,6 +1154,29 @@ const CAT_ART = {"animals": "url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A
 function mascot(mood, size){
   const src = MASCOT_IMG[mood] || MASCOT_IMG.idle;
   return `<span class="mascot-wrap mascot-${mood}" style="width:${size||96}px;height:${size||96}px"><img src="${src}" alt="" draggable="false"></span>`;
+}
+
+const HERO_CTA_ARROW = '<svg class="home-hero-cta-arrow-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.75 3.25L4.25 7L8.75 10.75" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const HERO_CTA_SPARKLES = '<svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="M11 2l1.1 3.8L15.5 6.5l-3.3 1.2L11 11.5 9.2 7.7 5.5 6.5l3.9-1.2L11 2z"/><path d="M17 12.5l.65 2.2L19.5 14.5l-1.9.75L17 17.2l-.55-1.95L14.5 14.5l1.95-.75.55-2.25z" opacity=".85"/><path d="M5.2 14.8l.5 1.65L7.3 16.5 6 17l-.45 1.55-.5-1.55L3.5 16.5l1.7-.4.5-1.3z" opacity=".7"/></svg>';
+const HOME_CHEVRON = '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 5L7 10l5.5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const HOME_STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2.4 2.87 5.82 6.42.93-4.65 4.53 1.1 6.4L12 17.06l-5.74 3.02 1.1-6.4-4.65-4.53 6.42-.93L12 2.4Z"/></svg>';
+const HOME_GRID_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="2.5" y="2.5" width="8" height="8" rx="2"/><rect x="13.5" y="2.5" width="8" height="8" rx="2"/><rect x="2.5" y="13.5" width="8" height="8" rx="2"/><rect x="13.5" y="13.5" width="8" height="8" rx="2"/></svg>';
+const HOME_SPEECH_ICON = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5h16v11H11l-5 3v-3H4v-11Z" fill="currentColor"/><circle cx="8" cy="11" r="1.2" fill="white"/><circle cx="12" cy="11" r="1.2" fill="white"/><circle cx="16" cy="11" r="1.2" fill="white"/></svg>';
+const HOME_PRACTICE_ICONS = {
+  focus:'<svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="14" fill="#fff" stroke="currentColor" stroke-width="3"/><circle cx="20" cy="20" r="8" stroke="currentColor" stroke-width="3"/><circle cx="20" cy="20" r="3.5" fill="currentColor"/><path d="m28 12 7-7m-3 0h3v3" stroke="#69B7EF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  receptive:'<svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M16 31c-4-3-5-7-3-11l3-7c.6-1.5 2.8-1.1 2.8.6V20 8c0-2 2.8-2 2.8 0v10-8c0-2 2.8-2 2.8 0v9-6c0-2 2.8-2 2.8 0v8l2-2c2-2 4.4.4 2.8 2.8L27 31H16Z" fill="#FFD75A" stroke="#D89A2E" stroke-width="1.4" stroke-linejoin="round"/></svg>',
+  cloze:'<svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="7" y="7" width="26" height="26" rx="8" fill="#fff"/><rect x="14" y="13" width="4.5" height="14" rx="2.25" fill="currentColor"/><rect x="21.5" y="13" width="4.5" height="14" rx="2.25" fill="currentColor"/></svg>'
+};
+const HOME_PRACTICE_TONES = {
+  pink:['#FFD9E6','#F46B91'], lavender:['#DED0FA','#7C4CD6'], peach:['#FFCDA1','#E8792E']
+};
+
+function homeHeroCta(catId){
+  return `<button type="button" class="home-hero-cta talki-welcome-cta" data-cat="${catId}" aria-label="המשך ללמידה">
+    <span class="home-hero-cta-arrow talki-welcome-cta-arrow">${HERO_CTA_ARROW}</span>
+    <span class="home-hero-cta-label talki-welcome-cta-label">המשך ללמידה</span>
+    <span class="home-hero-cta-sparkles talki-welcome-cta-sparkles">${HERO_CTA_SPARKLES}</span>
+  </button>`;
 }
 function micIcon(state, size){
   const file = state==='listening' || state===true ? 'talki-speech-microphone-listening.png'
@@ -1461,20 +1649,31 @@ function chime(good, opts){
   if(opts.isLevelComplete){ AudioManager.playSfx('game.levelComplete'); return; }
   AudioManager.playSfx(opts.kind==='match' ? 'interaction.correctMatch' : 'answer.correct');
 }
-/* one background track per game "personality" (bouncy/curious/gentle); chosen once
-   per game type, never re-randomized mid-round. See talki-audio-map for the source. */
+/* Each game keeps one stable looping track for the whole round. The eight supplied
+   gameplay tracks are distributed across the game types rather than randomized. */
 const GAME_MUSIC_PROFILE = {
-  quiz:'gameplay_curious', memory:'gameplay_bouncy', missing:'gameplay_gentle',
-  match:'gameplay_curious', cards:'gameplay_gentle', bubbles:'gameplay_bouncy',
-  sounds:'gameplay_curious', count:'gameplay_gentle', sort:'gameplay_curious',
-  puzzle:'gameplay_gentle'
+  quiz:'gameplay_playroom_a', memory:'gameplay_carousel_a',
+  missing:'gameplay_discoveries_a', match:'gameplay_playroom_b',
+  cards:'gameplay_carousel_b', bubbles:'gameplay_parade_a',
+  sounds:'gameplay_discoveries_b', count:'gameplay_parade_b',
+  sort:'gameplay_playroom_a', puzzle:'gameplay_carousel_a'
 };
+const WELCOME_MUSIC_PROFILES = Object.freeze([
+  'gameplay_playroom_a', 'gameplay_playroom_b',
+  'gameplay_discoveries_a', 'gameplay_discoveries_b',
+  'gameplay_parade_a', 'gameplay_parade_b',
+  'gameplay_carousel_a', 'gameplay_carousel_b'
+]);
+/* Pick once per app session so the welcome screen varies without restarting
+   the track on every render. AudioManager keeps the selected file looping. */
+const welcomeMusicProfile =
+  WELCOME_MUSIC_PROFILES[Math.floor(Math.random() * WELCOME_MUSIC_PROFILES.length)];
 const SPEECH_VIEWS = new Set(['speech','focus','cloze','temptation','receptive','pairs','combine']);
 function resolveMusicState(){
   if(game && game.done) return 'rewardScreen';
   if(SPEECH_VIEWS.has(view)) return 'speechOrListeningTask';
   if(GAME_MUSIC_PROFILE[view]) return GAME_MUSIC_PROFILE[view];
-  return 'home';
+  return welcomeMusicProfile;
 }
 function startMusic(){ AudioManager.setMusicState(resolveMusicState()); }
 function stopMusic(){ AudioManager.stopMusic(); }
@@ -1615,6 +1814,11 @@ const CAT_GRAD = {
   outside:['#4FA3D1','#2E6E96'], emotions:['var(--wood)','var(--wood-dark)'],
   mine:['var(--grape)','var(--grape-dark)']
 };
+const CAT_ACCENT = {
+  animals:'#8FD3C1', food:'#F46B91', home:'#69B7EF', colors:'#9366E5',
+  body:'#F46B91', family:'#FFB977', numbers:'#FFD75A', actions:'#79CFAE',
+  emotions:'#9366E5', outside:'#69B7EF', mine:'#7C4CD6'
+};
 function catGrad(id){ const g = CAT_GRAD[id]||CAT_GRAD.animals; return `linear-gradient(155deg,${g[0]},${g[1]})`; }
 function catIcon(id){ return id==='mine' ? 'assets/v2/brand/talki-star-mark.png' : `assets/v2/categories/talki-cat-icon-${id}.png`; }
 function currentCategory(){
@@ -1626,9 +1830,9 @@ function currentCategory(){
 }
 
 const PRACTICE_LIST = [
-  ['focus','🎯','מילה במיקוד','מילה אחת, שמונה משפטים קצרים','pc-1'],
-  ['receptive','👈','תראי לי','מזהים בלי צורך לדבר','pc-2'],
-  ['cloze','⏸️','משלימים ביחד','עוצרים מילה לפני הסוף ומחכים','pc-3'],
+  ['focus','🎯','מילה במיקוד','מילה אחת, שמונה משפטים קצרים','pc-1','pink'],
+  ['receptive','👈','תראי לי','מזהים בלי צורך לדבר','pc-2','lavender'],
+  ['cloze','⏸️','משלימים ביחד','עוצרים מילה לפני הסוף ומחכים','pc-3','peach'],
   ['temptation','🫙','הצנצנת','משמיעים קול כדי לפתוח','pc-4'],
   ['pairs','👂','דומה אבל לא','עֵץ או עֵז? מבחינים בין צלילים','pc-5'],
   ['combine','➕','שתי מילים','מחברים "עוד" + מילה','pc-6']
@@ -1638,61 +1842,83 @@ function renderHome(){
   const cur = currentCategory();
   const curDone = cur ? catLearned(cur) : 0, curTot = cur ? cur.items.length : 0;
   const curPct = curTot ? Math.round(curDone/curTot*100) : 0;
+  const ringCircumference = 157.1;
 
   const cards = allCats().map(cat=>{
     const done = catLearned(cat), tot = cat.items.length;
     const pct = tot ? Math.round(done/tot*100) : 0;
-    return `<button class="v2-cat-card" data-cat="${cat.id}">
-      <div class="v2cc-top">
-        <div class="v2cc-icon" style="background:${catGrad(cat.id)}"><img src="${catIcon(cat.id)}" alt=""></div>
-        <span class="v2cc-badge">⭐ ${done}/${tot}</span>
-      </div>
-      <div class="v2cc-name">${display(cat.title)}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+    const accent = CAT_ACCENT[cat.id] || CAT_ACCENT.animals;
+    return `<button type="button" class="home-cat-card ${cat.id==='mine'?'mine':''}" data-cat="${cat.id}"
+      style="--cat-accent:${accent}" aria-label="${plain(cat.title)}, ${done} מתוך ${tot}">
+      <span class="home-cat-icon" style="background:${catGrad(cat.id)}"><img src="${catIcon(cat.id)}" alt=""></span>
+      <span class="home-cat-copy">
+        <span class="home-cat-title">${display(cat.title)}</span>
+        <span class="home-cat-meta">${done}/${tot} ${HOME_STAR}</span>
+      </span>
+      <span class="home-cat-fill" style="width:calc((100% - 28px) * ${pct/100})"></span>
     </button>`;
   }).join('');
 
-  return `
-    <div class="v2-header" data-view-inner="home">
-      <div class="v2h-bg" style="background-image:url('assets/v2/backgrounds/talki-bg-home-hero.png')"></div>
-      <div class="v2h-scrim"></div>
-      <div class="v2h-content">
-        <div class="v2h-top">
-          ${mascot('wave', 46)}
-          <div class="v2-star-pill"><img src="assets/v2/icons/talki-ui-icon-star.png" alt="">${learned.size}</div>
-        </div>
-        <div class="v2-greet" style="margin-top:10px">
-          <div class="g-txt"><h2>היי! בואו נדבר</h2>
-            <p>לומדים מילים, מתרגלים ודוברים בביטחון</p></div>
-        </div>
-        ${cur ? `<button class="v2-cta" data-cat="${cur.id}">המשך ללמוד ◀</button>` : ''}
+  const practiceCards = PRACTICE_LIST.slice(0,3).map(([g,ic,t,sub,cls,tone])=>{
+    const [bg,accent] = HOME_PRACTICE_TONES[tone] || HOME_PRACTICE_TONES.pink;
+    return `<button type="button" class="home-practice-card" data-game="${g}"
+      style="--practice-bg:${bg};--practice-accent:${accent}">
+      <span class="home-practice-title">${t}</span>
+      <span class="home-practice-icon">${HOME_PRACTICE_ICONS[g]||ic}</span>
+      <span class="home-practice-desc">${sub}</span>
+      <span class="home-chevron">${HOME_CHEVRON}</span>
+    </button>`;
+  }).join('');
+
+  const games = [
+    ['memory','talki-game-card-memory.png','משחק זיכרון'],
+    ['quiz','talki-game-card-where-is.png','איפה ה...?'],
+    ['missing','talki-game-card-missing.png','מה נעלם?']
+  ].map(([g,img,t])=>`<button type="button" class="home-game-card" data-game="${g}">
+      <img src="assets/v2/game-menu/${img}" alt="">
+      <span class="home-game-title">${t}</span>
+    </button>`).join('');
+
+  return `<div class="home-container">
+    <section class="home-hero talki-welcome-banner" data-view-inner="home" aria-label="ברוכים הבאים" dir="rtl">
+      <div class="home-hero-content talki-welcome-content">
+        <h1 class="home-hero-title talki-welcome-title">היי כאן דברי</h1>
+        <p class="home-hero-subtitle talki-welcome-subtitle">לומדים מילים, מתרגלים<br>ודברים בביטחון</p>
+        ${cur ? homeHeroCta(cur.id) : ''}
       </div>
-    </div>
+    </section>
     ${speechOk?'':'<div class="banner">הדפדפן לא תומך בהקראת קול. אפשר להקליט קול אמיתי במסך ההורים, או לנסות בכרום.</div>'}
-    ${cur ? `<button class="v2-continue" data-cat="${cur.id}">
-      <div class="v2c-art" style="background:${catGrad(cur.id)}"><img src="${catIcon(cur.id)}" alt=""></div>
-      <div class="v2c-txt"><b>ממשיכים מאיפה שעצרנו</b><span>${display(cur.title)}</span></div>
-      <div class="v2c-pct">${curPct}%</div>
-      <div class="v2c-chev">◀</div>
+    ${cur ? `<button type="button" class="home-continue" data-cat="${cur.id}">
+      <span class="home-continue-icon" style="background:${catGrad(cur.id)}"><img src="${catIcon(cur.id)}" alt=""></span>
+      <span class="home-continue-copy">
+        <span class="home-continue-eyebrow">מתרגלים היום</span>
+        <span class="home-continue-title">${display(cur.title)}</span>
+        <span class="home-continue-support">ממשיכים מאיפה שעצרנו</span>
+      </span>
+      <span class="home-progress-ring" aria-label="${curPct}%">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle class="ring-track" cx="32" cy="32" r="25"></circle>
+          <circle class="ring-value" cx="32" cy="32" r="25" stroke-dasharray="${ringCircumference}"
+            stroke-dashoffset="${(ringCircumference*(1-curPct/100)).toFixed(1)}"></circle>
+        </svg>
+        <span>${curPct}%</span>
+      </span>
+      <span class="home-chevron">${HOME_CHEVRON}</span>
     </button>` : ''}
-    <div class="section-label">🗂️ קטגוריות</div>
-    <div class="v2-cat-grid">${cards}</div>
-    <div class="section-label">🗣️ תרגול דיבור<button class="pill-btn" data-nav="practice" style="font-size:.74rem;padding:6px 12px">הכל ◀</button></div>
-    <div class="v2-practice-list">${PRACTICE_LIST.slice(0,3).map(([g,ic,t,sub,cls])=>`
-      <button class="v2-practice-card ${cls}" data-game="${g}">
-        <span class="pc-icon">${ic}</span>
-        <span class="pc-txt"><b>${t}</b><small>${sub}</small></span>
-        <span class="pc-chev">◀</span>
-      </button>`).join('')}</div>
-    <div class="section-label">🎮 משחקים<button class="pill-btn" data-nav="games" style="font-size:.74rem;padding:6px 12px">הכל ◀</button></div>
-    <div class="v2-games-grid">${[
-      ['quiz','talki-game-card-where-is.png','איפה ה...?'],
-      ['memory','talki-game-card-memory.png','משחק זיכרון'],
-      ['missing','talki-game-card-missing.png','מה נעלם?']
-    ].map(([g,img,t])=>`<button class="v2-game-card" data-game="${g}">
-        <img src="assets/v2/game-menu/${img}" alt="">
-        <span class="vg-label"><b>${t}</b></span>
-      </button>`).join('')}</div>`;
+    <h2 class="home-section-heading"><span class="hsh-icon">${HOME_GRID_ICON}</span><span class="hsh-title">קטגוריות</span></h2>
+    <div class="home-cat-grid">${cards}</div>
+    <h2 class="home-section-heading">
+      <span class="hsh-icon">${HOME_SPEECH_ICON}</span><span class="hsh-title">תרגול דיבור</span>
+      <button type="button" class="hsh-link" data-nav="practice">הכל ◀</button>
+    </h2>
+    <div class="home-practice-row">${practiceCards}</div>
+    <h2 class="home-section-heading">
+      <span class="hsh-icon"><img class="home-games-icon" src="assets/v2/icons/talki-ui-icon-games.png" alt=""></span>
+      <span class="hsh-title">משחקים</span>
+      <button type="button" class="hsh-link" data-nav="games">הכל ◀</button>
+    </h2>
+    <div class="home-games-row">${games}</div>
+  </div>`;
 }
 
 /* still used by the parent recording screen, which is adult UI */
@@ -3458,14 +3684,15 @@ if(window.ResizeObserver){
   try{ new ResizeObserver(syncBarHeight).observe(document.querySelector('.topbar')); }catch(e){}
 }
 
-/* The bottom nav lives outside #app and survives every render, so it is bound
-   exactly once here rather than from bind(). */
-document.querySelectorAll('#bottomNav [data-nav]')
+/* Persistent navigation lives outside #app and survives every render, so it is
+   bound exactly once here rather than from bind(). */
+document.querySelectorAll('#bottomNav [data-nav], .topbar [data-nav]')
   .forEach(el=>el.addEventListener('click', ()=>navTo(el.dataset.nav)));
 
 function syncSpeedIcon(){
   const icon = document.getElementById('speedIcon');
   if(!icon) return;
+  /* OK hand at normal rate (mockup default); speedometers at slow/fast extremes */
   const src = settings.rate<=0.6 ? 'assets/v2/icons/talki-ui-icon-speech-rate-slow.png'
     : settings.rate>=1 ? 'assets/v2/icons/talki-ui-icon-speech-rate-fast.png'
     : 'assets/v2/icons/talki-ui-icon-speech-rate.png';
