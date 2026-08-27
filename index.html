@@ -823,6 +823,11 @@
     .home-hero-cta:hover,.home-hero-cta:active{transform:none}
     .home-continue{transition:none}
     .home-continue:hover,.home-continue:active{transform:none}
+    .home-cat-card{transition:none}
+    .home-cat-card:hover,.home-cat-card:active{transform:none}
+    .home-cat-value{transition:none}
+    .home-practice-card{transition:none}
+    .home-practice-card:hover,.home-practice-card:active{transform:none}
   }
   @media(min-width:768px){.home-hero{margin-top:25px;margin-bottom:20px}}
   @media(max-width:520px){
@@ -834,14 +839,29 @@
   body[data-view="home"] main{max-width:760px;padding-top:10px;padding-inline:var(--home-padding-inline)}
   .home-container{width:100%}
   .home-container button{text-align:start;color:inherit}
-  .home-container button:active:not(.home-continue){transform:translateY(1px)}
+  .home-container button:active:not(.home-continue):not(.home-cat-card):not(.home-practice-card){transform:translateY(1px)}
   .home-container svg{display:block}
   .home-section-heading{justify-content:flex-start}
   .home-section-heading .hsh-icon{width:25px;height:25px;color:var(--talki-purple-600)}
-  .home-section-heading .hsh-title{flex:1}
-  .home-section-heading .hsh-link{min-height:36px;border:0;border-radius:999px;
-    padding:7px 13px;background:var(--talki-purple-050);color:var(--talki-purple-700);
-    font-weight:800;text-align:center}
+  .home-section-heading .hsh-title{flex:1;min-width:0}
+  .home-section-heading .hsh-link{appearance:none;flex:none;display:inline-flex;align-items:center;
+    justify-content:center;gap:7px;direction:ltr;min-width:76px;height:36px;padding:0 14px;
+    border:1px solid #E4D6F7;border-radius:999px;background:linear-gradient(180deg,#FFFFFF 0%,#FBF7FF 72%,#F5EEFF 100%);
+    color:#563578;box-shadow:0 3px 8px rgb(100 70 50 / 10%),0 1px 2px rgb(109 59 166 / 6%),
+      inset 0 1px 0 rgb(255 255 255 / 90%),inset 0 -1px 0 rgb(228 214 247 / 55%);
+    font-family:'Rubik',sans-serif;font-size:15px;font-weight:800;line-height:1;letter-spacing:-.01em;
+    cursor:pointer;transition:transform .14s ease,box-shadow .14s ease}
+  .home-section-heading .hsh-link-chev{display:block;width:7px;height:7px;flex:none;
+    border-block-start:2.4px solid #6D3BA6;border-inline-start:2.4px solid #6D3BA6;
+    border-radius:1px;transform:rotate(-45deg);margin-inline-end:1px}
+  .home-section-heading .hsh-link-label{display:block}
+  @media(hover:hover){
+    .home-section-heading .hsh-link:hover{transform:translateY(-1px);
+      box-shadow:0 5px 12px rgb(100 70 50 / 12%),0 1px 3px rgb(109 59 166 / 8%),
+        inset 0 1px 0 rgb(255 255 255 / 90%),inset 0 -1px 0 rgb(228 214 247 / 55%)}
+  }
+  .home-section-heading .hsh-link:active{transform:translateY(0) scale(.98)}
+  .home-section-heading .hsh-link:focus-visible{outline:3px solid rgb(124 76 214 / 30%);outline-offset:3px}
 
   .home-continue{position:relative;appearance:none;width:100%;min-height:86px;margin-top:16px;
     padding:10px 18px 10px 16px;display:grid;grid-template-columns:64px minmax(0,auto) 1fr 62px 32px;
@@ -881,42 +901,95 @@
     color:#68429D;pointer-events:none}
   .home-continue .home-chevron svg{width:10px;height:18px}
 
-  .home-cat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--home-grid-gap)}
-  .home-cat-card{position:relative;min-height:96px;padding:12px 14px 10px;display:flex;
-    align-items:center;gap:11px;border:1px solid var(--talki-border-soft);border-radius:20px;
-    background:#fff;box-shadow:var(--shadow-card);overflow:hidden}
-  .home-cat-card::after{content:"";position:absolute;inset-inline:14px;bottom:9px;height:4px;
-    border-radius:999px;background:var(--talki-track)}
-  .home-cat-card.mine{grid-column:1/-1;min-height:86px}
-  .home-cat-icon{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;flex:none}
-  .home-cat-icon img{width:36px;height:36px;object-fit:contain}
-  .home-cat-copy{min-width:0;flex:1;align-self:stretch;display:flex;flex-direction:column;
-    justify-content:center;padding-bottom:8px}
-  .home-cat-title{color:var(--talki-text-primary);font-family:'Rubik',sans-serif;
-    font-size:clamp(.91rem,3.8vw,1.06rem);font-weight:800;line-height:1.2;
+  .home-categories{width:100%;direction:rtl}
+  .home-categories .home-section-heading{margin-block-end:14px;color:#4E2A72;gap:10px}
+  .home-categories .home-section-heading .hsh-icon{width:22px;height:22px;align-self:center}
+  .home-categories-icon{width:22px;height:22px;display:block;flex:none}
+  .home-cat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px clamp(12px,2.5vw,14px)}
+  .home-cat-card{--cat-accent:var(--talki-purple-600);--progress:0%;appearance:none;
+    min-height:clamp(72px,11vw,78px);padding-block:9px;padding-inline:12px 8px;
+    display:flex;flex-direction:row;align-items:stretch;gap:10px;
+    border:1px solid rgb(121 83 47 / 8%);border-radius:18px;overflow:hidden;
+    background:linear-gradient(180deg,rgb(255 255 255 / 98%),rgb(255 253 250 / 96%));
+    box-shadow:0 3px 10px rgb(91 62 37 / 5.5%),0 1px 2px rgb(91 62 37 / 3.5%);
+    font:inherit;text-align:inherit;color:inherit;cursor:pointer;
+    transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+  @media(hover:hover){
+    .home-cat-card:hover{transform:translateY(-1px);
+      box-shadow:0 5px 13px rgb(91 62 37 / 8%),0 1px 3px rgb(91 62 37 / 4%)}
+  }
+  .home-cat-card:active{transform:translateY(0) scale(.995)}
+  .home-cat-card:focus-visible{outline:3px solid rgb(124 76 214 / 28%);outline-offset:3px}
+  .home-cat-card.mine{grid-column:1/-1}
+  .home-cat-icon{width:clamp(44px,8.5vw,48px);height:clamp(44px,8.5vw,48px);flex:0 0 clamp(44px,8.5vw,48px);
+    border-radius:14px;display:grid;place-items:center;align-self:center;
+    box-shadow:inset 0 1px 0 rgb(255 255 255 / 45%),0 3px 7px rgb(55 31 85 / 12%)}
+  .home-cat-icon img{width:clamp(34px,4.2vw,40px);height:clamp(34px,4.2vw,40px);object-fit:contain;
+    user-select:none;pointer-events:none}
+  .home-cat-copy{min-width:0;flex:1;display:flex;flex-direction:column;justify-content:space-between;
+    padding-block:2px 1px}
+  .home-cat-title{color:#29212c;font-family:'Rubik',sans-serif;
+    font-size:clamp(14px,1.6vw,16px);font-weight:700;line-height:1.2;text-align:right;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .home-cat-meta{display:flex;align-items:center;gap:3px;margin-top:7px;color:var(--talki-text-secondary);
-    font-size:.69rem;font-weight:600;direction:ltr;justify-content:flex-end}
-  .home-cat-meta svg{width:13px;height:13px;color:var(--talki-gold-500)}
-  .home-cat-fill{position:absolute;z-index:1;inset-inline-start:14px;bottom:9px;height:4px;
-    max-width:calc(100% - 28px);border-radius:999px;background:var(--cat-accent);
-    transition:width .25s ease}
+  .home-cat-progress{display:flex;flex-direction:column;gap:5px;margin-top:4px}
+  .home-cat-stats{display:flex;align-items:center;justify-content:flex-start;gap:4px;
+    direction:ltr;color:#7e7088;font-size:11px;font-weight:600;line-height:1}
+  .home-cat-stats svg{width:11px;height:11px;flex:none;color:#f6c744}
+  .home-cat-track{position:relative;width:100%;height:4px;border-radius:999px;overflow:hidden;
+    background:color-mix(in srgb,var(--cat-accent) 48%,white)}
+  .home-cat-value{display:block;height:100%;width:var(--progress);max-width:100%;
+    background:var(--cat-accent);border-radius:inherit;transition:width .35s ease}
 
-  .home-practice-row,.home-games-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-  .home-practice-card{position:relative;min-height:118px;padding:12px;border:0;border-radius:22px;
-    background:var(--practice-bg);box-shadow:var(--shadow-card);display:block;overflow:hidden}
-  .home-practice-icon{position:absolute;top:12px;right:12px;width:42px;height:42px;border-radius:14px;
-    display:grid;place-items:center;background:rgba(255,255,255,.76);color:var(--practice-accent)}
-  .home-practice-icon svg{width:29px;height:29px}
-  .home-practice-title{display:block;min-height:42px;padding-right:47px;color:var(--talki-text-primary);
-    font-size:.9rem;font-weight:800;line-height:1.15}
-  .home-practice-desc{display:block;margin-top:5px;padding-left:18px;color:#463A52;
-    font-size:.67rem;font-weight:600;line-height:1.28}
-  .home-practice-card .home-chevron{position:absolute;left:12px;bottom:11px;width:28px;height:28px;
-    background:rgba(255,255,255,.86);color:var(--practice-accent)}
-  .home-practice-card .home-chevron svg{width:14px;height:14px}
+  .home-practice{width:100%;direction:rtl;container-type:inline-size}
+  .home-practice .home-section-heading{margin-block-end:12px;color:#563578}
+  .home-practice .home-section-heading .hsh-icon{width:clamp(19px,2.2vw,24px);height:clamp(19px,2.2vw,24px)}
+  .home-practice-icon-header{width:100%;height:100%;object-fit:contain;display:block}
+  .home-practice-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:clamp(10px,1.5vw,14px);direction:rtl}
+  .home-practice-card{--card-start:#ffc8dd;--card-end:#ffacd0;--icon-scale:.72;
+    appearance:none;position:relative;min-height:clamp(100px,12vw,112px);
+    padding-block:12px;padding-inline:12px 14px;direction:ltr;
+    display:grid;grid-template-columns:clamp(30px,3vw,34px) minmax(0,1fr) clamp(52px,6vw,64px);
+    grid-template-areas:"nav content icon";align-items:center;column-gap:10px;
+    border:1px solid rgb(255 255 255 / 52%);border-radius:clamp(20px,2.5vw,27px);
+    background:linear-gradient(135deg,var(--card-start),var(--card-end));
+    box-shadow:0 5px 12px rgb(78 51 43 / 7%),inset 0 1px 0 rgb(255 255 255 / 42%);
+    font:inherit;text-align:inherit;color:inherit;cursor:pointer;overflow:hidden;
+    transition:transform .16s ease,box-shadow .16s ease}
+  .home-practice-card[data-variant="pink"]{--card-start:#ffc8dd;--card-end:#ffacd0;--icon-scale:.72}
+  .home-practice-card[data-variant="lavender"]{--card-start:#ded3ff;--card-end:#c5b3ff;--icon-scale:.66}
+  .home-practice-card[data-variant="orange"]{--card-start:#ffd5aa;--card-end:#ffbd7f;--icon-scale:.58}
+  @media(hover:hover) and (pointer:fine){
+    .home-practice-card:hover{transform:translateY(-2px);
+      box-shadow:0 8px 17px rgb(78 51 43 / 9%),inset 0 1px 0 rgb(255 255 255 / 42%)}
+  }
+  .home-practice-card:active{transform:translateY(0) scale(.99)}
+  .home-practice-card:focus-visible{outline:3px solid rgb(124 76 214 / 30%);outline-offset:3px}
+  .home-practice-nav{grid-area:nav;width:clamp(30px,3vw,34px);height:clamp(30px,3vw,34px);
+    flex:0 0 clamp(30px,3vw,34px);padding:0;border:0;border-radius:50%;
+    background:linear-gradient(145deg, #ffffff 0%, #fffaff 45%, rgba(255,255,255,.28) 100%);
+    box-shadow:0 3px 8px rgb(89 53 126 / 12%),0 1px 2px rgb(89 53 126 / 8%),
+      inset 0 1px 0 rgb(255 255 255 / 95%);
+    display:grid;place-items:center;pointer-events:none}
+  .home-practice-nav-chev{display:block;width:9px;height:9px;box-sizing:border-box;
+    border-left:3px solid #6335a3;border-bottom:3px solid #6335a3;border-radius:1.5px;
+    transform:rotate(45deg) translate(1px,-1px)}
+  .home-practice-copy{grid-area:content;min-width:0;direction:rtl;display:flex;flex-direction:column;
+    justify-content:center;align-self:stretch;text-align:right}
+  .home-practice-title{margin:0;color:#241f27;font-family:'Rubik',sans-serif;
+    font-size:clamp(14px,1.7vw,17px);font-weight:800;line-height:1.15}
+  .home-practice-desc{margin:7px 0 0;color:#483d48;font-size:clamp(11px,1.25vw,13px);
+    font-weight:500;line-height:1.35}
+  .home-practice-icon-wrap{grid-area:icon;width:100%;aspect-ratio:1;display:grid;place-items:center;
+    border-radius:18px;background:linear-gradient(145deg,rgb(255 255 255 / 98%),rgb(255 253 250 / 93%));
+    box-shadow:0 3px 8px rgb(64 45 35 / 8%),inset 0 1px 0 rgb(255 255 255 / 85%);pointer-events:none}
+  .home-practice-icon{display:block;width:calc(100% * var(--icon-scale));height:calc(100% * var(--icon-scale));
+    object-fit:contain;user-select:none;pointer-events:none}
+  @container (max-width:400px){
+    .home-practice-row{grid-template-columns:1fr}
+  }
 
-  .home-games-row{padding-bottom:4px}
+  .home-games-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding-bottom:4px}
   .home-game-card{position:relative;aspect-ratio:1.55/1;border:0;border-radius:18px;
     overflow:hidden;background:#fff;box-shadow:var(--shadow-card);padding:0}
   .home-game-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -927,17 +1000,9 @@
   .home-games-icon{width:25px;height:25px;object-fit:contain}
 
   @media(min-width:430px){
-    .home-practice-card{min-height:126px;padding:13px}
-    .home-practice-title{font-size:.96rem}
-    .home-practice-desc{font-size:.72rem}
     .home-game-title{font-size:.95rem;padding:8px 10px}
   }
   @media(min-width:600px){
-    .home-cat-card{min-height:106px;padding-inline:16px}
-    .home-cat-icon{width:56px;height:56px}.home-cat-icon img{width:40px;height:40px}
-    .home-practice-card{min-height:144px}
-    .home-practice-icon{width:48px;height:48px}.home-practice-icon svg{width:34px;height:34px}
-    .home-practice-title{font-size:1.05rem;padding-right:54px}.home-practice-desc{font-size:.82rem}
     .home-game-title{font-size:1rem}
   }
   @media(max-width:480px){
@@ -950,13 +1015,11 @@
   }
   @media(max-width:374px){
     .home-continue-title{font-size:17px}
-    .home-cat-card{padding-inline:10px;gap:8px}.home-cat-icon{width:44px;height:44px}
-    .home-cat-icon img{width:33px;height:33px}
-    .home-practice-row,.home-games-row{gap:7px}
-    .home-practice-card{padding:9px}
-    .home-practice-icon{top:9px;right:9px;width:36px;height:36px}.home-practice-icon svg{width:25px;height:25px}
-    .home-practice-title{font-size:.79rem;padding-right:41px}.home-practice-desc{font-size:.62rem}
-    .home-practice-card .home-chevron{left:9px;bottom:9px}
+    .home-cat-card{padding-inline:10px 7px;gap:8px;min-height:66px}
+    .home-cat-icon{width:42px;height:42px;flex-basis:42px;border-radius:13px}
+    .home-cat-icon img{width:32px;height:32px}
+    .home-cat-title{font-size:14px}
+    .home-games-row{gap:7px}
   }
 
   /* ================================================================
@@ -1179,19 +1242,39 @@ function mascot(mood, size){
 
 const HERO_CTA_ARROW = '<svg class="home-hero-cta-arrow-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.75 3.25L4.25 7L8.75 10.75" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const HERO_CTA_SPARKLES = '<svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="M11 2l1.1 3.8L15.5 6.5l-3.3 1.2L11 11.5 9.2 7.7 5.5 6.5l3.9-1.2L11 2z"/><path d="M17 12.5l.65 2.2L19.5 14.5l-1.9.75L17 17.2l-.55-1.95L14.5 14.5l1.95-.75.55-2.25z" opacity=".85"/><path d="M5.2 14.8l.5 1.65L7.3 16.5 6 17l-.45 1.55-.5-1.55L3.5 16.5l1.7-.4.5-1.3z" opacity=".7"/></svg>';
-const HOME_CHEVRON = '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 5L7 10l5.5 5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const CONTINUE_CHEVRON = '<svg viewBox="0 0 12 20" fill="none" aria-hidden="true"><path d="M9 2 2 10l7 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const HOME_STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2.4 2.87 5.82 6.42.93-4.65 4.53 1.1 6.4L12 17.06l-5.74 3.02 1.1-6.4-4.65-4.53 6.42-.93L12 2.4Z"/></svg>';
-const HOME_GRID_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="2.5" y="2.5" width="8" height="8" rx="2"/><rect x="13.5" y="2.5" width="8" height="8" rx="2"/><rect x="2.5" y="13.5" width="8" height="8" rx="2"/><rect x="13.5" y="13.5" width="8" height="8" rx="2"/></svg>';
-const HOME_SPEECH_ICON = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5h16v11H11l-5 3v-3H4v-11Z" fill="currentColor"/><circle cx="8" cy="11" r="1.2" fill="white"/><circle cx="12" cy="11" r="1.2" fill="white"/><circle cx="16" cy="11" r="1.2" fill="white"/></svg>';
+const HOME_CATEGORIES_ICON = '<svg class="home-categories-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><defs><linearGradient id="homeCatGridGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#C9A8F5"/><stop offset="1" stop-color="#8B5DE7"/></linearGradient></defs><rect x="1.5" y="1.5" width="9.5" height="9.5" rx="2.8" fill="url(#homeCatGridGrad)"/><rect x="13" y="1.5" width="9.5" height="9.5" rx="2.8" fill="url(#homeCatGridGrad)"/><rect x="1.5" y="13" width="9.5" height="9.5" rx="2.8" fill="url(#homeCatGridGrad)"/><rect x="13" y="13" width="9.5" height="9.5" rx="2.8" fill="url(#homeCatGridGrad)"/></svg>';
+const HOME_PRACTICE_BUBBLE = 'assets/v2/icons/talki-speech-bubble.png';
 const HOME_PRACTICE_ICONS = {
-  focus:'<svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="14" fill="#fff" stroke="currentColor" stroke-width="3"/><circle cx="20" cy="20" r="8" stroke="currentColor" stroke-width="3"/><circle cx="20" cy="20" r="3.5" fill="currentColor"/><path d="m28 12 7-7m-3 0h3v3" stroke="#69B7EF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  receptive:'<svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M16 31c-4-3-5-7-3-11l3-7c.6-1.5 2.8-1.1 2.8.6V20 8c0-2 2.8-2 2.8 0v10-8c0-2 2.8-2 2.8 0v9-6c0-2 2.8-2 2.8 0v8l2-2c2-2 4.4.4 2.8 2.8L27 31H16Z" fill="#FFD75A" stroke="#D89A2E" stroke-width="1.4" stroke-linejoin="round"/></svg>',
-  cloze:'<svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="7" y="7" width="26" height="26" rx="8" fill="#fff"/><rect x="14" y="13" width="4.5" height="14" rx="2.25" fill="currentColor"/><rect x="21.5" y="13" width="4.5" height="14" rx="2.25" fill="currentColor"/></svg>'
+  focus:'assets/v2/icons/talki-speech-target.png',
+  receptive:'assets/v2/icons/talki-speech-pointing-hand.png',
+  cloze:'assets/v2/icons/talki-speech-pause.png'
 };
-const HOME_PRACTICE_TONES = {
-  pink:['#FFD9E6','#F46B91'], lavender:['#DED0FA','#7C4CD6'], peach:['#FFCDA1','#E8792E']
-};
+const HOME_PRACTICE_HOME = [
+  {id:'focus', title:'מילה במיקוד', description:'מילה אחת, שמונה משפטים קצרים', variant:'pink'},
+  {id:'receptive', title:'תראי לי', description:'מזהים בלי צורך לדבר', variant:'lavender'},
+  {id:'cloze', title:'משלימים ביחד', description:'עוצרים מילה לפני הסוף ומחכים', variant:'orange'}
+];
+
+function homeAllLink(nav){
+  return `<button type="button" class="hsh-link" data-nav="${nav}" aria-label="הכל">
+    <span class="hsh-link-chev" aria-hidden="true"></span>
+    <span class="hsh-link-label">הכל</span>
+  </button>`;
+}
+function homePracticeCard(item){
+  const icon = HOME_PRACTICE_ICONS[item.id];
+  return `<button type="button" class="home-practice-card" data-game="${item.id}" data-variant="${item.variant}"
+    aria-label="${item.title}">
+    <span class="home-practice-nav" aria-hidden="true"><span class="home-practice-nav-chev"></span></span>
+    <span class="home-practice-copy">
+      <span class="home-practice-title">${item.title}</span>
+      <span class="home-practice-desc">${item.description}</span>
+    </span>
+    <span class="home-practice-icon-wrap" aria-hidden="true"><img class="home-practice-icon" src="${icon}" alt=""></span>
+  </button>`;
+}
 
 function homeHeroCta(catId){
   return `<button type="button" class="home-hero-cta talki-welcome-cta" data-cat="${catId}" aria-label="המשך ללמידה">
@@ -1635,23 +1718,43 @@ function pickVoice(){
 if(speechOk){ pickVoice(); window.speechSynthesis.onvoiceschanged = pickVoice; }
 
 let currentAudio = null;
+/* Chrome drops speak() in the same turn as cancel(). iOS drops speak() after
+   setTimeout — it has to stay in the tap. Track a cancel so Chrome can wait
+   one macrotask, while a tap with nothing playing still speaks immediately. */
+let ttsGen = 0;
+let ttsNeedsGap = false;
+const ttsApple = (()=>{
+  const ua = navigator.userAgent || '';
+  return /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ||
+    (/Safari/i.test(ua) && !/Chrome|Chromium|Android/i.test(ua));
+})();
+function stopTTS(){
+  ttsGen++;
+  if(!speechOk) return;
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  ttsNeedsGap = true;
+}
 async function say(catId, word, opts){
   opts = opts || {};
   const k = key(catId, word);
+  const spoken = String(word || '');
   if(currentAudio){ currentAudio.pause(); currentAudio = null; }
-  if(recordings[k] === undefined){
-    recordings[k] = await sGet(K.rec(k)) || null;
-  }
+  /* Cached parent recording — play it. Otherwise speak TTS in this turn so we
+     stay inside the user-gesture (awaiting IndexedDB used to kill iOS/Chrome TTS). */
   if(recordings[k]){
     AudioManager.setVoicePromptPlaying(true);
     const done = once(()=>{ AudioManager.setVoicePromptPlaying(false); if(opts.after) opts.after(); });
     currentAudio = new Audio(recordings[k]);
     currentAudio.onended = done; currentAudio.onerror = done;
-    currentAudio.play().catch(()=>{ AudioManager.setVoicePromptPlaying(false); speakTTS(word, {core:true}); done(); });
+    currentAudio.play().catch(()=>{ AudioManager.setVoicePromptPlaying(false); speakTTS(spoken, {...opts, core:true}); });
     setTimeout(done, 6000);
     return;
   }
-  speakTTS(word, {...opts, core:true});
+  speakTTS(spoken, {...opts, core:true});
+  if(recordings[k] === undefined){
+    sGet(K.rec(k)).then(rec=>{ recordings[k] = rec || null; }).catch(()=>{ recordings[k] = null; });
+  }
 }
 function once(fn){ let used=false; return ()=>{ if(used||!fn) return; used=true; fn(); }; }
 function estimateMs(text){
@@ -1660,20 +1763,44 @@ function estimateMs(text){
 }
 function speakTTS(text, opts){
   opts = opts || {};
+  const utter = String(text || '').trim();
   if(!settings.voice && !opts.core){ if(opts.after) setTimeout(opts.after, 10); return; }
   AudioManager.setVoicePromptPlaying(true);
   const done = once(()=>{ AudioManager.setVoicePromptPlaying(false); if(opts.after) opts.after(); });
-  if(!speechOk){ setTimeout(done, estimateMs(text)); return; }
-  try{
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang='he-IL'; u.rate=settings.rate; u.pitch=1.1;
-    if(heVoice) u.voice = heVoice;
-    u.onend = done; u.onerror = done;
-    window.speechSynthesis.speak(u);
-  }catch(e){}
+  if(!utter){ done(); return; }
+  if(!speechOk){ setTimeout(done, estimateMs(utter)); return; }
+  const myGen = ++ttsGen;
+  const busy = !!(window.speechSynthesis.speaking || window.speechSynthesis.pending);
+  if(busy){
+    try{ window.speechSynthesis.cancel(); }catch(e){}
+    ttsNeedsGap = true;
+  }
+  const start = ()=>{
+    if(myGen !== ttsGen) return;
+    ttsNeedsGap = false;
+    try{
+      if(!heVoice) pickVoice();
+      const u = new SpeechSynthesisUtterance(utter);
+      u.lang='he-IL'; u.rate=settings.rate; u.pitch=1.1;
+      if(heVoice) u.voice = heVoice;
+      u.onend = ()=>{ if(myGen === ttsGen) done(); };
+      u.onerror = (ev)=>{
+        if(myGen !== ttsGen) return;
+        if(ev && (ev.error === 'canceled' || ev.error === 'interrupted')) return;
+        if(ev && ev.error === 'synthesis-failed' && !window.__ttsFailToast){
+          window.__ttsFailToast = true;
+          try{ toast('הדפדפן לא מצליח להקריא עברית. נסו בכרום או ספארי, או הקליטו קול במסך ההורים.'); }catch(e){}
+        }
+        done();
+      };
+      window.speechSynthesis.speak(u);
+      if(window.speechSynthesis.paused) window.speechSynthesis.resume();
+    }catch(e){ done(); }
+  };
+  if(ttsNeedsGap && !ttsApple) setTimeout(start, 0);
+  else start();
   // safety net: some browsers never fire onend (no Hebrew voice, muted tab, iOS)
-  setTimeout(done, estimateMs(text) + 900);
+  setTimeout(()=>{ if(myGen === ttsGen) done(); }, estimateMs(utter) + 900);
 }
 let ac = null;
 /* ---- centralized audio: semantic events only, see audio-manager.js ---- */
@@ -1785,9 +1912,12 @@ function render(){
   if(lastRenderedView === 'parent' && view !== 'parent'){
     unlocked = false; lockAnswer = null; lockInput = '';
   }
+  /* Only cancel TTS when leaving a screen. Same-view re-renders (e.g. marking
+     a word tile learned ~420ms after tap) used to kill speech mid-word. */
+  const viewChanged = lastRenderedView !== view;
   lastRenderedView = view;
   clearTimeout(clozeTimer);
-  if(view!=='cloze' && speechOk) window.speechSynthesis.cancel();
+  if(viewChanged && view!=='cloze') stopTTS();
   if(view!=='bubbles' && bubbleTimer){ clearInterval(bubbleTimer); bubbleTimer=null; }
   if(views[view]) document.body.dataset.view = view; else delete document.body.dataset.view;
   app.innerHTML = (views[view]||renderHome)();
@@ -1844,20 +1974,37 @@ const REP_IMG = {
   emotions:art('emotions','happy')
 };
 const CAT_GRAD = {
-  animals:['var(--leaf)','var(--leaf-dark)'], food:['var(--berry)','var(--berry-dark)'],
-  colors:['var(--grape)','var(--grape-dark)'], home:['var(--sky)','var(--sky-dark)'],
-  family:['var(--clay)','var(--clay-dark)'], body:['#D8567F','#A83560'],
-  actions:['var(--teal)','var(--teal-dark)'], numbers:['var(--sun)','var(--sun-dark)'],
-  outside:['#4FA3D1','#2E6E96'], emotions:['var(--wood)','var(--wood-dark)'],
-  mine:['var(--grape)','var(--grape-dark)']
+  animals:['#B4EEE0','#71C9B1'], food:['#FF96AD','#F6537F'],
+  colors:['#BD83F2','#8C4FD7'], home:['#88CAFC','#4D9DEA'],
+  family:['#FFE796','#F0C85A'], body:['#FF9BB5','#E85E85'],
+  actions:['#9AE5D5','#5BBFA8'], numbers:['#FFE796','#F0C85A'],
+  outside:['#88CAFC','#4D9DEA'], emotions:['#D4A8F5','#A967EA'],
+  mine:['#9B65EA','#6835CA']
 };
 const CAT_ACCENT = {
-  animals:'#8FD3C1', food:'#F46B91', home:'#69B7EF', colors:'#9366E5',
-  body:'#F46B91', family:'#FFB977', numbers:'#FFD75A', actions:'#79CFAE',
-  emotions:'#9366E5', outside:'#69B7EF', mine:'#7C4CD6'
+  animals:'#79CDB7', food:'#FF6F91', home:'#65AEF4', colors:'#A967EA',
+  body:'#EC6C91', family:'#77CCA4', numbers:'#E8B93A', actions:'#6FC2B4',
+  emotions:'#C27BEA', outside:'#61A7ED', mine:'#CA84EE'
 };
-function catGrad(id){ const g = CAT_GRAD[id]||CAT_GRAD.animals; return `linear-gradient(155deg,${g[0]},${g[1]})`; }
+function catGrad(id){ const g = CAT_GRAD[id]||CAT_GRAD.animals; return `linear-gradient(145deg,${g[0]},${g[1]})`; }
 function catIcon(id){ return id==='mine' ? 'assets/v2/brand/talki-star-mark.png' : `assets/v2/categories/talki-cat-icon-${id}.png`; }
+function homeCategoryCard(cat, done, tot){
+  const pct = tot ? Math.round(done/tot*100) : 0;
+  const accent = CAT_ACCENT[cat.id] || CAT_ACCENT.animals;
+  const wide = cat.id === 'mine';
+  return `<button type="button" class="home-cat-card${wide ? ' mine' : ''}" data-cat="${cat.id}"
+    style="--cat-accent:${accent};--progress:${pct}%"
+    aria-label="${plain(cat.title)}, ${done} מתוך ${tot}">
+    <span class="home-cat-icon" style="background:${catGrad(cat.id)}"><img src="${catIcon(cat.id)}" alt="" aria-hidden="true"></span>
+    <span class="home-cat-copy">
+      <span class="home-cat-title">${plain(cat.title)}</span>
+      <span class="home-cat-progress">
+        <span class="home-cat-stats"><span>${done}/${tot}</span>${HOME_STAR}</span>
+        <span class="home-cat-track" aria-hidden="true"><span class="home-cat-value"></span></span>
+      </span>
+    </span>
+  </button>`;
+}
 function currentCategory(){
   const cats = allCats().filter(c=>c.items.length);
   if(!cats.length) return null;
@@ -1882,29 +2029,10 @@ function renderHome(){
 
   const cards = allCats().map(cat=>{
     const done = catLearned(cat), tot = cat.items.length;
-    const pct = tot ? Math.round(done/tot*100) : 0;
-    const accent = CAT_ACCENT[cat.id] || CAT_ACCENT.animals;
-    return `<button type="button" class="home-cat-card ${cat.id==='mine'?'mine':''}" data-cat="${cat.id}"
-      style="--cat-accent:${accent}" aria-label="${plain(cat.title)}, ${done} מתוך ${tot}">
-      <span class="home-cat-icon" style="background:${catGrad(cat.id)}"><img src="${catIcon(cat.id)}" alt=""></span>
-      <span class="home-cat-copy">
-        <span class="home-cat-title">${plain(cat.title)}</span>
-        <span class="home-cat-meta">${done}/${tot} ${HOME_STAR}</span>
-      </span>
-      <span class="home-cat-fill" style="width:calc((100% - 28px) * ${pct/100})"></span>
-    </button>`;
+    return homeCategoryCard(cat, done, tot);
   }).join('');
 
-  const practiceCards = PRACTICE_LIST.slice(0,3).map(([g,ic,t,sub,cls,tone])=>{
-    const [bg,accent] = HOME_PRACTICE_TONES[tone] || HOME_PRACTICE_TONES.pink;
-    return `<button type="button" class="home-practice-card" data-game="${g}"
-      style="--practice-bg:${bg};--practice-accent:${accent}">
-      <span class="home-practice-title">${t}</span>
-      <span class="home-practice-icon">${HOME_PRACTICE_ICONS[g]||ic}</span>
-      <span class="home-practice-desc">${sub}</span>
-      <span class="home-chevron">${HOME_CHEVRON}</span>
-    </button>`;
-  }).join('');
+  const practiceCards = HOME_PRACTICE_HOME.map(homePracticeCard).join('');
 
   const games = [
     ['memory','talki-game-card-memory.png','משחק זיכרון'],
@@ -1925,19 +2053,26 @@ function renderHome(){
     </section>
     ${speechOk?'':'<div class="banner">הדפדפן לא תומך בהקראת קול. אפשר להקליט קול אמיתי במסך ההורים, או לנסות בכרום.</div>'}
     ${cur ? homeContinueCard(cur, curPct) : ''}
-    <h2 class="home-section-heading"><span class="hsh-icon">${HOME_GRID_ICON}</span><span class="hsh-title">קטגוריות</span></h2>
-    <div class="home-cat-grid">${cards}</div>
-    <h2 class="home-section-heading">
-      <span class="hsh-icon">${HOME_SPEECH_ICON}</span><span class="hsh-title">תרגול דיבור</span>
-      <button type="button" class="hsh-link" data-nav="practice">הכל ◀</button>
-    </h2>
-    <div class="home-practice-row">${practiceCards}</div>
-    <h2 class="home-section-heading">
-      <span class="hsh-icon"><img class="home-games-icon" src="assets/v2/icons/talki-ui-icon-games.png" alt=""></span>
-      <span class="hsh-title">משחקים</span>
-      <button type="button" class="hsh-link" data-nav="games">הכל ◀</button>
-    </h2>
-    <div class="home-games-row">${games}</div>
+    <section class="home-categories" aria-labelledby="home-categories-heading">
+      <h2 class="home-section-heading" id="home-categories-heading"><span class="hsh-icon">${HOME_CATEGORIES_ICON}</span><span class="hsh-title">קטגוריות</span></h2>
+      <div class="home-cat-grid">${cards}</div>
+    </section>
+    <section class="home-practice" aria-labelledby="home-practice-heading">
+      <h2 class="home-section-heading" id="home-practice-heading">
+        <span class="hsh-icon"><img class="home-practice-icon-header" src="${HOME_PRACTICE_BUBBLE}" alt="" aria-hidden="true"></span>
+        <span class="hsh-title">תרגול דיבור</span>
+        ${homeAllLink('practice')}
+      </h2>
+      <div class="home-practice-row">${practiceCards}</div>
+    </section>
+    <section class="home-games" aria-labelledby="home-games-heading">
+      <h2 class="home-section-heading" id="home-games-heading">
+        <span class="hsh-icon"><img class="home-games-icon" src="assets/v2/icons/talki-ui-icon-games.png" alt="" aria-hidden="true"></span>
+        <span class="hsh-title">משחקים</span>
+        ${homeAllLink('games')}
+      </h2>
+      <div class="home-games-row">${games}</div>
+    </section>
   </div>`;
 }
 
@@ -2789,7 +2924,7 @@ function runCloze(){
 function clozeNext(scored){
   if(!game) return;
   clearTimeout(clozeTimer);
-  if(view!=='cloze' && speechOk) window.speechSynthesis.cancel();
+  if(view!=='cloze') stopTTS();
   if(scored) game.score++;
   game.i++;
   if(game.i>=game.pool.length){ game.done=true; confetti(24); render(); return; }
@@ -3103,7 +3238,8 @@ function bind(){
     else launch(g, activeCat||fallback);
   });
 
-  /* word tiles */
+  /* word tiles — speak in-gesture; mark learned in place (no full render, which
+     used to cancel speechSynthesis mid-word). */
   on('.tile', el=>{
     const word = el.dataset.word, k = key(activeCat,word);
     const cat = getCat(activeCat), item = cat.items.find(i=>i.word===word);
@@ -3113,11 +3249,15 @@ function bind(){
     } : {});
     learned.add(k);
     if(isNew){
-      saveProgress(); chime(true);
+      saveProgress(); chime(true); updateHeader();
+      el.classList.add('learned');
+      if(!el.querySelector('.sticker')){
+        el.insertAdjacentHTML('beforeend', '<span class="sticker">⭐</span>');
+      }
       if(learned.size % 10 === 0) celebrate(`${learned.size} מילים!`);
     }
     el.classList.add('pop');
-    setTimeout(()=>{ el.classList.remove('pop'); render(); }, 420);
+    setTimeout(()=> el.classList.remove('pop'), 420);
   });
 
   /* flashcards */
@@ -3126,10 +3266,10 @@ function bind(){
     const cat = getCat(activeCat);
     const go = d => {
       cardIdx = (cardIdx + d + cat.items.length) % cat.items.length;
-      render();
       const w = cat.items[cardIdx].word;
       learned.add(key(cat.id,w)); saveProgress();
-      setTimeout(()=>say(cat.id,w),150);
+      say(cat.id, w);
+      render();
     };
     flash.addEventListener('click', ()=>say(cat.id, cat.items[cardIdx].word));
     let x0=null;
@@ -3156,7 +3296,7 @@ function bind(){
      starting the game had nothing to go on but a guess. */
   if(view==='quiz' && game && !game.done && !game.asked){
     game.asked = true;
-    setTimeout(()=>{ if(alive('quiz')) say(game.catId, game.target.word); }, 350);
+    say(game.catId, game.target.word);
   }
   on('[data-opt]', el=>{
     if(game.locked) return;
@@ -3202,7 +3342,7 @@ function bind(){
      who cannot read the line above still knows what just happened */
   if(view==='missing' && game && !game.done && game.phase==='ask' && !game.asked){
     game.asked = true;
-    setTimeout(()=>{ if(alive('missing')) speakTTS('מָה נֶעֱלַם?', {}); }, 250);
+    speakTTS('מָה נֶעֱלַם?', {});
   }
   on('[data-guess]', el=>{
     /* the board stays on screen for up to 900ms after an answer, so without
@@ -3249,7 +3389,7 @@ function bind(){
        under the shadows, and this is how the other Talki games open too */
     if(game && !game.done && !game.told){
       game.told = true;
-      setTimeout(()=>{ if(alive('puzzle')) speakTTS('שִׂימִי כָּל תְּמוּנָה בַּמָּקוֹם שֶׁלָּהּ', {}); }, 400);
+      speakTTS('שִׂימִי כָּל תְּמוּנָה בַּמָּקוֹם שֶׁלָּהּ', {});
     }
   }
 
@@ -3270,7 +3410,7 @@ function bind(){
   /* animal sounds */
   if(view==='sounds' && game && !game.done && !game.played){
     game.played = true;
-    setTimeout(()=>speakTTS(game.target.sound,{}), 400);
+    speakTTS(game.target.sound,{});
   }
   on('[data-playsound]', ()=> speakTTS(game.target.sound,{}));
   on('[data-sopt]', el=>{
@@ -3289,7 +3429,7 @@ function bind(){
   /* counting — say the question, which also models the word being counted */
   if(view==='count' && game && !game.done && !game.asked){
     game.asked = true;
-    setTimeout(()=>{ if(alive('count')) speakTTS('כַּמָּה ' + plain(game.it.word) + ' יֵשׁ?', {}); }, 350);
+    speakTTS('כַּמָּה ' + game.it.word + ' יֵשׁ?', {});
   }
   on('[data-count]', el=>{
     if(game.locked) return;
@@ -3305,7 +3445,7 @@ function bind(){
      is a recording for it */
   if(view==='sort' && game && !game.done && !game.asked){
     game.asked = true;
-    setTimeout(()=>{ if(alive('sort')) say(game.right.id, game.it.word); }, 350);
+    say(game.right.id, game.it.word);
   }
   on('[data-box]', el=>{
     if(game.locked) return;
@@ -3322,10 +3462,7 @@ function bind(){
   /* A. focused stimulation */
   if(view==='focus' && game && !game.done && !game.spoke){
     game.spoke = true;
-    setTimeout(()=>{
-      if(!alive('focus') || !CARRIERS[game.step]) return;
-      speakTTS(plain(CARRIERS[game.step].replace('{w}', plain(game.it.word))), {});
-    }, 350);
+    if(CARRIERS[game.step]) speakTTS(CARRIERS[game.step].replace('{w}', game.it.word), {core:true});
   }
   const fc = document.getElementById('focusCard');
   if(fc) fc.addEventListener('click', ()=>{
@@ -3334,12 +3471,14 @@ function bind(){
     if(!learned.has(k)){ learned.add(k); saveProgress(); }
     game.step++;
     if(game.step >= game.total){ game.done = true; confetti(26); AudioManager.playSfx('game.levelComplete'); markSeen(game.catId, game.it.word, false); render(); return; }
-    game.spoke = false; render();
+    game.spoke = true;
+    if(CARRIERS[game.step]) speakTTS(CARRIERS[game.step].replace('{w}', game.it.word), {core:true});
+    render();
   });
   on('[data-nextword]', ()=> launch('focus', game.catId));
 
   /* B. cloze */
-  if(view==='cloze' && game && !game.done && !game.started){ game.started = true; setTimeout(runCloze, 250); }
+  if(view==='cloze' && game && !game.done && !game.started){ game.started = true; runCloze(); }
   on('[data-clozeyes]', ()=>{
     if(!sameRound()) return;
     const willComplete = game.i+1 >= game.pool.length;
@@ -3352,7 +3491,7 @@ function bind(){
   /* C. communication temptation */
   if(view==='temptation' && game && !game.done && !game.asked){
     game.asked = true;
-    setTimeout(()=>{ if(alive('temptation')) speakTTS('מָה יֵשׁ בַּצִּנְצֶנֶת?',{}); }, 350);
+    speakTTS('מָה יֵשׁ בַּצִּנְצֶנֶת?',{});
   }
   on('[data-temptopen]', ()=> openJar());
   on('[data-temptmic]', ()=> listenForAnything());
@@ -3366,7 +3505,7 @@ function bind(){
   /* D. receptive identification */
   if(view==='receptive' && game && !game.done && !game.asked){
     game.asked = true;
-    setTimeout(()=>{ if(alive('receptive')) speakTTS('תַּרְאִי לִי ' + plain(game.target.word), {}); }, 350);
+    speakTTS('תַּרְאִי לִי ' + game.target.word, {});
   }
   on('[data-receptsay]', ()=> speakTTS('תַּרְאִי לִי ' + plain(game.target.word), {}));
   on('[data-recept]', el=>{
@@ -3390,7 +3529,7 @@ function bind(){
   /* E. minimal pairs */
   if(view==='pairs' && game && !game.done && !game.asked){
     game.asked = true;
-    setTimeout(()=>{ if(alive('pairs')) speakTTS(plain(game.target.word),{}); }, 350);
+    speakTTS(game.target.word,{});
   }
   on('[data-pairsay]', ()=> speakTTS(plain(game.target.word),{}));
   on('[data-pair]', el=>{

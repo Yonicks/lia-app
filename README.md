@@ -48,7 +48,7 @@ Ten built-in categories (**182 words**), each a themed set of illustrated
 word tiles — plus **הַמִּלִּים שֶׁלִּי** ("my words"), a category built
 entirely from words a parent adds (see below). Tapping any tile speaks the
 word and marks it "learned" with a sticker; the home screen shows a
-progress bar per category.
+progress bar per category. Category titles on the home screen are displayed cleanly without niqqud.
 
 #### 🐶 חַיּוֹת (animals) — 26
 כֶּלֶב (dog), חָתוּל (cat), פָּרָה (cow), אַרְיֵה (lion), פִּיל (elephant),
@@ -124,6 +124,11 @@ voice recording) from the parent screen.
 A swipe-through, one-word-at-a-time card view for focused repetition,
 separate from the tap-grid.
 
+### Interactive Word-Speak UI & Speech-Rate Controls
+To make pronunciation guidance more engaging and accessible, the app includes:
+- **Interactive Speech Feedback:** Guided speech bubbles, pointing hands, target markers, and intuitive play/pause/navigation controls that visually direct the child's focus during voice playback.
+- **Top Bar Controls:** Fast access to background/gameplay music toggle and instant Hebrew speech-rate level adjustment directly from the main header.
+
 ### Games (arcade-style vocabulary reinforcement)
 | Game | What happens |
 |---|---|
@@ -137,7 +142,7 @@ separate from the tap-grid.
 | 🐮 מי אמר את זה? (Sounds) | Hear an animal sound, find the right animal |
 | 🔢 כמה יש? (Count) | Count items, pick the matching number |
 | 📦 לאיזו קופסה? (Sort) | Sort pictures into the right category |
-| 🧩 שימי במקום (Puzzle) | Drag each picture onto its shadow — or tap the piece, then tap the shadow. Talki speaks the word as it snaps in |
+| 🧩 שימי במקום (Puzzle) | Drag each picture onto its shadow — or tap the piece, then tap the shadow. Talki speaks the word as it snaps in. Shape tags are added to all puzzle vocabulary items for enhanced visual distinctness |
 
 ### Speech practice — the clinical method
 Six activities under "תרגול דיבור", each tied to a named early-intervention
@@ -164,12 +169,12 @@ more often are weighted to appear more; words seen many times recently are
 weighted down; a little randomness keeps it from feeling mechanical. The
 parent report surfaces the resulting "words worth reviewing" list.
 
-### Personalization
+### Personalization & Playback Customization
 Parents can add custom words with a photo (or emoji) and a real voice
 recording — e.g. a grandparent's name, a neighbor's dog, a favorite toy —
 so the vocabulary isn't limited to generic stock categories. Real recorded
 voice is preferred everywhere over synthesized TTS when available, because
-a familiar voice works better for a child than a robotic one.
+a familiar voice works better for a child than a robotic one. Background gameplay music and UI sound feedback can be adjusted globally.
 
 ### Parent screen
 Long-press the 👤 icon and solve a random one-digit multiplication problem
@@ -217,11 +222,7 @@ instead of a broken mic prompt.
 
 ## Architecture
 
-- **Single-file app.** `index.html` (~2,500 lines) contains all markup,
-  CSS, and JS — no build step, no bundler, no framework, no npm
-  dependencies for the app itself. Rendering is a hand-rolled
-  `render()`/view-state pattern (`view = 'home' | 'category' | 'quiz' | ...`),
-  not React/Vue/etc.
+- **Single-file app.** `index.html` contains all markup, CSS, and JS — no build step, no bundler, no framework, no npm dependencies for the app itself. Rendering is a hand-rolled `render()`/view-state pattern (`view = 'home' | 'category' | 'quiz' | ...`), not React/Vue/etc.
 - **Storage.** IndexedDB via a small wrapper (`detect/get/set/del/keys`),
   used for progress, settings, custom words, per-word stats, and voice
   recordings.
@@ -266,7 +267,8 @@ talki/
 │   └── prepare_www.js       copy the PWA into www/ for Capacitor
 ├── tests/
 │   ├── test_suite.py         Playwright end-to-end suite (state)
-│   └── interaction_suite.py  Real touch/pointer/keyboard + reachability audit
+│   ├── interaction_suite.py  Real touch/pointer/keyboard + reachability audit
+│   └── word-speak-playwright.mjs  tile/flashcard tap-to-speak (mock TTS)
 └── .github/workflows/
     └── test-and-deploy.yml   CI: run tests on push/PR, deploy to Pages on main
 ```
@@ -284,7 +286,7 @@ python3 -m http.server 8000
 
 ## Tests & CI
 
-Two Playwright suites.
+Two Playwright Python suites, plus a node script for tap-to-speak.
 
 **`tests/test_suite.py`** covers layout at four screen sizes, every category and
 game opening, games played to completion, IndexedDB persistence, backup
@@ -302,14 +304,18 @@ under a real tap, rapid taps scoring once, the Back button, the parent gate, the
 Match & Drop puzzle (drag, tap→tap, keyboard, escalating help, resize, reduced
 motion), degraded audio APIs, and offline.
 
+**`tests/word-speak-playwright.mjs`** checks that tapping a word tile or flashcard
+calls `speechSynthesis.speak()` and is not cancelled mid-word by a re-render.
+
 ```bash
 pip install playwright && python -m playwright install chromium
 python3 -m http.server 8000 &
 BASE_URL=http://localhost:8000 python3 tests/test_suite.py
 BASE_URL=http://localhost:8000 python3 tests/interaction_suite.py
+node tests/word-speak-playwright.mjs
 ```
 
-Both accept `CHROMIUM_PATH=/path/to/chrome` to use a prebuilt browser instead of
+Both python-based test suites accept `CHROMIUM_PATH=/path/to/chrome` to use a prebuilt browser instead of
 the managed download. The puzzle's word choice is randomised in production;
 `?seed=7` (or `window.__talkiSeed`) makes it reproducible so tests never flake on
 which words came up.
