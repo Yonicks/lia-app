@@ -107,7 +107,9 @@ def test_rtl(b):
 
     positions = page.evaluate("""()=>{
       const center = selector => {
-        const r = document.querySelector(selector).getBoundingClientRect();
+        const el = document.querySelector(selector);
+        if(!el) return null;
+        const r = el.getBoundingClientRect();
         return r.left + r.width / 2;
       };
       return {
@@ -120,9 +122,14 @@ def test_rtl(b):
         continueArt: center('.home-continue .home-continue-icon'),
         continueChevron: center('.home-continue .home-chevron'),
         practiceIcon: center('.home-practice-card .home-practice-icon'),
-        practiceChevron: center('.home-practice-card .home-chevron')
+        practiceChevron: center('.home-practice-card .home-practice-nav')
       };
     }""")
+    missing = [k for k, v in positions.items() if v is None]
+    if missing:
+        fail("rtl-order", f"missing home layout anchors: {missing}")
+        ctx.close()
+        return
     pairs = [
         ("header brand", positions["brand"], positions["actions"]),  # brand sits inline-start (right); utility icons sit inline-end (left)
         ("bottom navigation", positions["homeTab"], positions["parentTab"]),
@@ -140,7 +147,7 @@ def test_rtl(b):
       cta: document.querySelector('.home-hero-cta-label')?.textContent.trim(),
       ctaArrow: !!document.querySelector('.home-hero-cta-arrow-icon'),
       continueChevron: !!document.querySelector('.home-continue .home-chevron svg'),
-      practiceChevron: !!document.querySelector('.home-practice-card .home-chevron svg')
+      practiceChevron: !!document.querySelector('.home-practice-card .home-practice-nav-chev')
     })""")
     if labels["cta"] != "המשך ללמידה" or not labels["ctaArrow"]:
         fail("rtl-chevron", f"hero CTA label/arrow wrong: {labels!r}")

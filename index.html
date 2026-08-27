@@ -112,6 +112,12 @@
     justify-content:center;flex:none;padding:3px;transition:transform .15s ease,box-shadow .15s ease}
   .tb-util-btn:active{transform:translateY(2px);box-shadow:var(--shadow-topbar-btn-active)}
   .tb-util-btn img{width:32px;height:32px;object-fit:contain}
+  /* version watermark: own row under the topbar so it never covers taps */
+  .app-ver{display:block;text-align:center;font-size:11px;font-weight:800;line-height:1;
+    letter-spacing:.08em;color:var(--talki-text-secondary);opacity:.55;pointer-events:none;
+    user-select:none;padding:4px 8px 0;font-family:'Rubik',system-ui,sans-serif}
+  .gate .app-ver{position:absolute;top:calc(env(safe-area-inset-top) + 10px);left:50%;
+    transform:translateX(-50%);padding:0;opacity:.6;z-index:2}
   @media(max-width:430px){
     .topbar{padding:10px 8px;gap:6px}
     .tb-head-cluster{gap:8px}
@@ -1160,11 +1166,14 @@
     /* a board dealt on a taller screen must still fit after a rotation, so
        the slots stop being square and take a share of the height instead */
     .pz-board{min-height:0}
-    .pz-slots{padding:9px;gap:8px}
-    .pz-slot{width:clamp(64px,20vw,110px);height:clamp(56px,11vh,96px);padding:5px}
-    .pz-guide{margin:7px 4px 6px;font-size:.76rem}
-    .pz-piece{width:clamp(64px,19vw,92px);min-height:64px;padding:5px 4px 4px}
-    .pz-piece img{aspect-ratio:auto;height:clamp(32px,6.5vh,56px)}
+    body[data-view="puzzle"] main{padding-top:8px}
+    body[data-view="puzzle"] .cat-header{padding:2px 2px 6px}
+    .pz-slots{padding:8px;gap:7px}
+    .pz-slot{width:clamp(64px,20vw,110px);height:clamp(52px,10.5vh,92px);padding:5px}
+    .pz-guide{margin:5px 4px 4px;font-size:.74rem}
+    .pz-tray{gap:8px}
+    .pz-piece{width:clamp(64px,19vw,92px);min-height:58px;padding:4px 4px 3px;gap:2px}
+    .pz-piece img{aspect-ratio:auto;height:clamp(30px,6vh,52px)}
     .pz-slot .pz-word{font-size:.68rem}
   }
   @media (max-height:560px){
@@ -1200,8 +1209,10 @@
     <button class="tb-util-btn" data-nav="stickers" aria-label="מדבקות ופרסים"><img src="assets/v2/icons/talki-ui-icon-gift.png" alt=""></button>
   </div>
 </div>
+<div class="app-ver" data-app-ver dir="ltr" aria-hidden="true">v1.0</div>
 
 <div class="gate" id="gate">
+  <div class="app-ver" data-app-ver dir="ltr" aria-hidden="true">v1.0</div>
   <div id="gateMascot" style="width:clamp(120px,30vw,190px)"></div>
   <h2>Talki</h2>
   <p>לוחצים על הכפתור כדי להתחיל — זה גם מה שמפעיל את הקול במכשיר</p>
@@ -1476,6 +1487,8 @@ let learned = new Set();                 // "cat:word"
 let stats = {};                          // key -> {seen, wrong}
 let custom = [];                         // [{id,word,emoji,photo}]
 let recordings = {};                     // key -> dataURL (loaded lazily, cached)
+const APP_VERSION = '1.0';
+document.querySelectorAll('[data-app-ver]').forEach(el => { el.textContent = 'v' + APP_VERSION; });
 let settings = { rate:0.85, niqqud:true, sounds:true, effects:true, music:true, musicVol:0.5, voice:true };
 
 let bubbleTimer = null;
@@ -3097,7 +3110,8 @@ function parentSettings(){
   <div class="panel"><h3>איפוס</h3>
     <div class="row"><div class="lbl"><b>איפוס התקדמות</b><small>מוחק מדבקות וסטטיסטיקות בלבד</small></div>
       <button class="pill-btn" data-reset="progress">איפוס</button></div>
-  </div>`;
+  </div>
+  <p class="note" style="text-align:center;margin:8px 0 0">Talki v${APP_VERSION}</p>`;
 }
 function parentRecord(){
   const cat = getCat(activeCat) || allCats()[0];
