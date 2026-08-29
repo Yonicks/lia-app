@@ -115,6 +115,9 @@ def test_rtl(b):
       return {
         brand: center('.tb-brand'),
         actions: center('.tb-utils'),
+        score: center('.tb-points'),
+        logo: center('.tb-logo'),
+        viewportCentre: window.innerWidth / 2,
         homeTab: center('[data-nav="home"].bn-item'),
         parentTab: center('[data-nav="parent"].bn-item'),
         category1: center('.home-cat-card:nth-child(1)'),
@@ -131,7 +134,9 @@ def test_rtl(b):
         ctx.close()
         return
     pairs = [
-        ("header brand", positions["brand"], positions["actions"]),  # brand sits inline-start (right); utility icons sit inline-end (left)
+        # compact header, right to left: score, centred brand mark, music
+        ("header score", positions["score"], positions["brand"]),
+        ("header music", positions["brand"], positions["actions"]),
         ("bottom navigation", positions["homeTab"], positions["parentTab"]),
         ("category grid", positions["category1"], positions["category2"]),
         ("continue card", positions["continueArt"], positions["continueChevron"]),
@@ -142,6 +147,14 @@ def test_rtl(b):
             fail("rtl-order", f"{name} is not ordered from right to left: {start} <= {end}")
         else:
             ok(f"{name} follows RTL visual order")
+
+    # The brand mark is centred on the viewport, not between the two side
+    # controls, so a wider score pill can never nudge it off centre.
+    drift = abs(positions["logo"] - positions["viewportCentre"])
+    if drift > 1.5:
+        fail("header-centre", f"brand mark is {drift:.1f}px off the viewport centre")
+    else:
+        ok("brand mark is centred in the header")
 
     labels = page.evaluate("""()=>({
       cta: document.querySelector('.home-hero-cta-label')?.textContent.trim(),

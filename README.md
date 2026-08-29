@@ -127,7 +127,7 @@ separate from the tap-grid.
 ### Interactive Word-Speak UI & Speech-Rate Controls
 To make pronunciation guidance more engaging and accessible, the app includes:
 - **Interactive Speech Feedback:** Guided speech bubbles, pointing hands, target markers, and intuitive play/pause/navigation controls that visually direct the child's focus during voice playback.
-- **Top Bar Controls:** Fast access to background/gameplay music toggle and instant Hebrew speech-rate level adjustment directly from the main header.
+- **Top Bar Controls:** The compact child header carries three things only — the star/points count, the centred Talki brand mark (long-press for the parent screen) and the background/gameplay music toggle. Hebrew speech rate is set from the speed control in parent settings.
 
 ### Games (arcade-style vocabulary reinforcement)
 | Game | What happens |
