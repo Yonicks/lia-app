@@ -618,26 +618,39 @@
      above; existing screens (games, parent) inherit the new palette
      automatically through the redefined CSS variables.
   ================================================================ */
-  main{padding-bottom:calc(96px + env(safe-area-inset-bottom) + var(--ad-h,0px))}
-  @media(min-width:768px){ main{padding-bottom:calc(100px + var(--ad-h,0px))} }
+  /* ================================================================
+     CHILD PRIMARY NAVIGATION — three destinations, nothing else.
+     Colourful Talki icons in every state so a child who cannot read
+     still recognises each place by shape and colour; the selected one
+     additionally sits on a lavender pill. The bar publishes its own
+     height as --child-nav-h so main's bottom padding tracks it instead
+     of repeating a magic number.
+  ================================================================ */
+  :root{ --child-nav-h:62px; }
+  main{padding-bottom:calc(var(--child-nav-h) + 24px + env(safe-area-inset-bottom) + var(--ad-h,0px))}
+  @media(min-width:768px){ main{padding-bottom:calc(var(--child-nav-h) + 28px + var(--ad-h,0px))} }
 
   .bottom-nav{position:fixed;inset-inline:0;bottom:0;z-index:40;display:flex;justify-content:center;
     padding:0 max(10px,env(safe-area-inset-left)) env(safe-area-inset-bottom) max(10px,env(safe-area-inset-right));
     pointer-events:none}
-  .bottom-nav .bn-inner{pointer-events:auto;width:100%;max-width:640px;min-height:72px;
+  .bottom-nav .bn-inner{pointer-events:auto;width:100%;max-width:640px;min-height:var(--child-nav-h);
     background:rgba(255,255,255,.96);border:1px solid var(--talki-border-soft);
     box-shadow:0 -8px 26px rgba(73,46,25,.10);
-    border-radius:22px 22px 0 0;display:flex;align-items:stretch;justify-content:space-around;
-    padding:8px 10px calc(8px + env(safe-area-inset-bottom));gap:4px}
-  .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-    border:none;background:transparent;padding:6px 4px 5px;border-radius:18px;color:var(--talki-text-muted);
-    font-size:.7rem;font-weight:700;min-height:52px}
-  .bn-item img{width:24px;height:24px;object-fit:contain;opacity:.72}
+    border-radius:22px 22px 0 0;display:grid;grid-template-columns:repeat(3,1fr);align-items:stretch;
+    /* the inset padding keeps the active pill out of the home indicator */
+    padding:3px 8px calc(3px + env(safe-area-inset-bottom));gap:4px}
+  .bn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    border:none;background:transparent;padding:4px 2px;border-radius:18px;color:var(--talki-text-muted);
+    font-size:.7rem;font-weight:700;white-space:nowrap;min-height:52px;
+    transition:transform 160ms ease,background-color 160ms ease,color 160ms ease}
+  .bn-item img{width:30px;height:30px;object-fit:contain;opacity:.84;
+    transition:transform 160ms ease,opacity 160ms ease}
   .bn-item.active{color:var(--talki-purple-700);background:var(--talki-purple-100)}
-  .bn-item.active img{opacity:1}
-  .bn-item.active span{font-size:.75rem;font-weight:700}
-  .bn-item:active{transform:translateY(1px)}
-  @media(min-width:768px){ .bn-item img{width:27px;height:27px} .bn-item{font-size:.74rem} }
+  .bn-item.active img{opacity:1;transform:scale(1.05)}
+  .bn-item.active span{font-weight:800}
+  .bn-item:active{transform:scale(.97)}
+  @media(min-width:768px){ .bn-item img{width:33px;height:33px} .bn-item{font-size:.76rem} }
+  @media(prefers-reduced-motion:reduce){ .bn-item,.bn-item img{transition:none} }
 
   /* ---- V2 illustrated header banner (home/category/practice/games/stickers) ---- */
   .v2-header{position:relative;border-radius:0 0 26px 26px;overflow:hidden;margin:-18px -14px 16px;
@@ -1215,12 +1228,12 @@
 <div id="confettiHost" class="confetti"></div>
 <div id="toast" class="toast"></div>
 
-<nav class="bottom-nav" id="bottomNav">
+<nav class="bottom-nav" id="bottomNav" aria-label="ניווט ראשי">
   <div class="bn-inner">
-    <button class="bn-item" data-nav="home"><img src="assets/v2/icons/talki-ui-icon-home.png" alt=""><span>בית</span></button>
-    <button class="bn-item" data-nav="games"><img src="assets/v2/icons/talki-ui-icon-games.png" alt=""><span>משחקים</span></button>
-    <button class="bn-item" data-nav="stickers"><img src="assets/v2/icons/talki-ui-icon-star.png" alt=""><span>הישגים</span></button>
-    <button class="bn-item" data-nav="parent"><img src="assets/v2/icons/talki-ui-icon-settings.png" alt=""><span>הגדרות</span></button>
+    <button class="bn-item" type="button" data-nav="home"><img src="assets/v2/nav/talki-nav-home.png" alt="" width="30" height="30"><span>בית</span></button>
+    <button class="bn-item" type="button" data-nav="games"><img src="assets/v2/nav/talki-nav-games.png" alt="" width="30" height="30"><span>משחקים</span></button>
+    <!-- the rewards screen keeps its internal "stickers" route; only the label changed -->
+    <button class="bn-item" type="button" data-nav="stickers"><img src="assets/v2/nav/talki-nav-rewards.png" alt="" width="30" height="30"><span>פרסים</span></button>
   </div>
 </nav>
 
@@ -1971,9 +1984,13 @@ window.addEventListener('popstate', e=>{
 function syncBottomNav(){
   const nav = document.getElementById('bottomNav');
   if(!nav) return;
-  const active = view==='home' ? 'home' : view==='games' ? 'games' : view==='stickers' ? 'stickers'
-    : view==='parent' ? 'parent' : null;
-  nav.querySelectorAll('.bn-item').forEach(el=>el.classList.toggle('active', el.dataset.nav===active));
+  /* parent is no longer one of the child destinations, so it lights nothing */
+  const active = view==='home' ? 'home' : view==='games' ? 'games' : view==='stickers' ? 'stickers' : null;
+  nav.querySelectorAll('.bn-item').forEach(el=>{
+    const on = el.dataset.nav===active;
+    el.classList.toggle('active', on);
+    if(on) el.setAttribute('aria-current','page'); else el.removeAttribute('aria-current');
+  });
 }
 
 const REP_IMG = {

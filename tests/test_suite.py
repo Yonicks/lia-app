@@ -119,7 +119,7 @@ def test_rtl(b):
         logo: center('.tb-logo'),
         viewportCentre: window.innerWidth / 2,
         homeTab: center('[data-nav="home"].bn-item'),
-        parentTab: center('[data-nav="parent"].bn-item'),
+        rewardsTab: center('[data-nav="stickers"].bn-item'),
         category1: center('.home-cat-card:nth-child(1)'),
         category2: center('.home-cat-card:nth-child(2)'),
         continueArt: center('.home-continue .home-continue-icon'),
@@ -137,7 +137,8 @@ def test_rtl(b):
         # compact header, right to left: score, centred brand mark, music
         ("header score", positions["score"], positions["brand"]),
         ("header music", positions["brand"], positions["actions"]),
-        ("bottom navigation", positions["homeTab"], positions["parentTab"]),
+        # three destinations, right to left: בית, משחקים, פרסים
+        ("bottom navigation", positions["homeTab"], positions["rewardsTab"]),
         ("category grid", positions["category1"], positions["category2"]),
         ("continue card", positions["continueArt"], positions["continueChevron"]),
         ("practice card", positions["practiceIcon"], positions["practiceChevron"]),

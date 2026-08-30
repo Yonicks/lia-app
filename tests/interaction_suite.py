@@ -89,6 +89,14 @@ def play(page, gtype):
 def has_game(page, gtype):
     return page.evaluate("(g)=>typeof MIN_ITEMS==='object' && g in MIN_ITEMS", gtype)
 
+def open_parent(page):
+    """The child nav has three destinations and none of them is the parent
+    screen, so the only way in is the 900 ms hold on the header brand mark."""
+    page.dispatch_event("#parentBtn", "mousedown")
+    page.wait_for_timeout(1100)
+    page.dispatch_event("#parentBtn", "mouseup")
+    page.wait_for_timeout(500)
+
 
 # ------------------------------------------------------------------ helpers
 # Scroll each control to the middle of the screen, then hit-test it. Anything
@@ -1031,14 +1039,13 @@ def test_parent_gate(b):
     ctx = b.new_context(viewport={"width": 390, "height": 844}, has_touch=True, is_mobile=True)
     page, errors = open_app(ctx)
 
-    page.click('#bottomNav [data-nav="parent"]', timeout=5000)
-    page.wait_for_timeout(500)
+    open_parent(page)
     if not page.locator(".lock-wrap").count():
-        fail("gate", "tapping הורה in the bottom nav opened parent settings ungated")
+        fail("gate", "the long-press on the brand mark opened parent settings ungated")
     elif page.locator("#exportBtn, [data-reset], #importReplace").count():
         fail("gate", "the lock screen exposes settings controls behind it")
     else:
-        ok("tapping הורה lands on the gate, not on settings")
+        ok("the long-press into the parent screen lands on the gate, not on settings")
 
     # a wrong answer must not open it
     page.evaluate("()=>{lockInput='1';render();}")
@@ -1061,11 +1068,10 @@ def test_parent_gate(b):
     # and it closes behind them
     page.click('#bottomNav [data-nav="home"]', timeout=5000)
     page.wait_for_timeout(400)
-    page.click('#bottomNav [data-nav="parent"]', timeout=5000)
-    page.wait_for_timeout(500)
+    open_parent(page)
     if not page.locator(".lock-wrap").count() or page.locator("#exportBtn").count():
         fail("gate", "the parent screen stayed unlocked after leaving it — "
-                     "a toddler tapping הורה would land straight in settings")
+                     "the next long-press would land straight in settings")
     else:
         ok("leaving the parent screen re-locks it")
 

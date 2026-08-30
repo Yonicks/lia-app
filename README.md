@@ -177,8 +177,10 @@ voice is preferred everywhere over synthesized TTS when available, because
 a familiar voice works better for a child than a robotic one. Background gameplay music and UI sound feedback can be adjusted globally.
 
 ### Parent screen
-Long-press the 👤 icon and solve a random one-digit multiplication problem
-to get in (keeps a toddler out, not a determined adult). Five tabs:
+Long-press the Talki brand mark in the header — the only way in, now that the
+child navigation has three destinations and none of them is this screen — and
+solve a random one-digit multiplication problem to get in (keeps a toddler out,
+not a determined adult). Five tabs:
 - **⚙️ הגדרות (Settings)** — speech rate, niqqud (vowel points) on/off,
   background music + volume, feedback sounds, confetti/animation effects,
   install prompt, backup/restore, progress reset.
