@@ -957,7 +957,10 @@ def test_spoken_prompt_on_entry(b):
     page.wait_for_timeout(1200)
     for _ in range(3):
         w = page.evaluate("()=>game.target.word")
-        page.evaluate("(w)=>document.querySelector(`[data-opt='${w}']`).click()", w)
+        # match on the attribute value, never by interpolating the word into a
+        # selector — גִּ'ירָפָה and friends carry an apostrophe that breaks one
+        page.evaluate("(w)=>[...document.querySelectorAll('[data-opt]')]"
+                      ".find(e=>e.dataset.opt===w).click()", w)
         page.wait_for_timeout(1200)
     spoken = page.evaluate("()=>window.__spoken.slice()")
     if len(spoken) != 4:
