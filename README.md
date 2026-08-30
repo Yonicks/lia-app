@@ -129,6 +129,12 @@ To make pronunciation guidance more engaging and accessible, the app includes:
 - **Interactive Speech Feedback:** Guided speech bubbles, pointing hands, target markers, and intuitive play/pause/navigation controls that visually direct the child's focus during voice playback.
 - **Top Bar Controls:** The compact child header carries three things only — the star/points count, the centred Talki brand mark (long-press for the parent screen) and the background/gameplay music toggle. Hebrew speech rate is set from the speed control in parent settings.
 
+### Navigation
+The app features a persistent bottom navigation bar providing quick access to:
+- **Home:** Main category view.
+- **Games:** Central hub for all arcade-style activities.
+- **Rewards:** Track stickers and progress milestones.
+
 ### Games (arcade-style vocabulary reinforcement)
 | Game | What happens |
 |---|---|
@@ -250,6 +256,7 @@ talki/
 ├── index.html          the entire app (markup + CSS + JS)
 ├── manifest.json        PWA manifest (name, icons, shortcuts, portrait lock)
 ├── sw.js                 service worker — precaches the shell, cache-first
+├── assets/               images (game-menu cards, navigation icons)
 ├── icons/                192, 512, 512-maskable, apple-touch (180), favicon
 ├── splash/                iOS launch images, 5 device sizes
 ├── privacy.html          store-required privacy policy (GitHub Pages)
@@ -261,6 +268,7 @@ talki/
 ├── capacitor.config.ts Capacitor wrapper (Play Store + App Store)
 ├── android/              native Android project
 ├── ios/                  native Xcode project (build on a Mac)
+├── docs/git/             git workflows and project configuration
 ├── tools/                  Python asset/art generation scripts
 │   ├── make_assets.py       app icons + iOS splash screens
 │   ├── make_art.py          mascot (5 expressions) + category patterns (inline SVG)
