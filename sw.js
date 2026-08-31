@@ -3,7 +3,7 @@
    server data at all), and refresh the HTML in the background so a new
    deploy is picked up on the next launch. */
 
-const VERSION = 'talki-v8';
+const VERSION = 'talki-v9';
 const SHELL = [
   './',
   './index.html',
@@ -14,7 +14,15 @@ const SHELL = [
   './icons/apple-touch-icon.png',
   './icons/favicon-32.png',
   './audio-manager.js',
-  './assets/audio/audio-logic.js'
+  './assets/audio/audio-logic.js',
+  // opening bumper art — the intro must survive an offline launch
+  './assets/v2/brand/talki-logo-mark.png',
+  './assets/v2/mascot/talki-star-waving.png',
+  './assets/v2/backgrounds/talki-bg-home-hero.png',
+  './assets/v2/effects/talki-particle-star-yellow.png',
+  './assets/v2/effects/talki-particle-star-purple.png',
+  './assets/v2/effects/talki-particle-star-green.png',
+  './assets/v2/effects/talki-particle-star-small.png'
 ];
 
 self.addEventListener('install', event => {

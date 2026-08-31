@@ -44,7 +44,7 @@ def open_app(ctx, wait=900):
             return
         errors.append("console.error: " + m.text + " @ " + (m.location or {}).get("url", "?"))
     page.on("console", on_console)
-    page.goto(URL)
+    page.goto(URL + "?intro=0")   # the opening bumper has its own test; it would cover #app here
     page.wait_for_timeout(wait)
     if page.query_selector("#gateBtn"):
         page.click("#gateBtn")
@@ -122,8 +122,8 @@ def test_rtl(b):
         rewardsTab: center('[data-nav="stickers"].bn-item'),
         category1: center('.home-cat-card:nth-child(1)'),
         category2: center('.home-cat-card:nth-child(2)'),
-        continueArt: center('.home-continue .home-continue-icon'),
-        continueChevron: center('.home-continue .home-chevron'),
+        ctaSparkles: center('.home-hero-cta-sparkles'),
+        ctaArrow: center('.home-hero-cta-arrow'),
         practiceIcon: center('.home-practice-card .home-practice-icon'),
         practiceChevron: center('.home-practice-card .home-practice-nav')
       };
@@ -140,7 +140,9 @@ def test_rtl(b):
         # three destinations, right to left: בית, משחקים, פרסים
         ("bottom navigation", positions["homeTab"], positions["rewardsTab"]),
         ("category grid", positions["category1"], positions["category2"]),
-        ("continue card", positions["continueArt"], positions["continueChevron"]),
+        # the continue card folded into the hero; the icon/chevron pair it used
+        # to contribute is now the CTA's sparkles (start) and forward arrow (end)
+        ("hero call to action", positions["ctaSparkles"], positions["ctaArrow"]),
         ("practice card", positions["practiceIcon"], positions["practiceChevron"]),
     ]
     for name, start, end in pairs:
@@ -160,15 +162,75 @@ def test_rtl(b):
     labels = page.evaluate("""()=>({
       cta: document.querySelector('.home-hero-cta-label')?.textContent.trim(),
       ctaArrow: !!document.querySelector('.home-hero-cta-arrow-icon'),
-      continueChevron: !!document.querySelector('.home-continue .home-chevron svg'),
+      heroState: document.querySelector('.home-hero')?.dataset.state,
+      heroProgress: !!document.querySelector('.home-hero-progress'),
       practiceChevron: !!document.querySelector('.home-practice-card .home-practice-nav-chev')
     })""")
-    if labels["cta"] != "המשך ללמידה" or not labels["ctaArrow"]:
+    if labels["cta"] != "מתחילים ללמוד" or not labels["ctaArrow"]:
         fail("rtl-chevron", f"hero CTA label/arrow wrong: {labels!r}")
-    elif not labels["continueChevron"] or not labels["practiceChevron"]:
+    elif labels["heroState"] != "fresh" or labels["heroProgress"]:
+        fail("home-hero", f"an empty profile must render the new-user hero with no progress: {labels!r}")
+    elif not labels["practiceChevron"]:
         fail("rtl-chevron", f"inconsistent forward chevrons: {labels}")
     else:
         ok("forward actions consistently use left-pointing RTL chevrons")
+
+    # The progress half of the old continue card lives inside the hero now, so
+    # exercise it the same way: seed a few learned words, re-render, and check
+    # the returning layout reads right to left and reports real numbers.
+    prog = page.evaluate("""()=>{
+      const cat = allCats().find(c => c.items.length >= 3);
+      cat.items.slice(0, 3).forEach(i => learned.add(key(cat.id, i.word)));
+      view = 'home'; game = null; render();
+      const centre = s => { const el = document.querySelector(s); if(!el) return null;
+        const r = el.getBoundingClientRect(); return r.left + r.width / 2; };
+      const cur = currentCategory();
+      return {
+        state: document.querySelector('.home-hero')?.dataset.state,
+        cta:   document.querySelector('.home-hero-cta-label')?.textContent.trim(),
+        tile:  centre('.home-hero-tile'),
+        name:  centre('.home-hero-cat-name'),
+        art:   document.querySelector('.home-hero-tile img')?.getAttribute('src'),
+        count: document.querySelector('.home-hero-count')?.textContent.trim(),
+        want:  catLearned(cur) + '/' + cur.items.length,
+        duplicateGone: !document.querySelector('.home-continue')
+      };
+    }""")
+    if prog["state"] != "returning" or prog["tile"] is None or prog["name"] is None:
+        fail("home-hero", f"returning-user hero did not render: {prog!r}")
+    elif prog["cta"] != "המשך ללמוד":
+        fail("home-hero", f"returning hero CTA should read המשך ללמוד: {prog!r}")
+    elif prog["tile"] <= prog["name"]:
+        fail("rtl-order", f"hero category tile is not right of its name: {prog!r}")
+    elif prog["count"] != prog["want"]:
+        fail("home-hero", f"hero numerals do not match the category progress: {prog!r}")
+    elif "talki-cat-art-" not in (prog["art"] or ""):
+        fail("home-hero", f"hero tile is not using the banner art set: {prog!r}")
+    elif not prog["duplicateGone"]:
+        fail("home-hero", "the duplicate .home-continue card is still rendered")
+    else:
+        ok("returning-user hero shows an RTL category tile and real category progress")
+
+    # The hero must name the category the child actually went into, not
+    # whichever one happens to be furthest along. Seed a clear conflict: make
+    # one category nearly finished, then open a different, barely-started one.
+    resumed = page.evaluate("""()=>{
+      const far = allCats().find(c => c.items.length >= 12);
+      const near = allCats().find(c => c.items.length >= 12 && c.id !== far.id);
+      far.items.slice(0, far.items.length - 1).forEach(i => learned.add(key(far.id, i.word)));
+      near.items.slice(0, 1).forEach(i => learned.add(key(near.id, i.word)));
+      saveProgress(); view = 'home'; render();
+      const named = () => document.querySelector('.home-hero-cat-name')?.textContent.trim();
+      const before = named();
+      enterCat(near.id); view = 'home'; render();
+      return { before, after: named(), wantAfter: plain(near.title), far: plain(far.title) };
+    }""")
+    if resumed["after"] != resumed["wantAfter"]:
+        fail("home-hero", f"hero did not resume the category last opened: {resumed!r}")
+    elif resumed["after"] == resumed["far"]:
+        fail("home-hero", f"hero fell back to the furthest-along category: {resumed!r}")
+    else:
+        ok("hero resumes the category the child last opened, not the furthest along")
 
     if errors:
         fail("rtl", f"JS errors: {errors[:2]}")

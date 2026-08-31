@@ -70,7 +70,7 @@ def open_app(ctx, wait=900):
             return
         errors.append("console.error: " + m.text)
     page.on("console", on_console)
-    page.goto(URL)
+    page.goto(URL + "?intro=0")   # the opening bumper would sit on top of every real tap
     page.wait_for_timeout(wait)
     if page.query_selector("#gateBtn"):
         page.click("#gateBtn")

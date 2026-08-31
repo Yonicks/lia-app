@@ -406,6 +406,79 @@
   .gate button{border:none;border-radius:999px;padding:16px 44px;font-size:1.25rem;font-weight:900;color:#fff;
     background:linear-gradient(155deg,var(--wood),var(--wood-dark));box-shadow:0 6px 0 var(--wood-dark)}
   .gate button:active{transform:translateY(4px);box-shadow:none}
+  .gate .mascot-wrap{animation:float 3.4s ease-in-out infinite}
+  .gate button{position:relative}
+  .gate button::after{content:"";position:absolute;inset:-10px;border-radius:999px;border:3px solid var(--wood);
+    opacity:0;animation:gatePulse 2.2s ease-out infinite;pointer-events:none}
+  @keyframes gatePulse{0%{transform:scale(.92);opacity:.5}70%{transform:scale(1.14);opacity:0}100%{opacity:0}}
+
+  /* ---- opening bumper: the gate tap is beat zero, this plays out of it.
+         Every element runs one 4.4s timeline so the beats stay in sync without
+         class-swapping; the exit is a separate class so a skip tap can cut in
+         at any point. Driven by setTimeout, never animationend — the global
+         reduced-motion rule below strips animations and no event would fire. ---- */
+  .intro{position:fixed;inset:0;z-index:88;overflow:hidden;
+    background:var(--cream) center/cover no-repeat url('assets/v2/backgrounds/talki-bg-home-hero.png');
+    display:flex;align-items:center;justify-content:center;touch-action:none}
+  .intro[hidden]{display:none}
+  .intro::before{content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(255,248,234,.42),rgba(255,248,234,.9) 78%)}
+  .intro-stage{position:relative;display:flex;flex-direction:column;align-items:center;
+    gap:clamp(6px,2vw,14px);width:min(92vw,520px);padding:0 12px;text-align:center}
+  .intro-figure{position:relative;line-height:0}
+  .intro-mascot{width:clamp(118px,32vw,196px);height:auto;transform-origin:50% 100%;
+    animation:introMascot 4.4s ease-out both}
+  .intro-word{position:relative;overflow:hidden;border-radius:14px;line-height:0;
+    animation:introWord 4.4s ease-out both}
+  .intro-word img{width:clamp(178px,54vw,318px);height:auto}
+  .intro-word::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.8) 50%,transparent 62%);
+    animation:introSweep 4.4s ease-out both}
+  .intro-tag{margin:0;font-weight:800;color:var(--ink-soft);font-size:clamp(.95rem,3.6vw,1.15rem);
+    animation:introTag 4.4s ease-out both}
+  .intro-sparks{position:absolute;inset:0;pointer-events:none}
+  .intro-spark{position:absolute;left:50%;top:50%;width:var(--s);height:var(--s);
+    margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+    background:center/contain no-repeat var(--img);
+    animation:introSpark .9s cubic-bezier(.2,.7,.3,1) var(--d) both}
+  .intro-spark.slow{animation-duration:2.1s}
+  .intro.out{animation:introOut .62s cubic-bezier(.4,0,.7,1) forwards}
+  .intro.out.fast{animation-duration:.26s}
+  .intro.out::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;
+    border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,255,255,0) 70%);
+    animation:introIris .62s ease-out forwards}
+  /* launch -> apex stretch -> landing squash -> rebound -> settle -> step aside for
+     the wordmark -> two slow waves */
+  @keyframes introMascot{
+    0%,3.4%{opacity:0;transform:translate(0,120%) scale(.82,1.28)}
+    10.9%{opacity:1;transform:translate(0,-16%) scale(1.06,.94)}
+    14.5%{transform:translate(0,0) scale(1.2,.8)}
+    18.2%{transform:translate(0,-7%) scale(.95,1.07)}
+    21.8%,29.5%{transform:translate(0,0) scale(1,1) rotate(0)}
+    38.6%,70.5%{transform:translate(-30%,14%) scale(.6) rotate(0)}
+    76%{transform:translate(-30%,14%) scale(.6) rotate(-11deg)}
+    81.5%{transform:translate(-30%,14%) scale(.6) rotate(8deg)}
+    87%{transform:translate(-30%,14%) scale(.6) rotate(-8deg)}
+    93.2%,100%{opacity:1;transform:translate(-30%,14%) scale(.6) rotate(0)}
+  }
+  @keyframes introWord{
+    0%,29.5%{opacity:0;transform:scale(.35) translateY(14px)}
+    38.6%{opacity:1;transform:scale(1.08) translateY(0)}
+    42%{transform:scale(.98)}
+    46%,70.5%{transform:scale(1) translateY(0)}
+    85%{transform:scale(1) translateY(-6px)}
+    100%{opacity:1;transform:scale(1) translateY(0)}
+  }
+  @keyframes introSweep{0%,38.6%{transform:translateX(-130%)}52%,100%{transform:translateX(130%)}}
+  @keyframes introTag{0%,52.3%{opacity:0;transform:translateY(10px)}62.5%,100%{opacity:1;transform:translateY(0)}}
+  @keyframes introSpark{
+    0%{opacity:0;transform:translate(0,0) scale(.2) rotate(0)}
+    22%{opacity:1;transform:translate(calc(var(--dx) * .45),calc(var(--dy) * .45)) scale(1.05) rotate(calc(var(--r) * .4))}
+    100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.35) rotate(var(--r))}
+  }
+  @keyframes introOut{to{opacity:0;transform:scale(1.08)}}
+  @keyframes introIris{to{transform:scale(92);opacity:0}}
   /* ---- כּוֹכִי the mascot ---- */
   .mascot-wrap{display:inline-block;line-height:0}
   .mascot-wrap svg,.mascot-wrap img{width:100%;height:100%;overflow:visible;object-fit:contain}
@@ -783,26 +856,84 @@
   .home-card{background:var(--talki-surface);border:1px solid var(--talki-border-soft);
     border-radius:22px;box-shadow:var(--shadow-card)}
 
-  /* ---- Home Welcome Hero (approved 3.045:1 banner) ---- */
-  .home-hero{width:calc(100% + 6px);max-width:888px;margin:1px -3px 16px;aspect-ratio:3.045/1;
-    display:flex;align-items:center;direction:rtl;overflow:hidden;padding-top:12px;
-    border-radius:clamp(20px,3.6vw,34px);
-    background:#9ed8f7 url('assets/v2/talki-welcome-banner.png') center/cover no-repeat;
+  /* ---- Home Welcome Hero — one card, two states (fresh / returning) ----
+     The scene art is starless and the mascot is a separate transparent layer,
+     so the hero is free to be as tall as its content needs: the scene just
+     crops more sky, and the character is never zoomed or clipped. Only
+     --content-w / --mascot-w move per breakpoint; the rest is fluid. */
+  .home-hero{--content-w:64%;--mascot-w:32%;--mascot-max:170px;
+    position:relative;width:calc(100% + 6px);max-width:888px;margin:1px -3px 16px;
+    min-height:clamp(200px,53vw,226px);display:flex;align-items:center;direction:rtl;
+    padding:clamp(14px,3.4vw,20px) clamp(14px,4vw,22px) clamp(16px,4vw,22px);
+    border-radius:clamp(20px,3.6vw,34px);overflow:hidden;
+    background:#9ed8f7 url('assets/v2/home/talki-hero-scene-compact.webp') center bottom/cover no-repeat;
     box-shadow:0 8px 22px rgba(76,48,24,.11),0 2px 5px rgba(76,48,24,.06)}
-  .home-hero-content{width:43%;max-width:390px;margin-inline-start:15.7%;
-    display:flex;flex-direction:column;align-items:center;text-align:center}
-  .home-hero-title{margin:0;color:#432064;font:900 clamp(25px,6.4vw,46px)/1.02 'Rubik',sans-serif;
-    letter-spacing:-.02em;white-space:nowrap;transform:translateY(-4px)}
-  .home-hero-subtitle{margin:2px 0 0;color:#56366F;font-family:'Rubik',sans-serif;
-    font-size:clamp(13px,2.66vw,25px);font-weight:400;line-height:1.08;letter-spacing:.2px;
-    transform:translateY(-3px)}
-  .home-hero-cta{position:relative;width:min(340px,90%);height:clamp(47px,8.3vw,76px);
-    margin-top:8px;padding:0 clamp(44px,7.65vw,72px);display:flex;align-items:center;
+  /* Sunlight, not a panel: a feathered white wash with no edge anywhere, so it
+     cannot read as a box and does not care where the crop puts the tree.
+     Strongest at 80% inline (the RTL copy column), gone before the mascot. */
+  .home-hero::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(118% 104% at 80% 44%,rgb(255 255 255 / 90%) 0%,
+      rgb(255 255 255 / 74%) 34%,rgb(255 255 255 / 34%) 60%,rgb(255 255 255 / 0%) 78%)}
+  /* Ground contact, pinned to the grass so it stays put while the star floats */
+  .home-hero::after{content:"";position:absolute;z-index:0;pointer-events:none;
+    left:clamp(2px,1.2vw,10px);bottom:clamp(2px,1.2vw,10px);
+    width:min(var(--mascot-w),var(--mascot-max));height:clamp(8px,2.2vw,14px);
+    background:radial-gradient(closest-side,rgb(30 66 32 / 30%),rgb(30 66 32 / 0%) 78%)}
+  .home-hero-mascot{position:absolute;left:clamp(2px,1.2vw,10px);bottom:clamp(4px,1.6vw,14px);
+    z-index:1;width:min(var(--mascot-w),var(--mascot-max));height:auto;
+    filter:drop-shadow(0 6px 10px rgb(38 72 40 / 16%));user-select:none;pointer-events:none}
+  @media(prefers-reduced-motion:no-preference){
+    .home-hero-mascot{animation:homeHeroFloat 5.5s ease-in-out infinite}
+  }
+  @keyframes homeHeroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .home-hero-content{position:relative;z-index:2;width:var(--content-w);min-width:0;
+    display:flex;flex-direction:column;align-items:stretch;text-align:start;
+    gap:clamp(6px,1.3vw,9px)}
+  .home-hero-title{margin:0;color:#3E1C63;font:800 clamp(15px,3.9vw,21px)/1.15 'Rubik',sans-serif;
+    letter-spacing:-.01em}
+  .home-hero[data-state="fresh"] .home-hero-content{gap:clamp(8px,2vw,12px);justify-content:center}
+  .home-hero[data-state="fresh"] .home-hero-title{font-size:clamp(24px,6.6vw,38px);font-weight:900;
+    line-height:1.04;letter-spacing:-.025em}
+  .home-hero[data-state="fresh"] .home-hero-subtitle{font-size:clamp(13px,3.4vw,17px)}
+  .home-hero-cat{display:flex;align-items:center;gap:clamp(8px,2.2vw,12px);min-width:0}
+  /* Pastel tile derived from the one accent table that already exists, so a
+     category can never end up with two different brand colours. */
+  .home-hero-tile{flex:none;display:grid;place-items:center;
+    width:clamp(42px,11.6vw,58px);height:clamp(42px,11.6vw,58px);
+    border-radius:clamp(13px,3.4vw,18px);
+    background:linear-gradient(160deg,color-mix(in srgb,var(--cat-accent) 22%,#fff),
+      color-mix(in srgb,var(--cat-accent) 46%,#fff));
+    box-shadow:inset 0 1px 0 rgb(255 255 255 / 70%),0 4px 10px rgb(46 30 70 / 14%)}
+  .home-hero-tile img{width:78%;height:78%;object-fit:contain;user-select:none;pointer-events:none}
+  .home-hero-cat-name{min-width:0;color:#2A1440;font-family:'Rubik',sans-serif;
+    font-size:clamp(22px,6.4vw,34px);font-weight:900;line-height:1.06;letter-spacing:-.02em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .home-hero-subtitle{margin:0;color:#4A3364;font-family:'Assistant',sans-serif;
+    font-size:clamp(12px,3.1vw,15px);font-weight:600;line-height:1.3;
+    text-shadow:0 1px 0 rgb(255 255 255 / 55%)}
+  .home-hero-num{direction:ltr;unicode-bidi:isolate;font-weight:800;
+    font-variant-numeric:tabular-nums;color:#5A2E93}
+  .home-hero-progress{--progress:0%;display:flex;align-items:center;gap:10px;
+    margin-block-start:clamp(2px,.8vw,5px)}
+  /* The track carries its own white so the bar never depends on where the
+     sunlight wash happens to fall. */
+  .home-hero-bar{flex:1;min-width:0;height:clamp(7px,1.7vw,9px);border-radius:999px;overflow:hidden;
+    background:rgb(255 255 255 / 78%);
+    box-shadow:inset 0 1px 2px rgb(46 30 70 / 14%),0 1px 0 rgb(255 255 255 / 60%)}
+  .home-hero-bar-fill{display:block;height:100%;width:var(--progress);max-width:100%;
+    border-radius:inherit;background:linear-gradient(90deg,#9B5CF0,#7028B8);
+    transition:width .35s ease}
+  .home-hero-count{flex:none;direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;
+    font-family:'Rubik',sans-serif;font-size:clamp(11px,2.8vw,13px);font-weight:800;
+    color:#4B2680;text-shadow:0 1px 0 rgb(255 255 255 / 65%)}
+  .home-hero-cta{position:relative;width:100%;max-width:340px;
+    height:clamp(46px,11.6vw,58px);margin-block-start:clamp(6px,1.8vw,10px);
+    padding-inline:clamp(40px,10vw,54px);display:flex;align-items:center;
     justify-content:center;overflow:hidden;border:0;border-radius:999px;direction:rtl;
     background:linear-gradient(180deg,#A64FEA 0%,#963FDF 28%,#8233CF 65%,#7028B8 100%);
     color:#fff;box-shadow:0 10px 20px rgba(90,39,145,.22),0 3px 7px rgba(80,29,132,.13),
       inset 0 1px 1px rgba(255,255,255,.28),inset 0 -2px 2px rgba(74,20,119,.1);
-    font-family:'Rubik',sans-serif;font-size:clamp(15px,2.66vw,25px);font-weight:700;
+    font-family:'Rubik',sans-serif;font-size:clamp(14px,3.6vw,18px);font-weight:700;
     line-height:1;letter-spacing:-.3px;
     cursor:pointer;-webkit-tap-highlight-color:transparent;
     transition:transform .14s ease,box-shadow .14s ease,filter .14s ease}
@@ -816,41 +947,56 @@
   }
   .home-hero-cta:active{transform:translateY(1px) scale(.99);
     box-shadow:0 5px 11px rgba(90,39,145,.19),inset 0 2px 3px rgba(76,19,122,.12)}
-  .home-hero-cta:focus-visible{outline:4px solid rgba(141,74,218,.25);outline-offset:4px}
+  .home-hero-cta:focus-visible{outline:4px solid rgba(141,74,218,.35);outline-offset:4px}
   .home-hero-cta-label{position:relative;z-index:2;color:#FFF;font:inherit;white-space:nowrap;
     transform:translateY(-1px)}
-  .home-hero-cta-arrow{position:absolute;left:clamp(9px,1.8vw,17px);top:50%;
-    width:clamp(30px,4.57vw,43px);height:clamp(30px,4.57vw,43px);
+  .home-hero-cta-arrow{position:absolute;left:clamp(7px,1.8vw,11px);top:50%;
+    width:clamp(28px,7vw,36px);height:clamp(28px,7vw,36px);
     transform:translateY(-50%);display:flex;align-items:center;justify-content:center;border-radius:50%;
     background:linear-gradient(180deg,#FFF,#FAF8FF);color:#66359E;
     box-shadow:0 2px 6px rgba(65,27,101,.1),inset 0 1px 1px rgba(255,255,255,.8);z-index:3}
   .home-hero-cta-arrow-icon{width:55%;height:55%;display:block}
-  .home-hero-cta-sparkles{position:absolute;right:clamp(9px,2.13vw,20px);top:50%;
-    width:clamp(24px,3.72vw,35px);transform:translateY(-50%);color:#C999FF;
+  .home-hero-cta-sparkles{position:absolute;right:clamp(8px,2vw,13px);top:50%;
+    width:clamp(20px,5vw,26px);transform:translateY(-50%);color:#C999FF;
     pointer-events:none;z-index:3}
   .home-hero-cta-sparkles svg{width:100%;height:auto;display:block}
   @media (prefers-reduced-motion:reduce){
     .home-hero-cta{transition:none}
     .home-hero-cta:hover,.home-hero-cta:active{transform:none}
-    .home-continue{transition:none}
-    .home-continue:hover,.home-continue:active{transform:none}
+    .home-hero-mascot{animation:none;transform:none}
+    .home-hero-bar-fill{transition:none}
     .home-cat-card{transition:none}
     .home-cat-card:hover,.home-cat-card:active{transform:none}
     .home-cat-value{transition:none}
     .home-practice-card{transition:none}
     .home-practice-card:hover,.home-practice-card:active{transform:none}
   }
-  @media(min-width:768px){.home-hero{margin-top:25px;margin-bottom:20px}}
-  @media(max-width:520px){
-    .home-hero{aspect-ratio:2.65/1;background-position:46% center}
-    .home-hero-content{width:53%;margin-inline-start:7.5%}
+  @media(max-width:374px){
+    .home-hero{--content-w:66%;--mascot-w:30%;--mascot-max:104px;
+      padding-inline:12px;min-height:200px}
+    .home-hero-cta{padding-inline:38px}
+  }
+  @media(min-width:375px){.home-hero{--content-w:63%;--mascot-w:33%;--mascot-max:190px}}
+  /* From here the hero is wider than ~1.8:1, so the 2.33:1 scene crops less
+     than the 4:3 one. Only the matched declaration is ever fetched. */
+  @media(min-width:480px){
+    .home-hero{--content-w:60%;--mascot-w:34%;--mascot-max:220px;
+      min-height:clamp(238px,44vw,268px);
+      background-image:url('assets/v2/home/talki-hero-scene-wide.webp')}
+  }
+  @media(min-width:768px){
+    .home-hero{--content-w:56%;--mascot-w:32%;--mascot-max:252px;
+      min-height:286px;margin-top:25px;margin-bottom:20px;padding:26px 30px 28px}
+    .home-hero::before{background:radial-gradient(96% 108% at 76% 46%,rgb(255 255 255 / 90%) 0%,
+      rgb(255 255 255 / 72%) 36%,rgb(255 255 255 / 30%) 62%,rgb(255 255 255 / 0%) 80%)}
+  }
   }
 
   /* ---- Home content cards ---- */
   body[data-view="home"] main{max-width:760px;padding-top:10px;padding-inline:var(--home-padding-inline)}
   .home-container{width:100%}
   .home-container button{text-align:start;color:inherit}
-  .home-container button:active:not(.home-continue):not(.home-cat-card):not(.home-practice-card){transform:translateY(1px)}
+  .home-container button:active:not(.home-cat-card):not(.home-practice-card):not(.home-hero-cta){transform:translateY(1px)}
   .home-container svg{display:block}
   .home-section-heading{justify-content:flex-start}
   .home-section-heading .hsh-icon{width:25px;height:25px;color:var(--talki-purple-600)}
@@ -873,44 +1019,6 @@
   }
   .home-section-heading .hsh-link:active{transform:translateY(0) scale(.98)}
   .home-section-heading .hsh-link:focus-visible{outline:3px solid rgb(124 76 214 / 30%);outline-offset:3px}
-
-  .home-continue{position:relative;appearance:none;width:100%;min-height:86px;margin-top:16px;
-    padding:10px 18px 10px 16px;display:grid;grid-template-columns:64px minmax(0,auto) 1fr 62px 32px;
-    align-items:center;column-gap:14px;direction:rtl;border:1px solid rgb(109 59 166 / 6%);
-    border-radius:22px;background:linear-gradient(180deg,rgb(255 255 255 / 99%),rgb(255 255 255 / 96%));
-    box-shadow:0 12px 30px rgb(79 50 28 / 8%),0 3px 8px rgb(79 50 28 / 4%);
-    font:inherit;text-align:inherit;color:inherit;cursor:pointer;overflow:hidden;
-    transition:transform .16s cubic-bezier(.2,.8,.2,1),box-shadow .16s ease}
-  .home-continue::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
-    box-shadow:inset 0 1px 0 rgb(255 255 255 / 80%)}
-  @media(hover:hover){
-    .home-continue:hover{transform:translateY(-1px);
-      box-shadow:0 14px 32px rgb(79 50 28 / 10%),0 4px 10px rgb(79 50 28 / 5%)}
-  }
-  .home-continue:active{transform:scale(.985)}
-  .home-continue:focus-visible{outline:3px solid rgb(124 76 214 / 35%);outline-offset:3px}
-  .home-continue-icon{display:grid;place-items:center;width:64px;aspect-ratio:1;border-radius:18px;
-    background:linear-gradient(145deg,#DDD2FF 0%,#CBB8FF 48%,#B89CF5 100%);
-    box-shadow:inset 0 1px 0 rgb(255 255 255 / 55%),0 6px 14px rgb(109 59 166 / 12%)}
-  .home-continue-icon img{width:48px;height:48px;object-fit:contain;user-select:none;pointer-events:none}
-  .home-continue-copy{min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:right}
-  .home-continue-eyebrow{margin:0 0 5px;font-size:11px;font-weight:700;line-height:1.2;color:#59466F}
-  .home-continue-title{margin:0 0 7px;font-family:'Rubik',sans-serif;
-    font-size:clamp(17px,1.3vw,20px);font-weight:800;line-height:1;color:#24192E;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-  .home-continue-support{margin:0;font-size:11px;font-weight:500;line-height:1.35;color:#81738F}
-  .home-continue-spacer{min-width:0}
-  .home-progress-ring{--progress:0deg;position:relative;display:grid;place-items:center;width:62px;
-    aspect-ratio:1;border-radius:50%;
-    background:conic-gradient(#8B5DE7 0deg var(--progress),#EEEAF2 var(--progress) 360deg)}
-  .home-progress-ring::before{content:"";position:absolute;inset:5px;border-radius:inherit;background:#fff}
-  .home-progress-ring span{position:relative;z-index:1;font-size:14px;font-weight:800;color:#54328A}
-  .home-chevron{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
-    flex:none;background:var(--talki-purple-050);color:var(--talki-purple-700)}
-  .home-chevron svg{width:17px;height:17px}
-  .home-continue .home-chevron{width:32px;height:48px;border-radius:0;background:transparent;
-    color:#68429D;pointer-events:none}
-  .home-continue .home-chevron svg{width:10px;height:18px}
 
   .home-categories{width:100%;direction:rtl}
   .home-categories .home-section-heading{margin-block-end:14px;color:#4E2A72;gap:10px}
@@ -1016,16 +1124,7 @@
   @media(min-width:600px){
     .home-game-title{font-size:1rem}
   }
-  @media(max-width:480px){
-    .home-continue{grid-template-columns:56px minmax(0,1fr) 54px 24px;column-gap:10px;
-      min-height:78px;padding-inline:12px}
-    .home-continue-spacer{display:none}
-    .home-continue-icon{width:56px;border-radius:16px}
-    .home-continue-icon img{width:43px;height:43px}
-    .home-progress-ring{width:54px}
-  }
   @media(max-width:374px){
-    .home-continue-title{font-size:17px}
     .home-cat-card{padding-inline:10px 7px;gap:8px;min-height:66px}
     .home-cat-icon{width:42px;height:42px;flex-basis:42px;border-radius:13px}
     .home-cat-icon img{width:32px;height:32px}
@@ -1217,11 +1316,26 @@
   </div>
 </header>
 
+<!-- beat zero of the opening bumper: the tap here is what unlocks audio, so the
+     animation can only start from it. Deliberately holds back the wordmark — the
+     bumper's job is to reveal it. -->
 <div class="gate" id="gate">
-  <div id="gateMascot" style="width:clamp(120px,30vw,190px)"></div>
-  <h2>Talki</h2>
+  <div id="gateMascot" style="width:clamp(130px,34vw,210px)"></div>
   <p>לוחצים על הכפתור כדי להתחיל — זה גם מה שמפעיל את הקול במכשיר</p>
-  <button id="gateBtn">מתחילים!</button>
+  <button id="gateBtn" type="button">מתחילים!</button>
+</div>
+
+<div class="intro" id="intro" hidden aria-hidden="true">
+  <div class="intro-stage">
+    <div class="intro-figure">
+      <img class="intro-mascot" src="assets/v2/mascot/talki-star-waving.png" alt=""
+        width="512" height="512" draggable="false">
+      <div class="intro-sparks" id="introSparks"></div>
+    </div>
+    <div class="intro-word"><img src="assets/v2/brand/talki-logo-mark.png" alt="Talki"
+      width="440" height="136" draggable="false"></div>
+    <p class="intro-tag">לומדים, מתרגלים ומדברים</p>
+  </div>
 </div>
 
 <main id="app"></main>
@@ -1258,7 +1372,6 @@ function mascot(mood, size){
 
 const HERO_CTA_ARROW = '<svg class="home-hero-cta-arrow-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M8.75 3.25L4.25 7L8.75 10.75" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const HERO_CTA_SPARKLES = '<svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="M11 2l1.1 3.8L15.5 6.5l-3.3 1.2L11 11.5 9.2 7.7 5.5 6.5l3.9-1.2L11 2z"/><path d="M17 12.5l.65 2.2L19.5 14.5l-1.9.75L17 17.2l-.55-1.95L14.5 14.5l1.95-.75.55-2.25z" opacity=".85"/><path d="M5.2 14.8l.5 1.65L7.3 16.5 6 17l-.45 1.55-.5-1.55L3.5 16.5l1.7-.4.5-1.3z" opacity=".7"/></svg>';
-const CONTINUE_CHEVRON = '<svg viewBox="0 0 12 20" fill="none" aria-hidden="true"><path d="M9 2 2 10l7 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const HOME_STAR = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2.4 2.87 5.82 6.42.93-4.65 4.53 1.1 6.4L12 17.06l-5.74 3.02 1.1-6.4-4.65-4.53 6.42-.93L12 2.4Z"/></svg>';
 const HOME_CATEGORIES_ICON = '<svg class="home-categories-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><defs><linearGradient id="homeCatGridGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#C9A8F5"/><stop offset="1" stop-color="#8B5DE7"/></linearGradient></defs><rect x="1.5" y="1.5" width="9.5" height="9.5" rx="2.8" fill="url(#homeCatGridGrad)"/><rect x="13" y="1.5" width="9.5" height="9.5" rx="2.8" fill="url(#homeCatGridGrad)"/><rect x="1.5" y="13" width="9.5" height="9.5" rx="2.8" fill="url(#homeCatGridGrad)"/><rect x="13" y="13" width="9.5" height="9.5" rx="2.8" fill="url(#homeCatGridGrad)"/></svg>';
 const HOME_PRACTICE_BUBBLE = 'assets/v2/icons/talki-speech-bubble.png';
@@ -1292,27 +1405,61 @@ function homePracticeCard(item){
   </button>`;
 }
 
-function homeHeroCta(catId){
-  return `<button type="button" class="home-hero-cta talki-welcome-cta" data-cat="${catId}" aria-label="המשך ללמידה">
+function homeHeroCta(catId, label){
+  return `<button type="button" class="home-hero-cta talki-welcome-cta" data-cat="${catId}" aria-label="${label}">
     <span class="home-hero-cta-arrow talki-welcome-cta-arrow">${HERO_CTA_ARROW}</span>
-    <span class="home-hero-cta-label talki-welcome-cta-label">המשך ללמידה</span>
+    <span class="home-hero-cta-label talki-welcome-cta-label">${label}</span>
     <span class="home-hero-cta-sparkles talki-welcome-cta-sparkles">${HERO_CTA_SPARKLES}</span>
   </button>`;
 }
-function homeContinueCard(cat, pct){
-  const p = Math.min(100, Math.max(0, pct));
-  return `<button type="button" class="home-continue" data-cat="${cat.id}"
-    aria-label="ממשיכים ${plain(cat.title)}, ${p}%">
-    <span class="home-continue-icon"><img src="${catIcon(cat.id)}" alt=""></span>
-    <span class="home-continue-copy">
-      <span class="home-continue-eyebrow">מתרגלים היום</span>
-      <span class="home-continue-title">${plain(cat.title)}</span>
-      <span class="home-continue-support">ממשיכים מאיפה שעצרתם</span>
-    </span>
-    <span class="home-continue-spacer" aria-hidden="true"></span>
-    <span class="home-progress-ring" style="--progress:${p * 3.6}deg" aria-label="${p}%"><span>${p}%</span></span>
-    <span class="home-chevron" aria-hidden="true">${CONTINUE_CHEVRON}</span>
-  </button>`;
+/* One hero, two states — it replaced both the old static banner and the white
+   continue card that used to sit under it.
+
+   currentCategory() never returns null once categories exist (it falls back to
+   the first untouched one), so a new user cannot be detected from `cur`: it is
+   learned.size === 0 and nothing else. The fresh state renders no tile, no bar
+   and no numbers rather than a fabricated 0%.
+
+   The two progress readouts are deliberately different scopes, and each says
+   which it is: the bar and "21/30" are THIS CATEGORY, while "another N words
+   to the next star" is the global STAR_STEP ladder that celebrate() and the
+   header pill already run on. */
+function homeHero(cur){
+  const fresh = learned.size === 0;
+  if(fresh) return `<section class="home-hero talki-welcome-banner" data-state="fresh"
+    data-view-inner="home" aria-label="ברוכים הבאים" dir="rtl">
+    <img class="home-hero-mascot" src="assets/v2/home/talki-hero-star.webp" alt="" aria-hidden="true"
+      draggable="false" width="640" height="619">
+    <div class="home-hero-content talki-welcome-content">
+      <h1 class="home-hero-title talki-welcome-title">היי כאן דברי</h1>
+      <p class="home-hero-subtitle talki-welcome-subtitle">לומדים מילים, מתרגלים ומדברים בביטחון</p>
+      ${homeHeroCta(cur.id, 'מתחילים ללמוד')}
+    </div>
+  </section>`;
+
+  const done = catLearned(cur), tot = cur.items.length;
+  const left = wordsToNextStar();
+  const words = left === 1 ? 'מילה אחת' : `<b class="home-hero-num">${left}</b> מילים`;
+  return `<section class="home-hero talki-welcome-banner" data-state="returning"
+    data-view-inner="home" aria-label="ברוכים הבאים" dir="rtl">
+    <img class="home-hero-mascot" src="assets/v2/home/talki-hero-star.webp" alt="" aria-hidden="true"
+      draggable="false" width="640" height="619">
+    <div class="home-hero-content talki-welcome-content">
+      <h1 class="home-hero-title talki-welcome-title">ממשיכים עם</h1>
+      <div class="home-hero-cat" style="--cat-accent:${catAccent(cur.id)}">
+        <span class="home-hero-tile" aria-hidden="true"><img src="${catHeroArt(cur.id)}" alt="" draggable="false"></span>
+        <span class="home-hero-cat-name">${plain(cur.title)}</span>
+      </div>
+      <p class="home-hero-subtitle talki-welcome-subtitle">עוד ${words} לכוכב הבא ⭐</p>
+      <div class="home-hero-progress" style="--progress:${pctOf(done, tot)}%" role="progressbar"
+        aria-valuemin="0" aria-valuemax="${tot}" aria-valuenow="${done}"
+        aria-label="${done} מתוך ${tot} מילים ב${plain(cur.title)}">
+        <span class="home-hero-bar"><span class="home-hero-bar-fill"></span></span>
+        <span class="home-hero-count">${done}/${tot}</span>
+      </div>
+      ${homeHeroCta(cur.id, 'המשך ללמוד')}
+    </div>
+  </section>`;
 }
 function micIcon(state, size){
   const file = state==='listening' || state===true ? 'talki-speech-microphone-listening.png'
@@ -1485,10 +1632,12 @@ const MODIFIERS = [
 ============================================================ */
 const K = {
   progress:'lia:progress', settings:'lia:settings', stats:'lia:stats',
-  customIndex:'lia:custom:index', custom:id=>'lia:custom:'+id, rec:key=>'lia:rec:'+key
+  customIndex:'lia:custom:index', custom:id=>'lia:custom:'+id, rec:key=>'lia:rec:'+key,
+  lastcat:'lia:lastcat'
 };
 
 let learned = new Set();                 // "cat:word"
+let lastCat = null;                      // id of the category the child last opened
 let stats = {};                          // key -> {seen, wrong}
 let custom = [];                         // [{id,word,emoji,photo}]
 let recordings = {};                     // key -> dataURL (loaded lazily, cached)
@@ -1651,8 +1800,9 @@ async function importBackup(file, mode){
 
 async function loadAll(){
   await Store.detect();
-  const [p,st,se,idx] = await Promise.all([sGet(K.progress), sGet(K.stats), sGet(K.settings), sGet(K.customIndex)]);
+  const [p,st,se,idx,lc] = await Promise.all([sGet(K.progress), sGet(K.stats), sGet(K.settings), sGet(K.customIndex), sGet(K.lastcat)]);
   if(p) learned = new Set(p);
+  if(lc) lastCat = lc;
   if(st) stats = st;
   if(se) settings = Object.assign(settings, se);
   if(idx && idx.length){
@@ -1664,6 +1814,13 @@ async function loadAll(){
 const saveProgress = ()=> sSet(K.progress,[...learned]);
 const saveStats    = ()=> sSet(K.stats,stats);
 const saveSettings = ()=> sSet(K.settings,settings);
+const saveLastCat  = ()=> sSet(K.lastcat,lastCat);
+/* Records that the child actually went into this category, which is what the
+   home hero's "ממשיכים עם" promises. Only the paths where a category was
+   deliberately chosen call this — startGame() and the sounds game also assign
+   activeCat, but they fall back to whatever category is big enough, so
+   persisting from there would name a category the child never picked. */
+function enterCat(id){ activeCat = id; if(id){ lastCat = id; saveLastCat(); } }
 
 /* ============================================================
    3. WORD HELPERS
@@ -1680,6 +1837,13 @@ function getCat(id){ return allCats().find(c=>c.id===id); }
 function key(catId,word){ return catId+':'+word; }
 function totalWords(){ return allCats().reduce((s,c)=>s+c.items.length,0); }
 function catLearned(cat){ return cat.items.filter(i=>learned.has(key(cat.id,i.word))).length; }
+/* One percent formula, one place. */
+function pctOf(done,tot){ return tot ? Math.round(done/tot*100) : 0; }
+/* Every STAR_STEP-th word learned anywhere fires celebrate(), and the header
+   pill counts that same global total — so the hero's "next star" line is the
+   very same ladder and the three can never drift apart. */
+const STAR_STEP = 10;
+function wordsToNextStar(){ return STAR_STEP - (learned.size % STAR_STEP); }
 function shuffle(a){ const x=[...a]; for(let i=x.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [x[i],x[j]]=[x[j],x[i]]; } return x; }
 
 /* Deterministic mode for the automated suites. `?seed=7` (or window.__talkiSeed)
@@ -2014,9 +2178,17 @@ const CAT_ACCENT = {
 };
 function catGrad(id){ const g = CAT_GRAD[id]||CAT_GRAD.animals; return `linear-gradient(145deg,${g[0]},${g[1]})`; }
 function catIcon(id){ return id==='mine' ? 'assets/v2/brand/talki-star-mark.png' : `assets/v2/categories/talki-cat-icon-${id}.png`; }
+function catAccent(id){ return CAT_ACCENT[id] || CAT_ACCENT.animals; }
+/* Hero banner tile only. The category grid keeps catIcon(); rolling this
+   richer art set out across the grid is deliberately a later phase. `mine` has
+   no art of its own and falls back to the brand star, as catIcon() does. */
+function catHeroArt(id){
+  return id==='mine' ? 'assets/v2/brand/talki-star-mark.png'
+                     : `assets/v2/categories/talki-cat-art-${id}.webp`;
+}
 function homeCategoryCard(cat, done, tot){
   const pct = tot ? Math.round(done/tot*100) : 0;
-  const accent = CAT_ACCENT[cat.id] || CAT_ACCENT.animals;
+  const accent = catAccent(cat.id);
   const wide = cat.id === 'mine';
   return `<button type="button" class="home-cat-card${wide ? ' mine' : ''}" data-cat="${cat.id}"
     style="--cat-accent:${accent};--progress:${pct}%"
@@ -2034,6 +2206,10 @@ function homeCategoryCard(cat, done, tot){
 function currentCategory(){
   const cats = allCats().filter(c=>c.items.length);
   if(!cats.length) return null;
+  /* Where the child actually was wins. It is skipped once finished, so the
+     hero never offers to "continue" a category with nothing left in it. */
+  const last = lastCat && cats.find(c=>c.id===lastCat);
+  if(last && catLearned(last) < last.items.length) return last;
   const inProgress = cats.filter(c=>{ const d=catLearned(c); return d>0 && d<c.items.length; });
   if(inProgress.length) return inProgress.sort((a,b)=>(catLearned(b)/b.items.length)-(catLearned(a)/a.items.length))[0];
   return cats.find(c=>catLearned(c)===0) || cats[0];
@@ -2050,8 +2226,6 @@ const PRACTICE_LIST = [
 
 function renderHome(){
   const cur = currentCategory();
-  const curDone = cur ? catLearned(cur) : 0, curTot = cur ? cur.items.length : 0;
-  const curPct = curTot ? Math.round(curDone/curTot*100) : 0;
 
   const cards = allCats().map(cat=>{
     const done = catLearned(cat), tot = cat.items.length;
@@ -2070,15 +2244,8 @@ function renderHome(){
     </button>`).join('');
 
   return `<div class="home-container">
-    <section class="home-hero talki-welcome-banner" data-view-inner="home" aria-label="ברוכים הבאים" dir="rtl">
-      <div class="home-hero-content talki-welcome-content">
-        <h1 class="home-hero-title talki-welcome-title">היי כאן דברי</h1>
-        <p class="home-hero-subtitle talki-welcome-subtitle">לומדים מילים, מתרגלים<br>ודברים בביטחון</p>
-        ${cur ? homeHeroCta(cur.id) : ''}
-      </div>
-    </section>
+    ${cur ? homeHero(cur) : ''}
     ${speechOk?'':'<div class="banner">הדפדפן לא תומך בהקראת קול. אפשר להקליט קול אמיתי במסך ההורים, או לנסות בכרום.</div>'}
-    ${cur ? homeContinueCard(cur, curPct) : ''}
     <section class="home-categories" aria-labelledby="home-categories-heading">
       <h2 class="home-section-heading" id="home-categories-heading"><span class="hsh-icon">${HOME_CATEGORIES_ICON}</span><span class="hsh-title">קטגוריות</span></h2>
       <div class="home-cat-grid">${cards}</div>
@@ -3244,13 +3411,13 @@ function bind(){
   const sameRound = ()=> !!game && roundTag() === boundRound;
 
   on('[data-nav]', el=> navTo(el.dataset.nav));
-  on('[data-cat]', el=>{ activeCat=el.dataset.cat; view='category'; render(); });
-  on('[data-cards]', el=>{ activeCat=el.dataset.cards; cardIdx=0; view='cards'; render(); });
+  on('[data-cat]', el=>{ enterCat(el.dataset.cat); view='category'; render(); });
+  on('[data-cards]', el=>{ enterCat(el.dataset.cards); cardIdx=0; view='cards'; render(); });
   on('[data-play]', el=>{ launch('quiz', el.dataset.play); });
-  on('[data-practice]', el=>{ activeCat=el.dataset.practice; view='practice'; render(); });
+  on('[data-practice]', el=>{ enterCat(el.dataset.practice); view='practice'; render(); });
   on('[data-stickerfilter]', el=>{ stickerFilter=el.dataset.stickerfilter; render(); });
   on('[data-gamecat]', el=>{
-    activeCat = el.dataset.gamecat;
+    enterCat(el.dataset.gamecat);
     AudioManager.playSfx('ui.secondaryTap');
     render();
   });
@@ -3281,7 +3448,7 @@ function bind(){
       if(!el.querySelector('.sticker')){
         el.insertAdjacentHTML('beforeend', '<span class="sticker">⭐</span>');
       }
-      if(learned.size % 10 === 0) celebrate(`${learned.size} מילים!`);
+      if(learned.size % STAR_STEP === 0) celebrate(`${learned.size} מילים!`);
     }
     el.classList.add('pop');
     setTimeout(()=> el.classList.remove('pop'), 420);
@@ -3618,7 +3785,8 @@ function bind(){
   });
   on('[data-reset]', async ()=>{
     if(!confirm('לאפס את כל ההתקדמות? ההקלטות והמילים האישיות יישארו. מומלץ לייצא גיבוי קודם.')) return;
-    learned = new Set(); stats = {}; await saveProgress(); await saveStats(); toast('ההתקדמות אופסה'); render();
+    learned = new Set(); stats = {}; lastCat = null; activeCat = null;
+    await saveProgress(); await saveStats(); await sDel(K.lastcat); toast('ההתקדמות אופסה'); render();
   });
   const recCat = document.getElementById('recCat');
   if(recCat) recCat.addEventListener('change', async ()=>{ activeCat = recCat.value; await preloadRecs(activeCat); render(); });
@@ -3974,7 +4142,94 @@ async function polishNativeShell(){
   }catch(e){}
 }
 
-document.getElementById('gateMascot').innerHTML = mascot('wave', 190);
+/* ---------- opening bumper ----------
+   ~5s brand intro that plays out of the start-gate tap. It cannot come any
+   earlier: the first real gesture is what unlocks audio, and a silent intro is
+   not the ask. Sound is layered from the existing SFX library on top of the
+   welcome music bed, which is already fading in by then — so the bumper hands
+   off to the home screen with no seam.
+
+   Timing is driven by setTimeout, never animationend: the global
+   `prefers-reduced-motion` rule strips every animation, so no such event would
+   ever fire and the overlay would strand the app. */
+const INTRO_STAGE_MS = 4400;   // must match the .intro-* animation durations
+const INTRO_EXIT_MS  = 620;    // must match @keyframes introOut
+const INTRO_BEATS = [
+  {at:180,  sfx:'ui.swipe'},              // the star launches
+  {at:640,  sfx:'ui.cardAppear'},         // it lands, sparkles burst
+  {at:1050, sfx:'reward.star'},           // sparkles fly out
+  {at:1450, sfx:'game.levelStart'},       // the wordmark lands
+  {at:3300, sfx:'reward.confetti'},       // held beat
+  {at:INTRO_STAGE_MS + 50, sfx:'ui.swipe'}// exit whoosh
+];
+const INTRO_PARTICLES = ['yellow','purple','green','small']
+  .map(c=>`assets/v2/effects/talki-particle-star-${c}.png`);
+// the mascot and wordmark are already in the DOM (inside the hidden overlay) so the
+// browser fetches them on its own; the particles only exist as runtime CSS vars.
+INTRO_PARTICLES.forEach(u=>{ const i = new Image(); i.src = u; });
+
+function introEnabled(){
+  const params = new URLSearchParams(location.search);
+  if(params.get('intro') === '0') return false;   // test/tooling escape hatch
+  if(params.get('game')) return false;            // deep link — go straight to the game
+  if(!settings.effects) return false;             // reuses the parent "confetti & animations" switch
+  try{ if(matchMedia('(prefers-reduced-motion: reduce)').matches) return false; }catch(e){}
+  return !!document.getElementById('intro');
+}
+
+/* 14 sparks burst out of the landing, 6 more drift in later under the held beat */
+function spawnIntroSparks(host){
+  if(!host) return;
+  const frag = document.createDocumentFragment();
+  for(let i=0;i<20;i++){
+    const ambient = i >= 14;
+    const a = (i / (ambient ? 6 : 14)) * Math.PI * 2 + Math.random() * 0.5;
+    const dist = (ambient ? 90 : 70) + Math.random() * 80;
+    const s = document.createElement('span');
+    s.className = 'intro-spark' + (ambient ? ' slow' : '');
+    s.style.cssText =
+      `--img:url('${INTRO_PARTICLES[i % INTRO_PARTICLES.length]}');` +
+      `--s:${(ambient ? 12 : 16) + Math.round(Math.random() * 14)}px;` +
+      `--dx:${Math.round(Math.cos(a) * dist)}px;--dy:${Math.round(Math.sin(a) * dist)}px;` +
+      `--r:${Math.round(-160 + Math.random() * 320)}deg;` +
+      `--d:${ambient ? 2300 + Math.round(Math.random() * 1200) : 520 + Math.round(Math.random() * 180)}ms`;
+    frag.appendChild(s);
+  }
+  host.appendChild(frag);
+}
+
+function playIntro(){
+  const el = document.getElementById('intro');
+  if(!el) return;
+  const timers = [];
+  let done = false;
+  const finish = ()=>{
+    if(done) return;
+    done = true;
+    timers.forEach(clearTimeout);
+    el.removeEventListener('pointerdown', skip);
+    document.removeEventListener('keydown', skip);
+    el.remove();
+  };
+  // tap anywhere to cut it short — no visible skip button, this is a toddler app
+  const skip = ()=>{
+    if(done || el.classList.contains('out')) return;
+    timers.forEach(clearTimeout);
+    timers.length = 0;
+    AudioManager.playSfx('ui.swipe');
+    el.classList.add('out', 'fast');
+    timers.push(setTimeout(finish, 300));
+  };
+  spawnIntroSparks(document.getElementById('introSparks'));
+  el.hidden = false;
+  INTRO_BEATS.forEach(b=> timers.push(setTimeout(()=>AudioManager.playSfx(b.sfx), b.at)));
+  timers.push(setTimeout(()=>el.classList.add('out'), INTRO_STAGE_MS));
+  timers.push(setTimeout(finish, INTRO_STAGE_MS + INTRO_EXIT_MS + 80));
+  el.addEventListener('pointerdown', skip);
+  document.addEventListener('keydown', skip);
+}
+
+document.getElementById('gateMascot').innerHTML = mascot('wave', 210);
 document.getElementById('gateBtn').addEventListener('click', ()=>{
   unlockAudio();
   AudioManager.unlock();
@@ -3982,6 +4237,8 @@ document.getElementById('gateBtn').addEventListener('click', ()=>{
   lockPortrait();
   if(settings.music) startMusic();
   startAds();
+  // sits under the gate (z 88 vs 90), so the gate's fade reveals it mid-launch
+  if(introEnabled()) playIntro();
   const g = document.getElementById('gate');
   g.style.transition = 'opacity .3s'; g.style.opacity = '0';
   setTimeout(()=>g.remove(), 320);
