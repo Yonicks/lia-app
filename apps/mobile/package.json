@@ -1,0 +1,56 @@
+{
+  "name": "mobile",
+  "version": "1.0.0",
+  "main": "expo-router/entry",
+  "dependencies": {
+    "@expo/metro-runtime": "~57.0.14",
+    "expo": "~57.0.19",
+    "expo-constants": "~57.0.16",
+    "expo-image": "~57.0.4",
+    "expo-linking": "~57.0.9",
+    "expo-router": "~57.0.18",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-gesture-handler": "~2.32.0",
+    "react-native-reanimated": "4.5.1",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "react-native-web": "^0.21.2",
+    "react-native-worklets": "0.10.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/react": "~19.2.2",
+    "@vitest/ui": "^4.1.11",
+    "eslint": "^9.39.5",
+    "eslint-config-expo": "^57.0.2",
+    "expo-doctor": "^1.20.4",
+    "jsdom": "^30.0.1",
+    "playwright": "^1.62.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.11"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "doctor": "expo-doctor",
+    "export:web": "expo export --platform web"
+  },
+  "private": true,
+  "expo": {
+    "install": {
+      "exclude": [
+        "react-native-worklets"
+      ]
+    }
+  },
+  "_comment_react_native_worklets": "Pinned to 0.10.4 (see root package.json overrides) because expo-modules-core@57.0.14 and @expo/ui@57.0.14 both depend on 0.10.4 directly, while expo-doctor's SDK 57.0.18 compatibility table still expects 0.10.1. Pinning to 0.10.1 leaves two copies installed, which is the worse outcome for a native build. 0.10.4 satisfies react-native-reanimated's declared peer range (0.10.x). Revisit when expo-doctor's table catches up."
+}

@@ -1,0 +1,7 @@
+appId: com.yonicks.talki.dev
+---
+- launchApp
+- assertVisible:
+    id: 'bootstrap-title'
+- assertVisible: 'Talki Native Migration'
+- takeScreenshot: phase-01-bootstrap
