@@ -30,6 +30,20 @@ export const brand = {
 /** Ten built-in categories' icon art (index.html `.cat-card .hero-chip img`
  *  equivalent). `mine` (custom words) has no dedicated icon in legacy either
  *  — it reuses the emoji 💜, which is out of scope for this art registry. */
+/** Opening-sequence art (Phase 6) — the same files `sw.js` 18-25 precaches
+ *  and comments "opening bumper art — the intro must survive an offline
+ *  launch". Copied from the repository-root `assets/v2/` exactly like every
+ *  other art registry entry in this file. */
+export const introAssets = {
+  background: require('../../assets/v2/backgrounds/talki-bg-home-hero.png'),
+  star: require('../../assets/v2/mascot/talki-star-waving.png'),
+  sparkleYellow: require('../../assets/v2/effects/talki-particle-star-yellow.png'),
+  sparklePurple: require('../../assets/v2/effects/talki-particle-star-purple.png'),
+  sparkleGreen: require('../../assets/v2/effects/talki-particle-star-green.png'),
+  sparkleSmall: require('../../assets/v2/effects/talki-particle-star-small.png'),
+  wordmark: require('../../assets/v2/brand/talki-logo-mark.png'),
+} as const;
+
 export const categoryIcons = {
   animals: require('../../assets/v2/categories/talki-cat-icon-animals.png'),
   food: require('../../assets/v2/categories/talki-cat-icon-food.png'),

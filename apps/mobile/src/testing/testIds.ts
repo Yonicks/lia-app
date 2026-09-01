@@ -8,6 +8,14 @@ export const testIds = {
     root: 'bootstrap-root',
     title: 'bootstrap-title',
   },
+  /** app/index.tsx + src/features/intro/ — the native opening sequence
+   *  (phase-06-plan.md). `layer(id)` matches every `IntroLayerId` so a spec
+   *  can assert on the exact same identifiers `layers.ts` exports. */
+  intro: {
+    root: 'intro-root',
+    skipLayer: 'intro-skip-layer',
+    layer: (id: string) => `intro-layer-${id}`,
+  },
   /** Dev-only, native-only (never rendered on web — see
    *  app/index.tsx and phase-03-plan.md Tier 3 test plan). Lets
    *  .maestro/persistence.yaml write a known value through TalkiStorage

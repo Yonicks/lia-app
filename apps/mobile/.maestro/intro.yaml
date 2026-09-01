@@ -1,0 +1,25 @@
+appId: com.yonicks.talki.dev
+---
+# Phase 6 Tier 3: launches the real app root (no ?intro=0 — the actual boot
+# path a user hits) and proves the opening sequence renders on a real
+# device and hands off to the next screen, which Tier 2 cannot prove on the
+# web target (validation.md §4). NOT executed in the sandbox this phase was
+# authored in: no Android SDK/adb/emulator and no Maestro binary are
+# available here — same limitation phase-01-report.md and
+# phase-03-report.md already recorded for their own flows. See
+# phase-06-report.md "Native coverage" for the honest accounting and the
+# manual attestations a real device run must still supply.
+- launchApp
+- assertVisible:
+    id: 'intro-root'
+- takeScreenshot: phase-06-intro-playing
+# INTRO_TOTAL_MS (1800) plus generous device slack — a low-end device is
+# exactly the failure mode this flow exists to catch, so the wait is
+# deliberately longer than Tier 2's tolerance.
+- extendedWaitUntil:
+    visible:
+      id: 'bootstrap-title'
+    timeout: 5000
+- assertNotVisible:
+    id: 'intro-root'
+- takeScreenshot: phase-06-handoff
