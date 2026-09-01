@@ -49,4 +49,50 @@ export const testIds = {
     recognitionRunButton: 'audio-lab-recognition-run',
     recognitionResultLabel: 'audio-lab-recognition-result',
   },
+  /** app/dev/gallery.tsx — a developer-only component gallery, unreachable
+   *  from child navigation (see phase-05-plan.md "The gallery is a test
+   *  surface, not documentation"). Renders every design-system primitive and
+   *  shell component in every documented state, grouped into six sections
+   *  that double as the Tier 2 screenshot-baseline and audit unit. */
+  gallery: {
+    root: 'gallery-root',
+    group: (name: string) => `gallery-group-${name}`,
+    typography: {
+      rtlSample: 'gallery-typography-rtl-sample',
+      rtlFirstChar: 'gallery-typography-rtl-first-char',
+      rtlRest: 'gallery-typography-rtl-rest',
+      fontProbeBody: 'gallery-typography-font-probe-body',
+      fontProbeHeading: 'gallery-typography-font-probe-heading',
+    },
+    buttons: {
+      primary: 'gallery-button-primary',
+      secondary: 'gallery-button-secondary',
+      ghost: 'gallery-button-ghost',
+      disabled: 'gallery-button-disabled',
+      icon: 'gallery-button-icon',
+    },
+    cards: {
+      plain: 'gallery-card-plain',
+      pressable: 'gallery-card-pressable',
+      image: (categoryId: string) => `gallery-image-card-${categoryId}`,
+    },
+    progress: {
+      bar: (pct: number) => `gallery-progress-${pct}`,
+      pill: 'gallery-pill',
+    },
+    shell: {
+      topBar: 'gallery-shell-topbar',
+      bottomNav: 'gallery-shell-bottom-nav',
+      gameHeader: 'gallery-shell-game-header',
+      parentGateOpenButton: 'gallery-shell-parent-gate-open',
+      parentGate: 'gallery-shell-parent-gate',
+      toastShowButton: 'gallery-shell-toast-show',
+      toastHost: 'gallery-shell-toast-host',
+      rewardOpenButton: 'gallery-shell-reward-open',
+      rewardOverlay: 'gallery-shell-reward-overlay',
+    },
+    colors: {
+      swatch: (name: string) => `gallery-color-swatch-${name}`,
+    },
+  },
 } as const;

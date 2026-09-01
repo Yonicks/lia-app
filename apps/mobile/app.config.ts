@@ -45,6 +45,7 @@ const config: ExpoConfig = {
     'expo-router',
     'expo-image',
     'expo-sqlite',
+    'expo-font',
     [
       'expo-audio',
       {
