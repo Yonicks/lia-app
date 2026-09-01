@@ -1,0 +1,28 @@
+appId: com.yonicks.talki.dev
+---
+# Phase 3 Tier 3: proves expo-sqlite durability across a genuine process
+# kill, which nothing else in this phase can prove — a web page reload is
+# not a process kill (validation.md §4). Writes a known value through
+# TalkiStorage via the dev-only, native-only DevStorageProbe trigger
+# (src/testing/DevStorageProbe.tsx), force-stops the app, relaunches it, and
+# asserts the value is still there.
+#
+# NOT executed in the sandbox this phase was authored in: no Android
+# SDK/adb/emulator and no Maestro binary are available here (same
+# limitation phase-01-report.md recorded for .maestro/smoke.yaml). See
+# phase-03-report.md "Native coverage" for the honest accounting.
+- launchApp
+- assertVisible:
+    id: 'dev-storage-probe-value'
+- tapOn:
+    id: 'dev-storage-probe-write'
+- assertNotVisible: '(loading)'
+# stopApp simulates a real OS process kill, not a page reload — this is
+# exactly what a web-only run cannot demonstrate.
+- stopApp
+- launchApp
+- assertVisible:
+    id: 'dev-storage-probe-value'
+- assertNotVisible: '(loading)'
+- assertNotVisible: '(none)'
+- takeScreenshot: phase-03-persistence

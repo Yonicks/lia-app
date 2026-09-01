@@ -181,25 +181,99 @@ export async function captureMatrix(page: Page, phase: string, name: string): Pr
   return filePath;
 }
 
-/**
- * Records every call made to the speech service so "speaks exactly once on
- * entry" is assertable, mirroring the legacy SPEECH_SPY pattern. Stubbed until
- * Phase 4 builds the speech service to spy on.
- * TODO(phase-04): install an init script that intercepts the real speech
- * module and records { text, at } for each call.
- */
-export async function speechSpy(_page: Page): Promise<{ calls: unknown[] }> {
-  return { calls: [] };
+export interface SpeechSpyCall {
+  catId: string;
+  word: string;
+  core: boolean;
+  at: number;
 }
 
 /**
- * Stubs the native service layer into its unavailable state so a screen can
- * be proven to survive missing TTS, missing microphone and missing
- * recognition, mirroring legacy STRIP_AUDIO. Stubbed until Phase 4 builds the
- * services to degrade.
- * TODO(phase-04): mock the speech/audio/recording modules to reject or return
- * "unavailable" and assert the screen still renders and stays interactive.
+ * Records every call made to `WordVoiceService.say()` so "speaks exactly
+ * once on entry" is assertable, mirroring legacy `SPEECH_SPY`
+ * (tests/interaction_suite.py 915-926), which wraps
+ * `speechSynthesis.speak` for the identical reason.
+ *
+ * MUST be called *before* `page.goto()`/`openApp()` — like legacy's
+ * `ctx.add_init_script(SPEECH_SPY)` before `open_app()`, this installs a
+ * Playwright init script (`window.__talkiSpeechSpyEnabled = true`) that has
+ * to exist before the app bundle loads, because
+ * `src/testing/e2eVoiceSpyBridge.ts` only wraps `wordVoiceService.say` once,
+ * at module-evaluation time, if the flag is already set.
+ *
+ * Returns a handle whose `calls()` re-reads the live log from the page on
+ * every call — a single point-in-time array wouldn't let a caller assert
+ * "zero, then interact, then exactly one", which is the actual shape every
+ * "speaks once on entry" assertion needs.
  */
-export async function degradeNativeApis(_page: Page): Promise<void> {
-  // no-op until Phase 4
+export async function speechSpy(page: Page): Promise<{ calls: () => Promise<SpeechSpyCall[]>; clear: () => Promise<void> }> {
+  await page.addInitScript(() => {
+    (window as unknown as { __talkiSpeechSpyEnabled?: boolean }).__talkiSpeechSpyEnabled = true;
+    (window as unknown as { __talkiSpeechSpyLog?: unknown[] }).__talkiSpeechSpyLog = [];
+  });
+  return {
+    calls: () =>
+      page.evaluate(
+        () => (window as unknown as { __talkiSpeechSpyLog?: SpeechSpyCall[] }).__talkiSpeechSpyLog ?? []
+      ),
+    clear: () =>
+      page.evaluate(() => {
+        (window as unknown as { __talkiSpeechSpyLog?: unknown[] }).__talkiSpeechSpyLog = [];
+      }),
+  };
+}
+
+/**
+ * Forces every native-backed service into its unavailable state so a
+ * screen can be proven to survive missing TTS, missing microphone and
+ * missing speech recognition — mirroring legacy `STRIP_AUDIO`
+ * (tests/interaction_suite.py 858-864), which deletes/hides the exact same
+ * browser APIs for the exact same reason.
+ *
+ * MUST be called *before* `page.goto()`/`openApp()`, like legacy's
+ * `ctx.add_init_script(STRIP_AUDIO)` before `open_app()`: the app's own
+ * platform-web implementations (`webAudioEngine.ts` over
+ * `HTMLAudioElement`/Web Audio, `expo-speech`'s web shim over
+ * `speechSynthesis`, `expo-speech-recognition`'s web shim over
+ * `SpeechRecognition`, and `RecordingService`'s `isAvailable()` check over
+ * `navigator.mediaDevices`) all probe these same browser globals, so
+ * removing them before the bundle loads is what makes each service
+ * actually report "unavailable" rather than throwing mid-call.
+ */
+export async function degradeNativeApis(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    const w = window as unknown as Record<string, unknown>;
+    delete w.SpeechRecognition;
+    delete w.webkitSpeechRecognition;
+    const gone = (name: string) => {
+      try {
+        Object.defineProperty(window, name, {
+          configurable: true,
+          get() {
+            return undefined;
+          },
+        });
+      } catch {
+        // some browsers won't let a built-in global be redefined — best effort
+      }
+    };
+    gone('speechSynthesis');
+    gone('AudioContext');
+    gone('webkitAudioContext');
+    try {
+      delete w.MediaRecorder;
+    } catch {
+      w.MediaRecorder = undefined;
+    }
+    try {
+      Object.defineProperty(navigator, 'mediaDevices', {
+        configurable: true,
+        get() {
+          return undefined;
+        },
+      });
+    } catch {
+      // ignore — best effort, matching legacy STRIP_AUDIO's own try/catch
+    }
+  });
 }

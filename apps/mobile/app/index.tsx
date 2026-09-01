@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { DevStorageProbe } from '../src/testing/DevStorageProbe';
 import { testIds } from '../src/testing/testIds';
 
 export default function Bootstrap() {
@@ -11,6 +12,7 @@ export default function Bootstrap() {
           Talki Native Migration
         </Text>
         <Text style={styles.subtitle}>Phase 1</Text>
+        <DevStorageProbe />
       </View>
     </SafeAreaView>
   );

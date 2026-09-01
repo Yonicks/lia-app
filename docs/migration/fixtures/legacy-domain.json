@@ -1,0 +1,1628 @@
+{
+  "CARRIERS": [
+    "הִנֵּה {w}",
+    "עוֹד {w}",
+    "וַואו, {w}!",
+    "אֵיפֹה {w}?",
+    "זֶה {w}",
+    "{w} שֶׁלִּי",
+    "בַּיי בַּיי {w}",
+    "אֲנִי רוֹאָה {w}"
+  ],
+  "CATEGORIES": {
+    "actions": {
+      "cls": "c-actions",
+      "icon": "🏃",
+      "id": "actions",
+      "items": [
+        {
+          "emoji": "🍽️",
+          "img": "assets/words/actions/talki-actions-eating.png",
+          "shape": "action",
+          "word": "אוֹכֶלֶת"
+        },
+        {
+          "emoji": "🥤",
+          "img": "assets/words/actions/talki-actions-drinking.png",
+          "shape": "action",
+          "word": "שׁוֹתָה"
+        },
+        {
+          "emoji": "😴",
+          "img": "assets/words/actions/talki-actions-sleeping.png",
+          "shape": "action",
+          "word": "יְשֵׁנָה"
+        },
+        {
+          "emoji": "🏃",
+          "img": "assets/words/actions/talki-actions-running.png",
+          "shape": "action",
+          "word": "רָצָה"
+        },
+        {
+          "emoji": "🤸",
+          "img": "assets/words/actions/talki-actions-jumping.png",
+          "shape": "action",
+          "word": "קוֹפֶצֶת"
+        },
+        {
+          "emoji": "👏",
+          "img": "assets/words/actions/talki-actions-clapping.png",
+          "shape": "action",
+          "word": "מוֹחֵאת כַּפַּיִם"
+        },
+        {
+          "emoji": "😘",
+          "img": "assets/words/actions/talki-actions-kissing.png",
+          "shape": "action",
+          "word": "מְנַשֶּׁקֶת"
+        },
+        {
+          "emoji": "🤗",
+          "img": "assets/words/actions/talki-actions-hugging.png",
+          "shape": "action",
+          "word": "מְחַבֶּקֶת"
+        },
+        {
+          "emoji": "😢",
+          "img": "assets/words/actions/talki-actions-crying.png",
+          "shape": "action",
+          "word": "בּוֹכָה"
+        },
+        {
+          "emoji": "😂",
+          "img": "assets/words/actions/talki-actions-laughing.png",
+          "shape": "action",
+          "word": "צוֹחֶקֶת"
+        },
+        {
+          "emoji": "🛁",
+          "img": "assets/words/actions/talki-actions-bathing.png",
+          "shape": "action",
+          "word": "מִתְרַחֶצֶת"
+        },
+        {
+          "emoji": "🎤",
+          "img": "assets/words/actions/talki-actions-singing.png",
+          "shape": "action",
+          "word": "שָׁרָה"
+        },
+        {
+          "emoji": "🎨",
+          "img": "assets/words/actions/talki-actions-drawing.png",
+          "shape": "action",
+          "word": "מְצַיֶּרֶת"
+        },
+        {
+          "emoji": "🚶",
+          "img": "assets/words/actions/talki-actions-walking.png",
+          "shape": "action",
+          "word": "הוֹלֶכֶת"
+        },
+        {
+          "emoji": "🏊",
+          "img": "assets/words/actions/talki-actions-swimming.png",
+          "shape": "action",
+          "word": "שׂוֹחָה"
+        },
+        {
+          "emoji": "💃",
+          "img": "assets/words/actions/talki-actions-dancing.png",
+          "shape": "action",
+          "word": "רוֹקֶדֶת"
+        }
+      ],
+      "title": "פְּעוּלוֹת"
+    },
+    "animals": {
+      "cls": "c-animals",
+      "icon": "🐶",
+      "id": "animals",
+      "items": [
+        {
+          "emoji": "🐶",
+          "img": "assets/words/animals/talki-animals-dog.png",
+          "shape": "quadruped",
+          "sound": "הַב הַב",
+          "word": "כֶּלֶב"
+        },
+        {
+          "emoji": "🐱",
+          "img": "assets/words/animals/talki-animals-cat.png",
+          "shape": "quadruped",
+          "sound": "מְיָאוּ",
+          "word": "חָתוּל"
+        },
+        {
+          "emoji": "🐮",
+          "img": "assets/words/animals/talki-animals-cow.png",
+          "shape": "quadruped",
+          "sound": "מוּ",
+          "word": "פָּרָה"
+        },
+        {
+          "emoji": "🦁",
+          "img": "assets/words/animals/talki-animals-lion.png",
+          "shape": "quadruped",
+          "sound": "רְרְרָאוּ",
+          "word": "אַרְיֵה"
+        },
+        {
+          "emoji": "🐘",
+          "img": "assets/words/animals/talki-animals-elephant.png",
+          "shape": "quadruped",
+          "word": "פִּיל"
+        },
+        {
+          "emoji": "🦆",
+          "img": "assets/words/animals/talki-animals-duck.png",
+          "shape": "flying-animal",
+          "sound": "גַּע גַּע",
+          "word": "בַּרְוָוז"
+        },
+        {
+          "emoji": "🐎",
+          "img": "assets/words/animals/talki-animals-horse.png",
+          "shape": "quadruped",
+          "sound": "הִי הָה",
+          "word": "סוּס"
+        },
+        {
+          "emoji": "🐔",
+          "img": "assets/words/animals/talki-animals-hen.png",
+          "shape": "flying-animal",
+          "sound": "קוּ קוּ רִיקוּ",
+          "word": "תַּרְנְגוֹלֶת"
+        },
+        {
+          "emoji": "🐑",
+          "img": "assets/words/animals/talki-animals-sheep.png",
+          "shape": "quadruped",
+          "sound": "מֶה",
+          "word": "כִּבְשָׂה"
+        },
+        {
+          "emoji": "🐒",
+          "img": "assets/words/animals/talki-animals-monkey.png",
+          "shape": "quadruped",
+          "sound": "אוּ אוּ אָה אָה",
+          "word": "קוֹף"
+        },
+        {
+          "emoji": "🐷",
+          "img": "assets/words/animals/talki-animals-pig.png",
+          "shape": "quadruped",
+          "sound": "אוֹיְנְק",
+          "word": "חֲזִיר"
+        },
+        {
+          "emoji": "🐸",
+          "img": "assets/words/animals/talki-animals-frog.png",
+          "shape": "small-animal",
+          "sound": "קְוָואק",
+          "word": "צְפַרְדֵּעַ"
+        },
+        {
+          "emoji": "🦋",
+          "img": "assets/words/animals/talki-animals-butterfly.png",
+          "shape": "small-animal",
+          "word": "פַּרְפַּר"
+        },
+        {
+          "emoji": "🐰",
+          "img": "assets/words/animals/talki-animals-rabbit.png",
+          "shape": "small-animal",
+          "word": "אַרְנָב"
+        },
+        {
+          "emoji": "🐢",
+          "img": "assets/words/animals/talki-animals-turtle.png",
+          "shape": "small-animal",
+          "word": "צָב"
+        },
+        {
+          "emoji": "🐟",
+          "img": "assets/words/animals/talki-animals-fish.png",
+          "shape": "small-animal",
+          "word": "דָּג"
+        },
+        {
+          "emoji": "🐦",
+          "img": "assets/words/animals/talki-animals-bird.png",
+          "shape": "flying-animal",
+          "sound": "צִיוּ צִיוּ",
+          "word": "צִפּוֹר"
+        },
+        {
+          "emoji": "🐻",
+          "img": "assets/words/animals/talki-animals-bear.png",
+          "shape": "quadruped",
+          "sound": "גְּרְרְר",
+          "word": "דֹּב"
+        },
+        {
+          "emoji": "🦒",
+          "img": "assets/words/animals/talki-animals-giraffe.png",
+          "shape": "quadruped",
+          "word": "גִּ'ירָפָה"
+        },
+        {
+          "emoji": "🐍",
+          "img": "assets/words/animals/talki-animals-snake.png",
+          "shape": "small-animal",
+          "sound": "שְׁשְׁשְׁ",
+          "word": "נָחָשׁ"
+        },
+        {
+          "emoji": "🐭",
+          "img": "assets/words/animals/talki-animals-mouse.png",
+          "shape": "small-animal",
+          "sound": "צִיק צִיק",
+          "word": "עַכְבָּר"
+        },
+        {
+          "emoji": "🦓",
+          "img": "assets/words/animals/talki-animals-zebra.png",
+          "shape": "quadruped",
+          "word": "זֶבְּרָה"
+        },
+        {
+          "emoji": "🦉",
+          "img": "assets/words/animals/talki-animals-owl.png",
+          "shape": "flying-animal",
+          "sound": "הוּ הוּ",
+          "word": "יַנְשׁוּף"
+        },
+        {
+          "emoji": "🐝",
+          "img": "assets/words/animals/talki-animals-bee.png",
+          "shape": "small-animal",
+          "sound": "זְזְזְז",
+          "word": "דְּבוֹרָה"
+        },
+        {
+          "emoji": "🐜",
+          "img": "assets/words/animals/talki-animals-ant.png",
+          "shape": "small-animal",
+          "word": "נְמָלָה"
+        },
+        {
+          "emoji": "🐧",
+          "img": "assets/words/animals/talki-animals-penguin.png",
+          "shape": "flying-animal",
+          "word": "פִּינְגְּוִין"
+        }
+      ],
+      "title": "חיות"
+    },
+    "body": {
+      "cls": "c-body",
+      "icon": "👀",
+      "id": "body",
+      "items": [
+        {
+          "emoji": "👁️",
+          "img": "assets/words/body/talki-body-eye.png",
+          "shape": "body",
+          "word": "עַיִן"
+        },
+        {
+          "emoji": "👂",
+          "img": "assets/words/body/talki-body-ear.png",
+          "shape": "body",
+          "word": "אֹזֶן"
+        },
+        {
+          "emoji": "👃",
+          "img": "assets/words/body/talki-body-nose.png",
+          "shape": "body",
+          "word": "אַף"
+        },
+        {
+          "emoji": "👄",
+          "img": "assets/words/body/talki-body-mouth.png",
+          "shape": "body",
+          "word": "פֶּה"
+        },
+        {
+          "emoji": "✋",
+          "img": "assets/words/body/talki-body-hand.png",
+          "shape": "body",
+          "word": "יָד"
+        },
+        {
+          "emoji": "🦶",
+          "img": "assets/words/body/talki-body-foot.png",
+          "shape": "body",
+          "word": "רֶגֶל"
+        },
+        {
+          "emoji": "☝️",
+          "img": "assets/words/body/talki-body-finger.png",
+          "shape": "body",
+          "word": "אֶצְבַּע"
+        },
+        {
+          "emoji": "🦷",
+          "img": "assets/words/body/talki-body-tooth.png",
+          "shape": "body",
+          "word": "שֵׁן"
+        },
+        {
+          "emoji": "👅",
+          "img": "assets/words/body/talki-body-tongue.png",
+          "shape": "body",
+          "word": "לָשׁוֹן"
+        },
+        {
+          "emoji": "💇",
+          "img": "assets/words/body/talki-body-hair.png",
+          "shape": "body",
+          "word": "שֵׂעָר"
+        },
+        {
+          "emoji": "🫀",
+          "img": "assets/words/body/talki-body-heart.png",
+          "shape": "body",
+          "word": "לֵב"
+        },
+        {
+          "emoji": "🦵",
+          "img": "assets/words/body/talki-body-knee.png",
+          "shape": "body",
+          "word": "בֶּרֶךְ"
+        }
+      ],
+      "title": "הַגּוּף"
+    },
+    "colors": {
+      "cls": "c-colors",
+      "icon": "🎨",
+      "id": "colors",
+      "items": [
+        {
+          "emoji": "🔴",
+          "img": "assets/words/colors/talki-colors-shapes-red.png",
+          "shape": "color",
+          "word": "אָדוֹם"
+        },
+        {
+          "emoji": "🔵",
+          "img": "assets/words/colors/talki-colors-shapes-blue.png",
+          "shape": "color",
+          "word": "כָּחוֹל"
+        },
+        {
+          "emoji": "🟡",
+          "img": "assets/words/colors/talki-colors-shapes-yellow.png",
+          "shape": "color",
+          "word": "צָהוֹב"
+        },
+        {
+          "emoji": "🟢",
+          "img": "assets/words/colors/talki-colors-shapes-green.png",
+          "shape": "color",
+          "word": "יָרוֹק"
+        },
+        {
+          "emoji": "🟠",
+          "img": "assets/words/colors/talki-colors-shapes-orange.png",
+          "shape": "color",
+          "word": "כָּתוֹם"
+        },
+        {
+          "emoji": "🟣",
+          "img": "assets/words/colors/talki-colors-shapes-purple.png",
+          "shape": "color",
+          "word": "סָגוֹל"
+        },
+        {
+          "emoji": "🩷",
+          "img": "assets/words/colors/talki-colors-shapes-pink.png",
+          "shape": "color",
+          "word": "וָרוֹד"
+        },
+        {
+          "emoji": "🤎",
+          "img": "assets/words/colors/talki-colors-shapes-brown.png",
+          "shape": "color",
+          "word": "חוּם"
+        },
+        {
+          "emoji": "🖤",
+          "img": "assets/words/colors/talki-colors-shapes-black.png",
+          "shape": "color",
+          "word": "שָׁחוֹר"
+        },
+        {
+          "emoji": "🤍",
+          "img": "assets/words/colors/talki-colors-shapes-white.png",
+          "shape": "color",
+          "word": "לָבָן"
+        },
+        {
+          "emoji": "🩶",
+          "img": "assets/words/colors/talki-colors-shapes-gray.png",
+          "shape": "color",
+          "word": "אָפוֹר"
+        },
+        {
+          "emoji": "🩵",
+          "img": "assets/words/colors/talki-colors-shapes-light-blue.png",
+          "shape": "color",
+          "word": "תְּכֵלֶת"
+        },
+        {
+          "emoji": "🌈",
+          "img": "assets/words/colors/talki-colors-shapes-colorful.png",
+          "shape": "color",
+          "word": "צִבְעוֹנִי"
+        },
+        {
+          "emoji": "⭐",
+          "img": "assets/words/colors/talki-colors-shapes-star.png",
+          "shape": "shape-object",
+          "word": "כּוֹכָב"
+        },
+        {
+          "emoji": "❤️",
+          "img": "assets/words/colors/talki-colors-shapes-heart.png",
+          "shape": "shape-object",
+          "word": "לֵב"
+        },
+        {
+          "emoji": "⭕",
+          "img": "assets/words/colors/talki-colors-shapes-circle.png",
+          "shape": "shape-object",
+          "word": "עִיגּוּל"
+        },
+        {
+          "emoji": "🟦",
+          "img": "assets/words/colors/talki-colors-shapes-square.png",
+          "shape": "shape-object",
+          "word": "רִיבּוּעַ"
+        },
+        {
+          "emoji": "🔺",
+          "img": "assets/words/colors/talki-colors-shapes-triangle.png",
+          "shape": "shape-object",
+          "word": "מְשׁוּלָּשׁ"
+        },
+        {
+          "emoji": "🔸",
+          "img": "assets/words/colors/talki-colors-shapes-diamond.png",
+          "shape": "shape-object",
+          "word": "מְעוּיָּן"
+        },
+        {
+          "emoji": "➡️",
+          "img": "assets/words/colors/talki-colors-shapes-arrow.png",
+          "shape": "shape-object",
+          "word": "חֵץ"
+        },
+        {
+          "emoji": "🌙",
+          "img": "assets/words/colors/talki-colors-shapes-moon.png",
+          "shape": "nature-symbol",
+          "word": "יָרֵחַ"
+        },
+        {
+          "emoji": "💧",
+          "img": "assets/words/colors/talki-colors-shapes-drop.png",
+          "shape": "nature-symbol",
+          "word": "טִפָּה"
+        },
+        {
+          "emoji": "🌸",
+          "img": "assets/words/colors/talki-colors-shapes-flower.png",
+          "shape": "nature-symbol",
+          "word": "פֶּרַח"
+        },
+        {
+          "emoji": "☘️",
+          "img": "assets/words/colors/talki-colors-shapes-clover.png",
+          "shape": "nature-symbol",
+          "word": "תִּלְתָּן"
+        },
+        {
+          "emoji": "👑",
+          "img": "assets/words/colors/talki-colors-shapes-crown.png",
+          "shape": "nature-symbol",
+          "word": "כֶּתֶר"
+        },
+        {
+          "emoji": "🎈",
+          "img": "assets/words/colors/talki-colors-shapes-balloon.png",
+          "shape": "nature-symbol",
+          "word": "בָּלוֹן"
+        }
+      ],
+      "title": "צְבָעִים וְצוּרוֹת"
+    },
+    "emotions": {
+      "cls": "c-emotions",
+      "icon": "😊",
+      "id": "emotions",
+      "items": [
+        {
+          "emoji": "😊",
+          "img": "assets/words/emotions/talki-emotions-happy.png",
+          "shape": "emotion",
+          "word": "שְׂמֵחָה"
+        },
+        {
+          "emoji": "😢",
+          "img": "assets/words/emotions/talki-emotions-sad.png",
+          "shape": "emotion",
+          "word": "עֲצוּבָה"
+        },
+        {
+          "emoji": "😠",
+          "img": "assets/words/emotions/talki-emotions-angry.png",
+          "shape": "emotion",
+          "word": "כּוֹעֶסֶת"
+        },
+        {
+          "emoji": "😨",
+          "img": "assets/words/emotions/talki-emotions-scared.png",
+          "shape": "emotion",
+          "word": "מְפֻחֶדֶת"
+        },
+        {
+          "emoji": "🥱",
+          "img": "assets/words/emotions/talki-emotions-tired.png",
+          "shape": "emotion",
+          "word": "עֲיֵפָה"
+        },
+        {
+          "emoji": "😲",
+          "img": "assets/words/emotions/talki-emotions-surprised.png",
+          "shape": "emotion",
+          "word": "מֻפְתַּעַת"
+        },
+        {
+          "emoji": "🥰",
+          "img": "assets/words/emotions/talki-emotions-loving.png",
+          "shape": "emotion",
+          "word": "אוֹהֶבֶת"
+        },
+        {
+          "emoji": "🙈",
+          "img": "assets/words/emotions/talki-emotions-shy.png",
+          "shape": "emotion",
+          "word": "מִתְבַּיֶּשֶׁת"
+        },
+        {
+          "emoji": "😋",
+          "img": "assets/words/emotions/talki-emotions-hungry.png",
+          "shape": "emotion",
+          "word": "רְעֵבָה"
+        },
+        {
+          "emoji": "😑",
+          "img": "assets/words/emotions/talki-emotions-bored.png",
+          "shape": "emotion",
+          "word": "מִשְׁתַּעֲמֶמֶת"
+        }
+      ],
+      "title": "רְגָשׁוֹת"
+    },
+    "family": {
+      "cls": "c-family",
+      "icon": "👨‍👩‍👧",
+      "id": "family",
+      "items": [
+        {
+          "emoji": "👩",
+          "img": "assets/words/family/talki-family-mom.png",
+          "shape": "family-member",
+          "word": "אִמָּא"
+        },
+        {
+          "emoji": "👨",
+          "img": "assets/words/family/talki-family-dad.png",
+          "shape": "family-member",
+          "word": "אַבָּא"
+        },
+        {
+          "emoji": "👵",
+          "img": "assets/words/family/talki-family-grandma.png",
+          "shape": "family-member",
+          "word": "סַבְתָּא"
+        },
+        {
+          "emoji": "👴",
+          "img": "assets/words/family/talki-family-grandpa.png",
+          "shape": "family-member",
+          "word": "סַבָּא"
+        },
+        {
+          "emoji": "👶",
+          "img": "assets/words/family/talki-family-baby.png",
+          "shape": "family-member",
+          "word": "תִּינוֹק"
+        },
+        {
+          "emoji": "👦",
+          "img": "assets/words/family/talki-family-brother.png",
+          "shape": "family-member",
+          "word": "אָח"
+        },
+        {
+          "emoji": "👧",
+          "img": "assets/words/family/talki-family-sister.png",
+          "shape": "family-member",
+          "word": "אָחוֹת"
+        },
+        {
+          "emoji": "🧒",
+          "img": "assets/words/family/talki-family-girl.png",
+          "shape": "family-member",
+          "word": "יַלְדָּה"
+        },
+        {
+          "emoji": "💃",
+          "img": "assets/words/family/talki-family-aunt.png",
+          "shape": "family-member",
+          "word": "דּוֹדָה"
+        },
+        {
+          "emoji": "🕺",
+          "img": "assets/words/family/talki-family-uncle.png",
+          "shape": "family-member",
+          "word": "דּוֹד"
+        },
+        {
+          "emoji": "🧑‍🤝‍🧑",
+          "img": "assets/words/family/talki-family-friend.png",
+          "shape": "family-member",
+          "word": "חָבֵר"
+        },
+        {
+          "emoji": "👨‍👩‍👧‍👦",
+          "img": "assets/words/family/talki-family-family.png",
+          "shape": "family-member",
+          "word": "מִשְׁפָּחָה"
+        }
+      ],
+      "title": "מִשְׁפָּחָה"
+    },
+    "food": {
+      "cls": "c-food",
+      "icon": "🍎",
+      "id": "food",
+      "items": [
+        {
+          "emoji": "🍎",
+          "img": "assets/words/food/talki-food-apple.png",
+          "shape": "fruit",
+          "word": "תַּפּוּחַ"
+        },
+        {
+          "emoji": "🍌",
+          "img": "assets/words/food/talki-food-banana.png",
+          "shape": "fruit",
+          "word": "בָּנָנָה"
+        },
+        {
+          "emoji": "💧",
+          "img": "assets/words/food/talki-food-water.png",
+          "shape": "food-drink",
+          "word": "מַיִם"
+        },
+        {
+          "emoji": "🍞",
+          "img": "assets/words/food/talki-food-bread.png",
+          "shape": "dairy-bread",
+          "word": "לֶחֶם"
+        },
+        {
+          "emoji": "🍦",
+          "img": "assets/words/food/talki-food-ice-cream.png",
+          "shape": "frozen-food",
+          "word": "גְּלִידָה"
+        },
+        {
+          "emoji": "🍅",
+          "img": "assets/words/food/talki-food-tomato.png",
+          "shape": "vegetable",
+          "word": "עַגְבָנִיָּה"
+        },
+        {
+          "emoji": "🥒",
+          "img": "assets/words/food/talki-food-cucumber.png",
+          "shape": "vegetable",
+          "word": "מְלָפְפוֹן"
+        },
+        {
+          "emoji": "🥛",
+          "img": "assets/words/food/talki-food-milk.png",
+          "shape": "food-drink",
+          "word": "חָלָב"
+        },
+        {
+          "emoji": "🍇",
+          "img": "assets/words/food/talki-food-grapes.png",
+          "shape": "fruit",
+          "word": "עֲנָבִים"
+        },
+        {
+          "emoji": "🍓",
+          "img": "assets/words/food/talki-food-strawberry.png",
+          "shape": "fruit",
+          "word": "תּוּת"
+        },
+        {
+          "emoji": "🍊",
+          "img": "assets/words/food/talki-food-orange.png",
+          "shape": "fruit",
+          "word": "תַּפּוּז"
+        },
+        {
+          "emoji": "🍉",
+          "img": "assets/words/food/talki-food-watermelon.png",
+          "shape": "fruit",
+          "word": "אֲבַטִּיחַ"
+        },
+        {
+          "emoji": "🥚",
+          "img": "assets/words/food/talki-food-egg.png",
+          "shape": "dairy-bread",
+          "word": "בֵּיצָה"
+        },
+        {
+          "emoji": "🧀",
+          "img": "assets/words/food/talki-food-cheese.png",
+          "shape": "dairy-bread",
+          "word": "גְּבִינָה"
+        },
+        {
+          "emoji": "🍗",
+          "img": "assets/words/food/talki-food-chicken.png",
+          "shape": "prepared-food",
+          "word": "עוֹף"
+        },
+        {
+          "emoji": "🍕",
+          "img": "assets/words/food/talki-food-pizza.png",
+          "shape": "prepared-food",
+          "word": "פִּצָּה"
+        },
+        {
+          "emoji": "🥣",
+          "img": "assets/words/food/talki-food-soup.png",
+          "shape": "food-drink",
+          "word": "מָרָק"
+        },
+        {
+          "emoji": "🍰",
+          "img": "assets/words/food/talki-food-cake.png",
+          "shape": "prepared-food",
+          "word": "עוּגָה"
+        },
+        {
+          "emoji": "🍪",
+          "img": "assets/words/food/talki-food-cookie.png",
+          "shape": "prepared-food",
+          "word": "עוּגִיָּה"
+        },
+        {
+          "emoji": "🧃",
+          "img": "assets/words/food/talki-food-juice.png",
+          "shape": "food-drink",
+          "word": "מִיץ"
+        },
+        {
+          "emoji": "🥪",
+          "img": "assets/words/food/talki-food-sandwich.png",
+          "shape": "prepared-food",
+          "word": "כָּרִיךְ"
+        },
+        {
+          "emoji": "🍿",
+          "img": "assets/words/food/talki-food-popcorn.png",
+          "shape": "prepared-food",
+          "word": "פּוֹפְּקוֹרְן"
+        },
+        {
+          "emoji": "🍫",
+          "img": "assets/words/food/talki-food-chocolate.png",
+          "shape": "prepared-food",
+          "word": "שׁוֹקוֹלָד"
+        },
+        {
+          "emoji": "🥕",
+          "img": "assets/words/food/talki-food-carrot.png",
+          "shape": "vegetable",
+          "word": "גֶּזֶר"
+        },
+        {
+          "emoji": "🌽",
+          "img": "assets/words/food/talki-food-corn.png",
+          "shape": "vegetable",
+          "word": "תִּירָס"
+        },
+        {
+          "emoji": "🍋",
+          "img": "assets/words/food/talki-food-lemon.png",
+          "shape": "fruit",
+          "word": "לִימוֹן"
+        }
+      ],
+      "title": "אוֹכֶל"
+    },
+    "home": {
+      "cls": "c-home",
+      "icon": "🧸",
+      "id": "home",
+      "items": [
+        {
+          "emoji": "⚽",
+          "img": "assets/words/home/talki-home-ball.png",
+          "shape": "toy",
+          "word": "כַּדּוּר"
+        },
+        {
+          "emoji": "🧸",
+          "img": "assets/words/home/talki-home-doll.png",
+          "shape": "toy",
+          "word": "בּוּבָּה"
+        },
+        {
+          "emoji": "🛏️",
+          "img": "assets/words/home/talki-home-bed.png",
+          "shape": "furniture",
+          "word": "מִיטָה"
+        },
+        {
+          "emoji": "👟",
+          "img": "assets/words/home/talki-home-shoes.png",
+          "shape": "clothing",
+          "word": "נַעֲלַיִם"
+        },
+        {
+          "emoji": "🍼",
+          "img": "assets/words/home/talki-home-pacifier.png",
+          "shape": "toy",
+          "word": "מוֹצֵץ"
+        },
+        {
+          "emoji": "📖",
+          "img": "assets/words/home/talki-home-book.png",
+          "shape": "media",
+          "word": "סֵפֶר"
+        },
+        {
+          "emoji": "🪑",
+          "img": "assets/words/home/talki-home-chair.png",
+          "shape": "furniture",
+          "word": "כִּסֵּא"
+        },
+        {
+          "emoji": "🛋️",
+          "img": "assets/words/home/talki-home-sofa.png",
+          "shape": "furniture",
+          "word": "סַפָּה"
+        },
+        {
+          "emoji": "📺",
+          "img": "assets/words/home/talki-home-television.png",
+          "shape": "electronics",
+          "word": "טֶלֶוִיזְיָה"
+        },
+        {
+          "emoji": "🚪",
+          "img": "assets/words/home/talki-home-door.png",
+          "shape": "building-part",
+          "word": "דֶּלֶת"
+        },
+        {
+          "emoji": "🪟",
+          "img": "assets/words/home/talki-home-window.png",
+          "shape": "building-part",
+          "word": "חַלּוֹן"
+        },
+        {
+          "emoji": "🛌",
+          "img": "assets/words/home/talki-home-blanket.png",
+          "shape": "textile",
+          "word": "שְׂמִיכָה"
+        },
+        {
+          "emoji": "🛁",
+          "img": "assets/words/home/talki-home-bathtub.png",
+          "shape": "fixture",
+          "word": "אַמְבַּטְיָה"
+        },
+        {
+          "emoji": "🪥",
+          "img": "assets/words/home/talki-home-toothbrush.png",
+          "shape": "hygiene",
+          "word": "מִבְרֶשֶׁת שִׁנַּיִם"
+        },
+        {
+          "emoji": "🧼",
+          "img": "assets/words/home/talki-home-soap.png",
+          "shape": "hygiene",
+          "word": "סַבּוֹן"
+        },
+        {
+          "emoji": "🚽",
+          "img": "assets/words/home/talki-home-toilet.png",
+          "shape": "fixture",
+          "word": "שֵׁירוּתִים"
+        },
+        {
+          "emoji": "🍽️",
+          "img": "assets/words/home/talki-home-plate.png",
+          "shape": "dishware",
+          "word": "צַלַּחַת"
+        },
+        {
+          "emoji": "🥤",
+          "img": "assets/words/home/talki-home-cup.png",
+          "shape": "dishware",
+          "word": "כּוֹס"
+        },
+        {
+          "emoji": "🥄",
+          "img": "assets/words/home/talki-home-spoon.png",
+          "shape": "dishware",
+          "word": "כַּף"
+        },
+        {
+          "emoji": "⏰",
+          "img": "assets/words/home/talki-home-clock.png",
+          "shape": "object",
+          "word": "שָׁעוֹן"
+        },
+        {
+          "emoji": "📱",
+          "img": "assets/words/home/talki-home-phone.png",
+          "shape": "electronics",
+          "word": "טֶלֶפוֹן"
+        },
+        {
+          "emoji": "🔑",
+          "img": "assets/words/home/talki-home-key.png",
+          "shape": "object",
+          "word": "מַפְתֵּחַ"
+        },
+        {
+          "emoji": "👓",
+          "img": "assets/words/home/talki-home-glasses.png",
+          "shape": "accessory",
+          "word": "מַשְׁקָפַיִם"
+        },
+        {
+          "emoji": "☂️",
+          "img": "assets/words/home/talki-home-umbrella.png",
+          "shape": "accessory",
+          "word": "מִטְרִיָּה"
+        },
+        {
+          "emoji": "👕",
+          "img": "assets/words/home/talki-home-clothes.png",
+          "shape": "clothing",
+          "word": "בְּגָדִים"
+        },
+        {
+          "emoji": "🧦",
+          "img": "assets/words/home/talki-home-socks.png",
+          "shape": "clothing",
+          "word": "גַּרְבַּיִם"
+        }
+      ],
+      "title": "בַּבַּיִת"
+    },
+    "numbers": {
+      "cls": "c-numbers",
+      "icon": "🔢",
+      "id": "numbers",
+      "items": [
+        {
+          "emoji": "1️⃣",
+          "img": "assets/words/numbers/talki-numbers-one.png",
+          "shape": "number",
+          "word": "אַחַת"
+        },
+        {
+          "emoji": "2️⃣",
+          "img": "assets/words/numbers/talki-numbers-two.png",
+          "shape": "number",
+          "word": "שְׁתַּיִם"
+        },
+        {
+          "emoji": "3️⃣",
+          "img": "assets/words/numbers/talki-numbers-three.png",
+          "shape": "number",
+          "word": "שָׁלוֹשׁ"
+        },
+        {
+          "emoji": "4️⃣",
+          "img": "assets/words/numbers/talki-numbers-four.png",
+          "shape": "number",
+          "word": "אַרְבַּע"
+        },
+        {
+          "emoji": "5️⃣",
+          "img": "assets/words/numbers/talki-numbers-five.png",
+          "shape": "number",
+          "word": "חָמֵשׁ"
+        },
+        {
+          "emoji": "6️⃣",
+          "img": "assets/words/numbers/talki-numbers-six.png",
+          "shape": "number",
+          "word": "שֵׁשׁ"
+        },
+        {
+          "emoji": "7️⃣",
+          "img": "assets/words/numbers/talki-numbers-seven.png",
+          "shape": "number",
+          "word": "שֶׁבַע"
+        },
+        {
+          "emoji": "8️⃣",
+          "img": "assets/words/numbers/talki-numbers-eight.png",
+          "shape": "number",
+          "word": "שְׁמוֹנֶה"
+        },
+        {
+          "emoji": "9️⃣",
+          "img": "assets/words/numbers/talki-numbers-nine.png",
+          "shape": "number",
+          "word": "תֵּשַׁע"
+        },
+        {
+          "emoji": "🔟",
+          "img": "assets/words/numbers/talki-numbers-ten.png",
+          "shape": "number",
+          "word": "עֶשֶׂר"
+        }
+      ],
+      "title": "מִסְפָּרִים"
+    },
+    "outside": {
+      "cls": "c-outside",
+      "icon": "🌳",
+      "id": "outside",
+      "items": [
+        {
+          "emoji": "🌳",
+          "img": "assets/words/outside/talki-outside-tree.png",
+          "shape": "nature-plant",
+          "word": "עֵץ"
+        },
+        {
+          "emoji": "☀️",
+          "img": "assets/words/outside/talki-outside-sun.png",
+          "shape": "nature-weather",
+          "word": "שֶׁמֶשׁ"
+        },
+        {
+          "emoji": "☁️",
+          "img": "assets/words/outside/talki-outside-cloud.png",
+          "shape": "nature-weather",
+          "word": "עָנָן"
+        },
+        {
+          "emoji": "🌧️",
+          "img": "assets/words/outside/talki-outside-rain.png",
+          "shape": "nature-weather",
+          "word": "גֶּשֶׁם"
+        },
+        {
+          "emoji": "❄️",
+          "img": "assets/words/outside/talki-outside-snow.png",
+          "shape": "nature-weather",
+          "word": "שֶׁלֶג"
+        },
+        {
+          "emoji": "🚗",
+          "img": "assets/words/outside/talki-outside-car.png",
+          "shape": "vehicle",
+          "word": "מְכוֹנִית"
+        },
+        {
+          "emoji": "🚌",
+          "img": "assets/words/outside/talki-outside-bus.png",
+          "shape": "vehicle",
+          "word": "אוֹטוֹבּוּס"
+        },
+        {
+          "emoji": "🚲",
+          "img": "assets/words/outside/talki-outside-bicycle.png",
+          "shape": "vehicle",
+          "word": "אוֹפַנַּיִם"
+        },
+        {
+          "emoji": "✈️",
+          "img": "assets/words/outside/talki-outside-airplane.png",
+          "shape": "vehicle",
+          "word": "מָטוֹס"
+        },
+        {
+          "emoji": "⛵",
+          "img": "assets/words/outside/talki-outside-boat.png",
+          "shape": "vehicle",
+          "word": "סִירָה"
+        },
+        {
+          "emoji": "🚂",
+          "img": "assets/words/outside/talki-outside-train.png",
+          "shape": "vehicle",
+          "word": "רַכֶּבֶת"
+        },
+        {
+          "emoji": "🏠",
+          "img": "assets/words/outside/talki-outside-house.png",
+          "shape": "building",
+          "word": "בַּיִת"
+        },
+        {
+          "emoji": "🎠",
+          "img": "assets/words/outside/talki-outside-playground.png",
+          "shape": "building",
+          "word": "גַּן שַׁעֲשׁוּעִים"
+        },
+        {
+          "emoji": "🌊",
+          "img": "assets/words/outside/talki-outside-sea.png",
+          "shape": "nature-water",
+          "word": "יָם"
+        },
+        {
+          "emoji": "🏖️",
+          "img": "assets/words/outside/talki-outside-sand.png",
+          "shape": "nature-water",
+          "word": "חוֹל"
+        },
+        {
+          "emoji": "🌿",
+          "img": "assets/words/outside/talki-outside-grass.png",
+          "shape": "nature-plant",
+          "word": "דֶּשֶׁא"
+        },
+        {
+          "emoji": "🌷",
+          "img": "assets/words/outside/talki-outside-plant.png",
+          "shape": "nature-plant",
+          "word": "צֶמַח"
+        },
+        {
+          "emoji": "🌟",
+          "img": "assets/words/outside/talki-outside-stars.png",
+          "shape": "nature-weather",
+          "word": "כּוֹכָבִים"
+        }
+      ],
+      "title": "בַּחוּץ"
+    }
+  },
+  "CLOZE": [
+    {
+      "answer": "שָׁלוֹשׁ",
+      "emoji": "3️⃣",
+      "img": "assets/words/numbers/talki-numbers-three.png",
+      "phrase": "אֶחָד, שְׁתַּיִם, ..."
+    },
+    {
+      "answer": "צֵא",
+      "emoji": "🏃",
+      "img": "assets/words/actions/talki-actions-running.png",
+      "phrase": "מוּכָנִים, הִכּוֹן, ..."
+    },
+    {
+      "answer": "הַב הַב",
+      "emoji": "🐶",
+      "img": "assets/words/animals/talki-animals-dog.png",
+      "phrase": "הַכֶּלֶב אוֹמֵר ..."
+    },
+    {
+      "answer": "מוּ",
+      "emoji": "🐮",
+      "img": "assets/words/animals/talki-animals-cow.png",
+      "phrase": "הַפָּרָה אוֹמֶרֶת ..."
+    },
+    {
+      "answer": "תּוֹדָה",
+      "emoji": "🙏",
+      "phrase": "בְּבַקָּשָׁה וְ..."
+    },
+    {
+      "answer": "טוֹב",
+      "emoji": "🌙",
+      "img": "assets/words/colors/talki-colors-shapes-moon.png",
+      "phrase": "לַיְלָה טוֹב, לַיְלָה ..."
+    },
+    {
+      "answer": "מַיִם",
+      "emoji": "💧",
+      "img": "assets/words/food/talki-food-water.png",
+      "phrase": "אֲנִי רוֹצָה עוֹד ..."
+    },
+    {
+      "answer": "מְיָאוּ",
+      "emoji": "🐱",
+      "img": "assets/words/animals/talki-animals-cat.png",
+      "phrase": "הַחָתוּל אוֹמֵר ..."
+    }
+  ],
+  "GAMES": [
+    {
+      "id": "quiz",
+      "title": "איפה ה...?"
+    },
+    {
+      "id": "memory",
+      "title": "משחק זיכרון"
+    },
+    {
+      "id": "missing",
+      "title": "מה נעלם?"
+    },
+    {
+      "id": "cards",
+      "title": "כרטיסיות"
+    },
+    {
+      "id": "sounds",
+      "title": "מי אמר את זה?"
+    },
+    {
+      "id": "count",
+      "title": "כמה יש?"
+    },
+    {
+      "id": "puzzle",
+      "title": "שימי במקום"
+    },
+    {
+      "id": "match",
+      "title": "חיבורים"
+    },
+    {
+      "id": "bubbles",
+      "title": "בועות מילים"
+    },
+    {
+      "id": "sort",
+      "title": "לאיזו קופסה?"
+    },
+    {
+      "id": "speech",
+      "title": "תגידי את זה"
+    }
+  ],
+  "HOME_PRACTICE_HOME": [
+    {
+      "description": "מילה אחת, שמונה משפטים קצרים",
+      "id": "focus",
+      "title": "מילה במיקוד",
+      "variant": "pink"
+    },
+    {
+      "description": "מזהים בלי צורך לדבר",
+      "id": "receptive",
+      "title": "תראי לי",
+      "variant": "lavender"
+    },
+    {
+      "description": "עוצרים מילה לפני הסוף ומחכים",
+      "id": "cloze",
+      "title": "משלימים ביחד",
+      "variant": "orange"
+    }
+  ],
+  "K": {
+    "custom": "lia:custom:{id}",
+    "customIndex": "lia:custom:index",
+    "lastcat": "lia:lastcat",
+    "progress": "lia:progress",
+    "rec": "lia:rec:{key}",
+    "settings": "lia:settings",
+    "stats": "lia:stats"
+  },
+  "MIN_ITEMS": {
+    "bubbles": 1,
+    "cloze": 1,
+    "combine": 3,
+    "count": 1,
+    "focus": 1,
+    "match": 4,
+    "memory": 4,
+    "missing": 4,
+    "pairs": 2,
+    "puzzle": 2,
+    "quiz": 4,
+    "receptive": 4,
+    "sort": 4,
+    "sounds": 4,
+    "speech": 2,
+    "temptation": 1
+  },
+  "MODIFIERS": [
+    {
+      "emoji": "➕",
+      "expand": "אֲנִי רוֹצָה עוֹד {w}",
+      "w": "עוֹד"
+    },
+    {
+      "emoji": "🚫",
+      "expand": "אֵין יוֹתֵר {w}",
+      "w": "אֵין"
+    },
+    {
+      "emoji": "🐘",
+      "expand": "אֵיזֶה {w} גָּדוֹל",
+      "img": "assets/words/animals/talki-animals-elephant.png",
+      "w": "גָּדוֹל"
+    },
+    {
+      "emoji": "🤗",
+      "expand": "זֶה {w} שֶׁלִּי",
+      "img": "assets/words/actions/talki-actions-hugging.png",
+      "w": "שֶׁלִּי"
+    }
+  ],
+  "PAIRS": [
+    [
+      {
+        "emoji": "🌳",
+        "img": "assets/words/outside/talki-outside-tree.png",
+        "word": "עֵץ"
+      },
+      {
+        "emoji": "🐐",
+        "word": "עֵז"
+      }
+    ],
+    [
+      {
+        "emoji": "✋",
+        "img": "assets/words/body/talki-body-hand.png",
+        "word": "יָד"
+      },
+      {
+        "emoji": "🌊",
+        "img": "assets/words/outside/talki-outside-sea.png",
+        "word": "יָם"
+      }
+    ],
+    [
+      {
+        "emoji": "🏠",
+        "img": "assets/words/outside/talki-outside-house.png",
+        "word": "בַּיִת"
+      },
+      {
+        "emoji": "🫒",
+        "word": "זַיִת"
+      }
+    ],
+    [
+      {
+        "emoji": "🍲",
+        "word": "סִיר"
+      },
+      {
+        "emoji": "🎵",
+        "word": "שִׁיר"
+      }
+    ],
+    [
+      {
+        "emoji": "🥄",
+        "img": "assets/words/home/talki-home-spoon.png",
+        "word": "כַּף"
+      },
+      {
+        "emoji": "🏺",
+        "word": "כַּד"
+      }
+    ],
+    [
+      {
+        "emoji": "🐻",
+        "img": "assets/words/animals/talki-animals-bear.png",
+        "word": "דֹּב"
+      },
+      {
+        "emoji": "🐟",
+        "img": "assets/words/animals/talki-animals-fish.png",
+        "word": "דָּג"
+      }
+    ],
+    [
+      {
+        "emoji": "🍎",
+        "img": "assets/words/food/talki-food-apple.png",
+        "word": "תַּפּוּחַ"
+      },
+      {
+        "emoji": "🍊",
+        "img": "assets/words/food/talki-food-orange.png",
+        "word": "תַּפּוּז"
+      }
+    ]
+  ],
+  "PRACTICE_LIST": [
+    [
+      "focus",
+      "🎯",
+      "מילה במיקוד",
+      "מילה אחת, שמונה משפטים קצרים",
+      "pc-1",
+      "pink"
+    ],
+    [
+      "receptive",
+      "👈",
+      "תראי לי",
+      "מזהים בלי צורך לדבר",
+      "pc-2",
+      "lavender"
+    ],
+    [
+      "cloze",
+      "⏸️",
+      "משלימים ביחד",
+      "עוצרים מילה לפני הסוף ומחכים",
+      "pc-3",
+      "peach"
+    ],
+    [
+      "temptation",
+      "🫙",
+      "הצנצנת",
+      "משמיעים קול כדי לפתוח",
+      "pc-4"
+    ],
+    [
+      "pairs",
+      "👂",
+      "דומה אבל לא",
+      "עֵץ או עֵז? מבחינים בין צלילים",
+      "pc-5"
+    ],
+    [
+      "combine",
+      "➕",
+      "שתי מילים",
+      "מחברים \"עוד\" + מילה",
+      "pc-6"
+    ]
+  ],
+  "SETTINGS_DEFAULTS": {
+    "effects": true,
+    "music": true,
+    "musicVol": 0.5,
+    "niqqud": true,
+    "rate": 0.85,
+    "sounds": true,
+    "voice": true
+  },
+  "STICKERS": [
+    {
+      "cat": "animals",
+      "img": "talki-sticker-dog.png",
+      "word": "כֶּלֶב"
+    },
+    {
+      "cat": "animals",
+      "img": "talki-sticker-cat.png",
+      "word": "חָתוּל"
+    },
+    {
+      "cat": "animals",
+      "img": "talki-sticker-elephant.png",
+      "word": "פִּיל"
+    },
+    {
+      "cat": "animals",
+      "img": "talki-sticker-rabbit.png",
+      "word": "אַרְנָב"
+    },
+    {
+      "cat": "animals",
+      "img": "talki-sticker-bird.png",
+      "word": "צִפּוֹר"
+    },
+    {
+      "cat": "animals",
+      "img": "talki-sticker-butterfly.png",
+      "word": "פַּרְפַּר"
+    },
+    {
+      "cat": "food",
+      "img": "talki-sticker-apple.png",
+      "word": "תַּפּוּחַ"
+    },
+    {
+      "cat": "food",
+      "img": "talki-sticker-cake.png",
+      "word": "עוּגָה"
+    },
+    {
+      "cat": "food",
+      "img": "talki-sticker-icecream.png",
+      "word": "גְּלִידָה"
+    },
+    {
+      "cat": "outside",
+      "img": "talki-sticker-car.png",
+      "word": "מְכוֹנִית"
+    },
+    {
+      "cat": "outside",
+      "img": "talki-sticker-house.png",
+      "word": "בַּיִת"
+    },
+    {
+      "cat": "outside",
+      "img": "talki-sticker-sun.png",
+      "word": "שֶׁמֶשׁ"
+    },
+    {
+      "cat": "outside",
+      "img": "talki-sticker-tree.png",
+      "word": "עֵץ"
+    },
+    {
+      "cat": "colors",
+      "img": "talki-sticker-balloon.png",
+      "word": "בָּלוֹן"
+    },
+    {
+      "cat": "colors",
+      "img": "talki-sticker-heart.png",
+      "word": "לֵב"
+    },
+    {
+      "cat": "colors",
+      "img": "talki-sticker-flower.png",
+      "word": "פֶּרַח"
+    },
+    {
+      "cat": "colors",
+      "img": "talki-sticker-rainbow.png",
+      "word": "צִבְעוֹנִי"
+    },
+    {
+      "cat": "home",
+      "img": "talki-sticker-ball.png",
+      "word": "כַּדּוּר"
+    },
+    {
+      "cat": "family",
+      "img": "talki-sticker-kid-boy.png",
+      "word": "אָח"
+    },
+    {
+      "cat": "family",
+      "img": "talki-sticker-kid-girl.png",
+      "word": "יַלְדָּה"
+    },
+    {
+      "cat": "numbers",
+      "complete": true,
+      "img": "talki-sticker-numbers.png"
+    },
+    {
+      "cat": null,
+      "img": "talki-sticker-star.png",
+      "milestone": 1
+    },
+    {
+      "cat": null,
+      "img": "talki-sticker-sparkle.png",
+      "milestone": 25
+    },
+    {
+      "cat": null,
+      "img": "talki-sticker-gift.png",
+      "milestone": 75
+    }
+  ]
+}

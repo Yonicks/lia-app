@@ -12,7 +12,14 @@ const config: ExpoConfig = {
   name: IS_DEV ? 'Talki (Dev)' : 'Talki',
   slug: 'talki',
   version: '1.0.0',
-  orientation: 'portrait',
+  /* 'default' (not 'portrait'): Phase 4 replaces the legacy app-wide
+     portrait lock (index.html 4088-4090, and this same field previously)
+     with OrientationService's per-route policy — games and practice are
+     landscape (deliberate deviation, feature-parity-checklist.md §14). A
+     static 'portrait' here would bake a portrait-only restriction into the
+     native manifest/Info.plist that expo-screen-orientation's runtime
+     lockAsync(LANDSCAPE) would then have to fight rather than simply set. */
+  orientation: 'default',
   icon: './assets/icon.png',
   userInterfaceStyle: 'light',
   scheme: 'talki',
@@ -34,7 +41,26 @@ const config: ExpoConfig = {
     favicon: './assets/favicon.png',
     bundler: 'metro',
   },
-  plugins: ['expo-router', 'expo-image'],
+  plugins: [
+    'expo-router',
+    'expo-image',
+    'expo-sqlite',
+    [
+      'expo-audio',
+      {
+        microphonePermission:
+          'Allow Talki to use the microphone to record a parent’s voice and to play speech-recognition games.',
+      },
+    ],
+    [
+      'expo-speech-recognition',
+      {
+        microphonePermission:
+          'Allow Talki to use the microphone to record a parent’s voice and to play speech-recognition games.',
+        speechRecognitionPermission: 'Allow Talki to use speech recognition for the "Say it!" game.',
+      },
+    ],
+  ],
   experiments: {
     typedRoutes: true,
   },

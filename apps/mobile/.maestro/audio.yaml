@@ -1,0 +1,48 @@
+appId: com.yonicks.talki.dev
+---
+# Phase 4 Tier 3: automates what a device/emulator run can prove that
+# nothing else in this phase can — real `expo-audio` playback surviving a
+# real app background/foreground cycle (validation.md §4: "App background
+# and resume: timers, audio session, and game state" is explicitly listed
+# as something Playwright provably cannot check).
+#
+# app/dev/audio-lab.tsx is deliberately unreachable from any in-app
+# navigation (phase-04-plan.md, "A diagnostic screen, deliberately
+# unreachable") — `openLink` with the app's own `talki://` scheme
+# (app.config.ts) is the on-device equivalent of
+# `src/testing/e2eRouterBridge.ts`'s web-only client-side navigation, used
+# for exactly the same reason: there is no button to tap instead.
+#
+# NOT executed in the sandbox this phase was authored in: no Android
+# SDK/adb/emulator and no Maestro binary are available here — the same
+# limitation phase-01-report.md and phase-03-report.md recorded for their
+# own Tier 3 flows (`.maestro/smoke.yaml`, `.maestro/persistence.yaml`).
+# See phase-04-native-report.md for the full, honest accounting of what
+# this phase could and could not verify.
+- launchApp
+- openLink: 'talki://dev/audio-lab'
+- assertVisible:
+    id: 'audio-lab-root'
+- tapOn:
+    id: 'audio-lab-unlock'
+- tapOn:
+    id: 'audio-lab-music-home'
+- assertVisible:
+    id: 'audio-lab-debug-state'
+- takeScreenshot: phase-04-audio-lab-playing
+# Backgrounds the app for real (not a page hide/visibilitychange, an actual
+# OS-level background) for 5s; Maestro returns focus to it automatically
+# afterward — this is the only way to prove
+# AudioEngineCore.handleAppBackground()/handleAppForeground() actually run
+# against a real audio session rather than the web `visibilitychange`
+# listener webAudioEngine.ts uses as its test-surface stand-in.
+- background: 5
+- assertVisible:
+    id: 'audio-lab-root'
+- takeScreenshot: phase-04-audio-lab-foregrounded
+# A second, independent tap proves the engine is still responsive after the
+# background/foreground round trip, not just that the screen redrew.
+- tapOn:
+    id: 'audio-lab-sfx-ui-primaryTap'
+- tapOn:
+    id: 'audio-lab-stop-all'
