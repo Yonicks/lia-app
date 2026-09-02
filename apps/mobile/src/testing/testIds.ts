@@ -106,6 +106,34 @@ export const testIds = {
     say: 'cards-say',
     counter: 'cards-counter',
   },
+  sounds: {
+    root: 'sounds-root',
+    play: 'sounds-play',
+    option: (index: number) => `sounds-option-${index}`,
+  },
+  count: {
+    root: 'count-root',
+    stage: 'count-stage',
+    option: (index: number) => `count-option-${index}`,
+  },
+  sort: {
+    root: 'sort-root',
+    item: 'sort-item',
+    box: (categoryId: string) => `sort-box-${categoryId}`,
+  },
+  bubbles: {
+    root: 'bubbles-root',
+    stage: 'bubbles-stage',
+    bubble: (index: number) => `bubbles-bubble-${index}`,
+  },
+  puzzle: {
+    root: 'puzzle-root',
+    slot: (id: string) => `puzzle-slot-${id}`,
+    piece: (id: string) => `puzzle-piece-${id}`,
+    guide: 'puzzle-guide',
+    done: 'puzzle-done',
+    together: 'puzzle-together-prompt',
+  },
   /** Dev-only, native-only (never rendered on web — see
    *  app/index.tsx and phase-03-plan.md Tier 3 test plan). Lets
    *  .maestro/persistence.yaml write a known value through TalkiStorage

@@ -22,6 +22,7 @@ export interface SettingsState {
    *  never TTS input"). */
   setNiqqud: (enabled: boolean) => Promise<void>;
   toggleMusic: () => Promise<void>;
+  setPuzzleLevel: (level: number) => Promise<void>;
 }
 
 async function persist(next: TalkiSettings): Promise<void> {
@@ -45,6 +46,12 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
   toggleMusic: async () => {
     const next = { ...get().settings, music: !get().settings.music };
+    set({ settings: next });
+    await persist(next);
+  },
+
+  setPuzzleLevel: async (level) => {
+    const next = { ...get().settings, puzzleLevel: level };
     set({ settings: next });
     await persist(next);
   },

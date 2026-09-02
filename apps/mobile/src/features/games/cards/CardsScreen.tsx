@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
+import { useRouter } from 'expo-router';
 
 import { TalkiButton, TalkiHeading, TalkiText } from '@/design-system/components';
 import { radii } from '@/design-system/theme/radii';
@@ -29,6 +30,7 @@ export interface CardsScreenProps {
 export function CardsScreen({ catId }: CardsScreenProps) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const router = useRouter();
   const session = useGameSession({ gameId: 'cards', requestedCatId: catId, mode: 'browse' });
   const settings = useSettingsStore((s) => s.settings);
   const markLearned = useProgressStore((s) => s.markLearned);
@@ -36,11 +38,11 @@ export function CardsScreen({ catId }: CardsScreenProps) {
 
   useEffect(() => {
     if (session.failed) {
-      const t = setTimeout(() => push(homeHref), 400);
+      const t = setTimeout(() => router.replace(homeHref), 400);
       return () => clearTimeout(t);
     }
     return undefined;
-  }, [session.failed, push]);
+  }, [session.failed, router]);
 
   const items = useMemo(() => session.category?.items ?? [], [session.category]);
   const safeIndex = clampCardIndex(index, items.length);

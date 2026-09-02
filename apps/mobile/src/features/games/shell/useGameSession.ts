@@ -14,6 +14,8 @@ export interface UseGameSessionArgs {
   requestedCatId: string | null;
   /** `browse` is cards: no MIN_ITEMS gate, no levelStart, empty → home. */
   mode?: 'game' | 'browse';
+  /** sounds: ignore the requested category and pin this one. */
+  fixedCatId?: CategoryId;
 }
 
 export interface GameSession {
@@ -40,7 +42,7 @@ export interface GameSession {
  * `game.levelStart`, lock landscape through OrientationService, and own
  * the rapid-tap lock. Per-game board state stays in the game's reducer.
  */
-export function useGameSession({ gameId, requestedCatId, mode = 'game' }: UseGameSessionArgs): GameSession {
+export function useGameSession({ gameId, requestedCatId, mode = 'game', fixedCatId }: UseGameSessionArgs): GameSession {
   const { hydrated, custom, hydrate } = useProgressStore();
   const audio = useGameAudio();
   const [toastHidden, setToastHidden] = useState(false);
@@ -77,8 +79,8 @@ export function useGameSession({ gameId, requestedCatId, mode = 'game' }: UseGam
       if (!category || category.items.length === 0) return { ok: false as const, toast: null };
       return { ok: true as const, category };
     }
-    return resolveStartCategory(gameId, requestedCatId as CategoryId | null, cats);
-  }, [hydrated, custom, gameId, requestedCatId, mode]);
+    return resolveStartCategory(gameId, (fixedCatId ?? requestedCatId) as CategoryId | null, cats);
+  }, [hydrated, custom, gameId, requestedCatId, mode, fixedCatId]);
 
   useEffect(() => {
     if (!result?.ok) return;

@@ -1,0 +1,35 @@
+# Phase 10 — one round of sounds, count, sort, bubbles, puzzle.
+# Device-attested. Not run in CI.
+appId: com.talki.app
+---
+- launchApp
+- tapOn:
+    id: bottom-nav-games
+- tapOn:
+    id: games-menu-card-sounds
+- assertVisible:
+    id: sounds-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-count
+- assertVisible:
+    id: count-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-sort
+- assertVisible:
+    id: sort-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-bubbles
+- assertVisible:
+    id: bubbles-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-puzzle
+- assertVisible:
+    id: puzzle-root

@@ -78,10 +78,12 @@ test.describe('Phase 9 missing', () => {
     expect(await auditTouchTargets(page), 'touch').toHaveLength(0);
     expect(await auditReachability(page), 'reach').toHaveLength(0);
     await waitAsk(page);
-    for (let i = 0; i < 10; i++) await page.getByTestId(testIds.missing.guess(1)).click();
-    const afterFirst = await countListeners(page, testIds.missing.guess(1));
-    for (let i = 0; i < 10; i++) await page.getByTestId(testIds.missing.guess(1)).click();
-    const afterSecond = await countListeners(page, testIds.missing.guess(1));
+    const missing = await missingWord(page);
+    const wrong = page.locator('[data-testid^="missing-guess-"]').filter({ hasNotText: missing }).first();
+    for (let i = 0; i < 10; i++) await wrong.click();
+    const afterFirst = await countListeners(page, testIds.game.headerBack);
+    for (let i = 0; i < 10; i++) await wrong.click();
+    const afterSecond = await countListeners(page, testIds.game.headerBack);
     expect(afterSecond - afterFirst).toBeLessThanOrEqual(1);
   });
 

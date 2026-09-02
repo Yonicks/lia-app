@@ -48,6 +48,13 @@ describe('startGame — MIN_ITEMS gate and category fallback', () => {
     expect(result).toEqual({ ok: false, toast: START_GAME_TOAST });
   });
 
+  it('sounds pins animals when the shell passes animals as the requested category', () => {
+    const cats = [cat('food', 26), cat('animals', 26)];
+    const result = resolveStartCategory('sounds', 'animals', cats);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.category.id).toBe('animals');
+  });
+
   it('defaults a missing MIN_ITEMS key to 4 (puzzle is 2, so a 3-item cat qualifies)', () => {
     const cats = [cat('animals', 3)];
     expect(resolveStartCategory('puzzle', 'animals', cats).ok).toBe(true);

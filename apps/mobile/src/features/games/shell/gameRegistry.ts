@@ -3,11 +3,16 @@ import type { ComponentType } from 'react';
 import { minItemsFor } from '@/domain/games/minItems';
 import type { GameId } from '@/domain/types';
 
+import { BubblesScreen } from '../bubbles/BubblesScreen';
 import { CardsScreen } from '../cards/CardsScreen';
+import { CountScreen } from '../count/CountScreen';
 import { MatchScreen } from '../match/MatchScreen';
 import { MemoryScreen } from '../memory/MemoryScreen';
 import { MissingScreen } from '../missing/MissingScreen';
+import { PuzzleScreen } from '../puzzle/PuzzleScreen';
 import { QuizScreen } from '../quiz/QuizScreen';
+import { SortScreen } from '../sort/SortScreen';
+import { SoundsScreen } from '../sounds/SoundsScreen';
 import type { GameScreenProps } from './types';
 
 export interface RegisteredGame {
@@ -18,7 +23,7 @@ export interface RegisteredGame {
 }
 
 /**
- * Phase 9 registers quiz + wave A. Remaining ids stay on the stub route.
+ * Phase 10 registers the full eleven-game catalogue.
  */
 export const gameRegistry: Partial<Record<GameId, RegisteredGame>> = {
   quiz: {
@@ -50,6 +55,36 @@ export const gameRegistry: Partial<Record<GameId, RegisteredGame>> = {
     titleHe: '🖼️ כרטיסיות',
     minItems: 1,
     Screen: CardsScreen,
+  },
+  sounds: {
+    id: 'sounds',
+    titleHe: '🐮 מי אמר את זה?',
+    minItems: minItemsFor('sounds'),
+    Screen: SoundsScreen,
+  },
+  count: {
+    id: 'count',
+    titleHe: '🔢 כמה יש?',
+    minItems: minItemsFor('count'),
+    Screen: CountScreen,
+  },
+  sort: {
+    id: 'sort',
+    titleHe: '📦 לאיזו קופסה?',
+    minItems: minItemsFor('sort'),
+    Screen: SortScreen,
+  },
+  bubbles: {
+    id: 'bubbles',
+    titleHe: '🫧 בועות מילים',
+    minItems: minItemsFor('bubbles'),
+    Screen: BubblesScreen,
+  },
+  puzzle: {
+    id: 'puzzle',
+    titleHe: '🧩 שִׂימִי בַּמָּקוֹם',
+    minItems: minItemsFor('puzzle'),
+    Screen: PuzzleScreen,
   },
 };
 

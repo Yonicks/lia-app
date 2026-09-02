@@ -71,7 +71,7 @@ test.describe('Phase 9 cards', () => {
     await page.evaluate(() =>
       (window as unknown as { __talkiRouterE2E: RouterBridge }).__talkiRouterE2E.push('/cards/mine'),
     );
-    await expect(page.getByTestId(testIds.home.root).first()).toBeVisible();
+    await expect(page.locator(`[data-testid="${testIds.home.root}"]:visible`)).toBeVisible();
     await expect(page.getByTestId(testIds.cards.root)).toHaveCount(0);
   });
 

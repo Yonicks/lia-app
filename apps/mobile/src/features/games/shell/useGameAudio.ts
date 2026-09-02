@@ -27,5 +27,14 @@ export function useGameAudio() {
   const invalidMove = useCallback(() => {
     audioEngine.playSfx('interaction.invalidMove');
   }, []);
-  return { start, complete, correct, wrong, correctMatch, invalidMove };
+  const dragPickup = useCallback(() => {
+    audioEngine.playSfx('interaction.dragPickup');
+  }, []);
+  const dragDrop = useCallback(() => {
+    audioEngine.playSfx('interaction.dragDrop');
+  }, []);
+  const secondaryTap = useCallback(() => {
+    audioEngine.playSfx('ui.secondaryTap');
+  }, []);
+  return { start, complete, correct, wrong, correctMatch, invalidMove, dragPickup, dragDrop, secondaryTap };
 }
