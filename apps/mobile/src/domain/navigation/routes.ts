@@ -33,6 +33,7 @@ export function practiceHref(id: PracticeModeId, catId?: CategoryId | null) {
 export const gamesMenuHref = '/games' as const;
 export const practiceMenuHref = '/practice' as const;
 export const homeHref = '/' as const;
+export const parentHref = '/parent' as const;
 
 /**
  * The native form of legacy's `?game=<type>` deep link (index.html

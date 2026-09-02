@@ -1,0 +1,18 @@
+appId: com.yonicks.talki.dev
+---
+# Phase 12 Tier 3: 900 ms hold, unlock, each parent tab, return.
+# Not executed in this sandbox (no adb / Maestro binary).
+- launchApp:
+    arguments:
+      intro: '0'
+- assertVisible:
+    id: 'home-root'
+- longPressOn:
+    id: 'parent-button'
+- assertVisible:
+    id: 'parent-gate-question'
+- takeScreenshot: phase-12-parent-gate
+- tapOn:
+    id: 'parent-gate-back'
+- assertVisible:
+    id: 'home-root'

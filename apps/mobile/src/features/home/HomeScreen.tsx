@@ -2,12 +2,13 @@ import { useCallback } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import { TalkiScreen } from '@/design-system/components';
-import { TopBar } from '@/components/shell';
+import { ToastHost, TopBar } from '@/components/shell';
 import { homePaddingInline, homeSectionGap } from '@/design-system/theme/spacing';
 import { useDevice } from '@/design-system/responsive/useDevice';
 import { categoryHref, gameHref, gamesMenuHref, practiceHref, practiceMenuHref } from '@/domain/navigation/routes';
 import type { CategoryId, GameId, PracticeModeId } from '@/domain/types';
 import { useGuardedPush } from '@/hooks/useGuardedPush';
+import { useParentBrand } from '@/hooks/useParentBrand';
 import { useSettingsStore } from '@/state/settingsStore';
 import { DevStorageProbe } from '@/testing/DevStorageProbe';
 import { testIds } from '@/testing/testIds';
@@ -30,6 +31,7 @@ export function HomeScreen() {
   const { deviceClass } = useDevice();
   const data = useHomeData();
   const { settings, toggleMusic } = useSettingsStore();
+  const parent = useParentBrand();
 
   const openCategory = useCallback(
     (id: CategoryId) => {
@@ -58,7 +60,15 @@ export function HomeScreen() {
 
   return (
     <TalkiScreen testID={testIds.home.root}>
-      <TopBar points={data.points} musicOn={settings.music} onToggleMusic={() => void toggleMusic()} />
+      {/* toast sits above the scroll so a short parent-tap is visible */}
+      <TopBar
+        points={data.points}
+        musicOn={settings.music}
+        onToggleMusic={() => void toggleMusic()}
+        onBrandLongPress={parent.onBrandLongPress}
+        onBrandShortPress={parent.onBrandShortPress}
+      />
+      <ToastHost message={parent.toast} onHide={parent.dismissToast} testID={testIds.parent.toast} />
       <ScrollView
         contentContainerStyle={[
           styles.content,

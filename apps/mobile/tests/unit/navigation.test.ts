@@ -14,6 +14,7 @@ import {
   gameHref,
   gamesMenuHref,
   homeHref,
+  parentHref,
   parseGameDeepLink,
   practiceHref,
   practiceMenuHref,
@@ -42,6 +43,7 @@ describe('navigation — every route in the map resolves', () => {
     expect(gamesMenuHref).toBe('/games');
     expect(practiceMenuHref).toBe('/practice');
     expect(homeHref).toBe('/');
+    expect(parentHref).toBe('/parent');
   });
 });
 

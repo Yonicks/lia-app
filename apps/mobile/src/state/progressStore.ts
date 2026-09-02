@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import { deleteCustomWord, saveCustomWord } from '../domain/parent/customWords';
+import { resetProgress as resetProgressKeys } from '../domain/parent/progressReset';
 import { key } from '../domain/progress/keys';
 import { markSeen } from '../domain/progress/selection';
 import type { CategoryId, TalkiWord, WordStats } from '../domain/types';
@@ -32,6 +34,9 @@ export interface ProgressState {
   setLastCat: (id: CategoryId) => Promise<void>;
   /** index.html `markSeen()` (1878-1883) — persists `lia:stats`. */
   recordSeen: (catId: string, word: string, wrong: boolean) => Promise<void>;
+  resetProgress: () => Promise<void>;
+  addCustom: (word: TalkiWord) => Promise<void>;
+  removeCustom: (id: string) => Promise<void>;
 }
 
 export const useProgressStore = create<ProgressState>((set, get) => ({
@@ -74,5 +79,20 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
   setLastCat: async (id) => {
     set({ lastCat: id });
     await storage.set(K.lastcat, id);
+  },
+
+  resetProgress: async () => {
+    await resetProgressKeys(storage);
+    set({ learned: new Set(), stats: {}, lastCat: null });
+  },
+
+  addCustom: async (word) => {
+    const custom = await saveCustomWord(storage, word);
+    set({ custom });
+  },
+
+  removeCustom: async (id) => {
+    const custom = await deleteCustomWord(storage, id);
+    set({ custom });
   },
 }));

@@ -1,11 +1,14 @@
+import { useEffect, useRef } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { brand, uiIcons } from '@/design-system/assets';
 import { TalkiIconButton, TalkiText } from '@/design-system/components';
+import { PARENT_HOLD_MOVE_PX, PARENT_HOLD_MS } from '@/domain/parent/gate';
 import { shadowTopbar } from '@/design-system/theme/shadows';
 import { v2, v3 } from '@/design-system/theme/colors';
 import { barHeight, homePaddingInline } from '@/design-system/theme/spacing';
 import { useDevice } from '@/design-system/responsive/useDevice';
+import { testIds } from '@/testing/testIds';
 
 export interface TopBarProps {
   /** index.html 1303-1306 (`tb-points`) — the child's running score, shown
@@ -16,9 +19,9 @@ export interface TopBarProps {
   points: number;
   musicOn: boolean;
   onToggleMusic: () => void;
-  /** Long-press-to-open, index.html 1308 (`tb-brand-btn`) — the trigger only;
-   *  the gate itself is `ParentGate`. */
+  /** 900 ms hold, index.html 4050-4058. A short tap toasts via onBrandShortPress. */
   onBrandLongPress?: () => void;
+  onBrandShortPress?: () => void;
   testID?: string;
 }
 
@@ -35,8 +38,68 @@ export interface TopBarProps {
  * `index.html` today, and per the phase's standing rule the code — not an
  * aspirational doc — is the source of truth.
  */
-export function TopBar({ points, musicOn, onToggleMusic, onBrandLongPress, testID }: TopBarProps) {
+export function TopBar({
+  points,
+  musicOn,
+  onToggleMusic,
+  onBrandLongPress,
+  onBrandShortPress,
+  testID,
+}: TopBarProps) {
   const { deviceClass } = useDevice();
+  const hold = useRef({
+    x: 0,
+    y: 0,
+    timer: null as ReturnType<typeof setTimeout> | null,
+    fired: false,
+    down: false,
+    unlisten: null as (() => void) | null,
+  });
+
+  const cancelHold = () => {
+    if (hold.current.timer) clearTimeout(hold.current.timer);
+    hold.current.timer = null;
+    hold.current.unlisten?.();
+    hold.current.unlisten = null;
+  };
+
+  const startHold = (x: number, y: number) => {
+    hold.current.fired = false;
+    hold.current.down = true;
+    hold.current.x = x;
+    hold.current.y = y;
+    cancelHold();
+    hold.current.down = true;
+    if (typeof window !== 'undefined') {
+      const onMove = (ev: MouseEvent | PointerEvent) => {
+        const moved =
+          Math.hypot(ev.pageX - hold.current.x, ev.pageY - hold.current.y) > PARENT_HOLD_MOVE_PX ||
+          Math.abs(ev.movementX) > PARENT_HOLD_MOVE_PX ||
+          Math.abs(ev.movementY) > PARENT_HOLD_MOVE_PX;
+        if (moved) {
+          hold.current.down = false;
+          cancelHold();
+        }
+      };
+      window.addEventListener('pointermove', onMove, true);
+      window.addEventListener('mousemove', onMove, true);
+      hold.current.unlisten = () => {
+        window.removeEventListener('pointermove', onMove, true);
+        window.removeEventListener('mousemove', onMove, true);
+      };
+    }
+    hold.current.timer = setTimeout(() => {
+      hold.current.fired = true;
+      hold.current.timer = null;
+      hold.current.down = false;
+      hold.current.unlisten?.();
+      hold.current.unlisten = null;
+      onBrandLongPress?.();
+    }, PARENT_HOLD_MS);
+  };
+
+  useEffect(() => () => cancelHold(), []);
+
   return (
     <View
       testID={testID}
@@ -59,13 +122,24 @@ export function TopBar({ points, musicOn, onToggleMusic, onBrandLongPress, testI
       </View>
       <View pointerEvents="box-none" style={styles.brandSlot}>
         <Pressable
-          testID="topbar-brand"
-          onLongPress={onBrandLongPress}
+          testID={testIds.parent.button}
           accessibilityRole="button"
           accessibilityLabel="מסך הורים (לחיצה ארוכה)"
           style={styles.brandButton}
+          onPressIn={(e) => startHold(e.nativeEvent.pageX, e.nativeEvent.pageY)}
+          onPressOut={() => {
+            if (!hold.current.fired) {
+              hold.current.down = false;
+              cancelHold();
+            }
+          }}
+          onPress={() => {
+            if (!hold.current.fired) onBrandShortPress?.();
+          }}
         >
-          <Image source={brand.headerLogo} style={styles.logo} resizeMode="contain" />
+          <View testID="topbar-brand" pointerEvents="none">
+            <Image source={brand.headerLogo} style={styles.logo} resizeMode="contain" pointerEvents="none" />
+          </View>
         </Pressable>
       </View>
       <View style={styles.utils}>

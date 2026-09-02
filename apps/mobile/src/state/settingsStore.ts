@@ -23,6 +23,7 @@ export interface SettingsState {
   setNiqqud: (enabled: boolean) => Promise<void>;
   toggleMusic: () => Promise<void>;
   setPuzzleLevel: (level: number) => Promise<void>;
+  patchSettings: (partial: Partial<TalkiSettings>) => Promise<void>;
 }
 
 async function persist(next: TalkiSettings): Promise<void> {
@@ -52,6 +53,12 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
   setPuzzleLevel: async (level) => {
     const next = { ...get().settings, puzzleLevel: level };
+    set({ settings: next });
+    await persist(next);
+  },
+
+  patchSettings: async (partial) => {
+    const next = { ...get().settings, ...partial };
     set({ settings: next });
     await persist(next);
   },

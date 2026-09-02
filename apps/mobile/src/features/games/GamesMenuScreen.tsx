@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useEffect, useState } from 'react';
 
 import { TalkiCard, TalkiHeading, TalkiScreen, TalkiText } from '@/design-system/components';
-import { TopBar } from '@/components/shell';
+import { ToastHost, TopBar } from '@/components/shell';
 import { useDevice } from '@/design-system/responsive/useDevice';
 import { homePaddingInline } from '@/design-system/theme/spacing';
 import { GAMES } from '@/domain/games/ids';
@@ -12,6 +12,7 @@ import { gameHref } from '@/domain/navigation/routes';
 import type { CategoryId } from '@/domain/types';
 import { GameArtCard } from '@/features/home/GameArtCard';
 import { useGuardedPush } from '@/hooks/useGuardedPush';
+import { useParentBrand } from '@/hooks/useParentBrand';
 import { useProgressStore } from '@/state/progressStore';
 import { useSettingsStore } from '@/state/settingsStore';
 import { testIds } from '@/testing/testIds';
@@ -29,6 +30,7 @@ export function GamesMenuScreen() {
   const { deviceClass } = useDevice();
   const { hydrated, custom, lastCat, learned, hydrate } = useProgressStore();
   const { settings, toggleMusic } = useSettingsStore();
+  const parent = useParentBrand();
   useEffect(() => {
     if (!hydrated) void hydrate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,7 +41,14 @@ export function GamesMenuScreen() {
 
   return (
     <TalkiScreen testID={testIds.gamesMenu.root}>
-      <TopBar points={learned.size} musicOn={settings.music} onToggleMusic={() => void toggleMusic()} />
+      <TopBar
+        points={learned.size}
+        musicOn={settings.music}
+        onToggleMusic={() => void toggleMusic()}
+        onBrandLongPress={parent.onBrandLongPress}
+        onBrandShortPress={parent.onBrandShortPress}
+      />
+      <ToastHost message={parent.toast} onHide={parent.dismissToast} testID={testIds.parent.toast} />
       <ScrollView contentContainerStyle={[styles.content, { paddingInline: homePaddingInline(deviceClass) }]}>
         <TalkiHeading level={1} style={styles.heading}>
           משחקים
