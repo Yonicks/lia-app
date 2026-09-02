@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { brand, uiIcons } from '@/design-system/assets';
 import { TalkiIconButton, TalkiText } from '@/design-system/components';
@@ -70,7 +70,9 @@ export function TopBar({
     hold.current.y = y;
     cancelHold();
     hold.current.down = true;
-    if (typeof window !== 'undefined') {
+    // Web only: cancel the hold if the pointer drags away (Playwright parent.spec).
+    // Native `window` exists but has no DOM addEventListener — calling it crashes.
+    if (Platform.OS === 'web' && typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
       const onMove = (ev: MouseEvent | PointerEvent) => {
         const moved =
           Math.hypot(ev.pageX - hold.current.x, ev.pageY - hold.current.y) > PARENT_HOLD_MOVE_PX ||
@@ -96,6 +98,14 @@ export function TopBar({
       hold.current.unlisten = null;
       onBrandLongPress?.();
     }, PARENT_HOLD_MS);
+  };
+
+  const onHoldMove = (pageX: number, pageY: number) => {
+    if (!hold.current.down || hold.current.fired) return;
+    if (Math.hypot(pageX - hold.current.x, pageY - hold.current.y) > PARENT_HOLD_MOVE_PX) {
+      hold.current.down = false;
+      cancelHold();
+    }
   };
 
   useEffect(() => () => cancelHold(), []);
@@ -127,6 +137,10 @@ export function TopBar({
           accessibilityLabel="מסך הורים (לחיצה ארוכה)"
           style={styles.brandButton}
           onPressIn={(e) => startHold(e.nativeEvent.pageX, e.nativeEvent.pageY)}
+          onTouchMove={(e) => {
+            const t = e.nativeEvent.touches[0];
+            if (t) onHoldMove(t.pageX, t.pageY);
+          }}
           onPressOut={() => {
             if (!hold.current.fired) {
               hold.current.down = false;

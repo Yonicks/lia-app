@@ -1,3 +1,4 @@
+/* global maestro, output */
 /**
  * Reads the parent-gate question Maestro copied (`7 × 4 = ?`) and exposes
  * digits for `tapOn: id: parent-gate-key-${output.d0}` etc.
