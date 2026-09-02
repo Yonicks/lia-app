@@ -92,7 +92,7 @@ describe('useSafeLayout composition — no double counting', () => {
     expect(layout.contentTop).not.toBe(47 + barHeight + 47);
   });
 
-  it('adds the bottom inset and adHeight (0) exactly once each', () => {
+  it('adds the bottom inset and adHeight (0 by default) exactly once each', () => {
     const layout = computeSafeLayout(0, 34);
     expect(layout.contentBottom).toBe(34 + adHeight);
     expect(adHeight).toBe(0);

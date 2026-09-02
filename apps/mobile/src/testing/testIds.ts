@@ -227,6 +227,10 @@ export const testIds = {
     root: 'parent-root',
     toast: 'parent-toast',
   },
+  ads: {
+    reserved: 'ad-reserved',
+    banner: 'ad-banner',
+  },
   stickers: {
     root: 'stickers-root',
     filter: (key: string) => `stickers-filter-${key}`,

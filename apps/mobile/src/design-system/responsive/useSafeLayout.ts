@@ -1,6 +1,9 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { adHeight, barHeight } from '../theme/spacing';
+import { composeContentBottom } from '@/services/ads/adLayout';
+import { useReservedAdHeight } from '@/services/ads/useReservedAdHeight';
+
+import { barHeight, tabBarHeight } from '../theme/spacing';
 
 export interface SafeLayout {
   /** Raw OS safe-area insets (notch, home indicator, status bar). */
@@ -11,9 +14,12 @@ export interface SafeLayout {
    *  `insetTop + barHeight + insetTop` (see "without double counting" in the
    *  Tier 1 responsive.test.ts requirement). */
   contentTop: number;
-  /** Content should end above the ad slot (always 0 in this migration — no
-   *  native ad banner is built) plus the bottom safe area. */
+  /** Content should end above the reserved ad slot plus the bottom safe
+   *  area. Tab-bar height is NOT added here — the navigator already owns
+   *  that strip, so counting it again would double-count. */
   contentBottom: number;
+  adReserved: number;
+  tabBarHeight: number;
 }
 
 /**
@@ -26,10 +32,13 @@ export interface SafeLayout {
  */
 export function useSafeLayout(): SafeLayout {
   const insets = useSafeAreaInsets();
+  const adReserved = useReservedAdHeight();
   return {
     insetTop: insets.top,
     insetBottom: insets.bottom,
     contentTop: insets.top + barHeight,
-    contentBottom: insets.bottom + adHeight,
+    contentBottom: composeContentBottom(insets.bottom, 0, adReserved),
+    adReserved,
+    tabBarHeight,
   };
 }

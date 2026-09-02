@@ -1,8 +1,11 @@
 import { useCallback, useState } from 'react';
 import { Stack, useGlobalSearchParams } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { AdBanner } from '../src/components/shell/AdBanner';
 
 import { forceRTL } from '../src/design-system/rtl/forceRTL';
 import { v3 } from '../src/design-system/theme/colors';
@@ -82,7 +85,13 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <Stack screenOptions={{ headerShown: false }} />
+        <StatusBar style="dark" />
+        <View style={{ flex: 1 }}>
+          <View style={{ flex: 1 }}>
+            <Stack screenOptions={{ headerShown: false }} />
+          </View>
+          <AdBanner />
+        </View>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

@@ -23,7 +23,10 @@ export function homeGridGap(deviceClass: DeviceClass): number {
  *  of both side controls at any width. `adH` is always 0 here — the legacy
  *  ad banner has no native equivalent and is never built in this migration. */
 export const barHeight = 68;
+/** Static default when no banner is reserved. Live height lives in adLayout. */
 export const adHeight = 0;
+/** BottomNavigation item minHeight 48 + paddingBlock 8+8. */
+export const tabBarHeight = 64;
 export function tbSideClear(deviceClass: DeviceClass): number {
   return deviceClass === 'phone' ? 106 : 104;
 }

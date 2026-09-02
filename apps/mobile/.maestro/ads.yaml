@@ -1,0 +1,9 @@
+appId: com.yonicks.talki.dev
+---
+# Phase 13 Tier 3: banner reservation. Not executed in this sandbox.
+- launchApp:
+    arguments:
+      intro: '0'
+- assertVisible:
+    id: 'home-root'
+- takeScreenshot: phase-13-home
