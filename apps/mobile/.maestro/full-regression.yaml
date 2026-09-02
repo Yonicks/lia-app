@@ -1,0 +1,150 @@
+appId: com.yonicks.talki.dev
+---
+# Phase 14 full regression — every game and every practice mode.
+# Device-attested. Not run in CI. Not executed in this sandbox
+# (no Android SDK / Maestro binary). See phase-14-device-qa.md.
+- launchApp:
+    arguments:
+      intro: '0'
+- assertVisible:
+    id: home-root
+
+# Home → category → cards → back
+- tapOn:
+    id: home-category-animals
+- assertVisible:
+    id: category-root
+- tapOn:
+    id: category-cards
+- assertVisible:
+    id: cards-root
+- tapOn:
+    id: game-header-back
+
+# Games menu: quiz, memory, missing, match, speech, sounds, count, sort, bubbles, puzzle
+- tapOn:
+    id: bottom-nav-games
+- assertVisible:
+    id: games-menu-root
+- tapOn:
+    id: games-menu-card-quiz
+- assertVisible:
+    id: quiz-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-memory
+- assertVisible:
+    id: memory-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-missing
+- assertVisible:
+    id: missing-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-match
+- assertVisible:
+    id: match-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-speech
+- assertVisible:
+    id: speech-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-sounds
+- assertVisible:
+    id: sounds-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-count
+- assertVisible:
+    id: count-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-sort
+- assertVisible:
+    id: sort-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-bubbles
+- assertVisible:
+    id: bubbles-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-puzzle
+- assertVisible:
+    id: puzzle-root
+- tapOn:
+    id: game-header-back
+
+# Practice modes
+- tapOn:
+    id: bottom-nav-home
+- tapOn:
+    id: home-all-practice
+- assertVisible:
+    id: practice-menu-root
+- tapOn:
+    id: practice-menu-card-focus
+- assertVisible:
+    id: focus-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: practice-menu-card-cloze
+- assertVisible:
+    id: cloze-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: practice-menu-card-temptation
+- assertVisible:
+    id: temptation-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: practice-menu-card-receptive
+- assertVisible:
+    id: receptive-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: practice-menu-card-pairs
+- assertVisible:
+    id: pairs-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: practice-menu-card-combine
+- assertVisible:
+    id: combine-root
+- tapOn:
+    id: game-header-back
+
+# Rewards / stickers
+- tapOn:
+    id: bottom-nav-stickers
+- assertVisible:
+    id: stickers-root
+
+# Parent gate (hold is Maestro longPressOn)
+- tapOn:
+    id: bottom-nav-home
+- longPressOn:
+    id: parent-button
+- assertVisible:
+    id: parent-gate-question
+- tapOn:
+    id: parent-gate-back
+- assertVisible:
+    id: home-root
