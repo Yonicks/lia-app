@@ -21,6 +21,9 @@ export interface GameShellProps {
   onDismissToast: () => void;
   celebrateMessage: string | null;
   onDismissCelebrate: () => void;
+  /** `false` for cards — a flashcard browser, not a scored game. */
+  scoring?: boolean;
+  chipTestIDs?: (string | undefined)[];
   children: ReactNode;
 }
 
@@ -40,13 +43,16 @@ export function GameShell({
   onDismissToast,
   celebrateMessage,
   onDismissCelebrate,
+  scoring = true,
+  chipTestIDs,
   children,
 }: GameShellProps) {
+  const showDone = scoring && done;
   return (
     <TalkiScreen testID={testIds.game.shellRoot}>
       <GameHeader title={title} titleTestID={testIds.game.headerTitle} onBack={onBack} />
-      {done ? null : <GameChips chips={chips} />}
-      <View style={styles.body}>{done ? <DoneCard result={result} onReplay={onReplay} onHome={onHome} /> : children}</View>
+      {showDone ? null : <GameChips chips={chips} chipTestIDs={chipTestIDs} />}
+      <View style={styles.body}>{showDone ? <DoneCard result={result} onReplay={onReplay} onHome={onHome} /> : children}</View>
       <ToastHost message={toast} onHide={onDismissToast} testID="game-toast" />
       <RewardOverlay
         visible={celebrateMessage !== null}

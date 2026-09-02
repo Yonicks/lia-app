@@ -21,5 +21,11 @@ export function useGameAudio() {
   const wrong = useCallback(() => {
     audioEngine.playSfx('answer.retry');
   }, []);
-  return { start, complete, correct, wrong };
+  const correctMatch = useCallback(() => {
+    audioEngine.playSfx('interaction.correctMatch');
+  }, []);
+  const invalidMove = useCallback(() => {
+    audioEngine.playSfx('interaction.invalidMove');
+  }, []);
+  return { start, complete, correct, wrong, correctMatch, invalidMove };
 }

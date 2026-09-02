@@ -2,6 +2,11 @@ import type { Dispatch } from 'react';
 
 import type { GameId, TalkiCategory, TalkiSettings, TalkiWord, WordStats } from '@/domain/types';
 
+export interface GameScreenProps {
+  catId: string | null;
+  seed?: number;
+}
+
 export interface GameResult {
   score: number;
   total: number;

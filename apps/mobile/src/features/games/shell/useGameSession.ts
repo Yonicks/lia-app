@@ -6,11 +6,14 @@ import { allCats } from '@/domain/vocabulary/allCats';
 import { orientationService } from '@/services/orientation';
 import { useProgressStore } from '@/state/progressStore';
 
+import { createManagedTimers, type TimerId } from './managedTimers';
 import { useGameAudio } from './useGameAudio';
 
 export interface UseGameSessionArgs {
   gameId: GameId;
   requestedCatId: string | null;
+  /** `browse` is cards: no MIN_ITEMS gate, no levelStart, empty → home. */
+  mode?: 'game' | 'browse';
 }
 
 export interface GameSession {
@@ -19,12 +22,17 @@ export interface GameSession {
   failed: boolean;
   toast: string | null;
   dismissToast: () => void;
+  showToast: (message: string) => void;
   tryLock: () => boolean;
   unlock: () => void;
   isLocked: () => boolean;
   restart: () => void;
   epoch: number;
   audio: ReturnType<typeof useGameAudio>;
+  schedule: (ms: number, fn: () => void) => TimerId;
+  cancel: (id: TimerId) => void;
+  cancelAll: () => void;
+  pendingTimers: () => number;
 }
 
 /**
@@ -32,13 +40,15 @@ export interface GameSession {
  * `game.levelStart`, lock landscape through OrientationService, and own
  * the rapid-tap lock. Per-game board state stays in the game's reducer.
  */
-export function useGameSession({ gameId, requestedCatId }: UseGameSessionArgs): GameSession {
+export function useGameSession({ gameId, requestedCatId, mode = 'game' }: UseGameSessionArgs): GameSession {
   const { hydrated, custom, hydrate } = useProgressStore();
   const audio = useGameAudio();
   const [toastHidden, setToastHidden] = useState(false);
+  const [localToast, setLocalToast] = useState<string | null>(null);
   const [epoch, setEpoch] = useState(0);
   const lockRef = useRef(false);
   const playedEpoch = useRef(-1);
+  const timers = useRef(createManagedTimers());
 
   useEffect(() => {
     if (!hydrated) void hydrate();
@@ -47,24 +57,38 @@ export function useGameSession({ gameId, requestedCatId }: UseGameSessionArgs): 
 
   useEffect(() => {
     void orientationService.applyFor('games');
+    const t = timers.current;
     return () => {
+      t.cancelAll();
       void orientationService.unlock();
     };
   }, []);
 
   const result = useMemo(() => {
     if (!hydrated) return null;
-    return resolveStartCategory(gameId, requestedCatId as CategoryId | null, allCats(custom));
-  }, [hydrated, custom, gameId, requestedCatId]);
+    const cats = allCats(custom);
+    if (mode === 'browse') {
+      if (requestedCatId) {
+        const requested = cats.find((c) => c.id === requestedCatId);
+        if (!requested || requested.items.length === 0) return { ok: false as const, toast: null };
+        return { ok: true as const, category: requested };
+      }
+      const category = cats[0];
+      if (!category || category.items.length === 0) return { ok: false as const, toast: null };
+      return { ok: true as const, category };
+    }
+    return resolveStartCategory(gameId, requestedCatId as CategoryId | null, cats);
+  }, [hydrated, custom, gameId, requestedCatId, mode]);
 
   useEffect(() => {
     if (!result?.ok) return;
     lockRef.current = false;
+    timers.current.cancelAll();
     if (playedEpoch.current === epoch) return;
     playedEpoch.current = epoch;
-    audio.start();
+    if (mode === 'game') audio.start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result, epoch]);
+  }, [result, epoch, mode]);
 
   const tryLock = useCallback(() => {
     if (lockRef.current) return false;
@@ -79,21 +103,37 @@ export function useGameSession({ gameId, requestedCatId }: UseGameSessionArgs): 
   const isLocked = useCallback(() => lockRef.current, []);
 
   const restart = useCallback(() => {
+    timers.current.cancelAll();
     setEpoch((n) => n + 1);
   }, []);
+
+  const schedule = useCallback((ms: number, fn: () => void) => timers.current.schedule(ms, fn), []);
+  const cancel = useCallback((id: TimerId) => timers.current.cancel(id), []);
+  const cancelAll = useCallback(() => timers.current.cancelAll(), []);
+  const pendingTimers = useCallback(() => timers.current.pending(), []);
+
+  const gateToast = result && !result.ok && !toastHidden ? result.toast : null;
 
   return {
     ready: hydrated && result !== null,
     category: result?.ok ? result.category : null,
     failed: result !== null && !result.ok,
-    toast: result && !result.ok && !toastHidden ? result.toast : null,
-    dismissToast: () => setToastHidden(true),
+    toast: localToast ?? gateToast,
+    dismissToast: () => {
+      setToastHidden(true);
+      setLocalToast(null);
+    },
+    showToast: (message) => setLocalToast(message),
     tryLock,
     unlock,
     isLocked,
     restart,
     epoch,
     audio,
+    schedule,
+    cancel,
+    cancelAll,
+    pendingTimers,
   };
 }
 

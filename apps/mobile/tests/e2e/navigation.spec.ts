@@ -40,7 +40,7 @@ test.describe('Phase 7 navigation spine', () => {
   test('game and practice cards route to a stub screen, and back returns correctly', async ({ page }) => {
     await openApp(page);
     await page.getByTestId(testIds.home.game('memory')).click();
-    await expect(page.getByTestId('game-stub-root')).toBeVisible();
+    await expect(page.getByTestId(testIds.game.shellRoot)).toBeVisible();
     await page.goBack();
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
 

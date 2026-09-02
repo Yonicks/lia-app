@@ -1,0 +1,29 @@
+# Phase 9 — one round of memory, missing, match, and cards.
+# Device-attested. Not run in CI.
+appId: com.talki.app
+---
+- launchApp
+- tapOn:
+    id: home-game-memory
+- assertVisible:
+    id: memory-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: bottom-nav-games
+- tapOn:
+    id: games-menu-card-missing
+- assertVisible:
+    id: missing-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-match
+- assertVisible:
+    id: match-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: games-menu-card-cards
+- assertVisible:
+    id: cards-root

@@ -1,18 +1,24 @@
+import type { ComponentType } from 'react';
+
 import { minItemsFor } from '@/domain/games/minItems';
 import type { GameId } from '@/domain/types';
 
+import { CardsScreen } from '../cards/CardsScreen';
+import { MatchScreen } from '../match/MatchScreen';
+import { MemoryScreen } from '../memory/MemoryScreen';
+import { MissingScreen } from '../missing/MissingScreen';
 import { QuizScreen } from '../quiz/QuizScreen';
+import type { GameScreenProps } from './types';
 
 export interface RegisteredGame {
   id: GameId;
   titleHe: string;
   minItems: number;
-  Screen: typeof QuizScreen;
+  Screen: ComponentType<GameScreenProps>;
 }
 
 /**
- * Phase 8 registers quiz only. Other ids stay on the stub route so a
- * missing registry entry cannot accidentally invent a second game.
+ * Phase 9 registers quiz + wave A. Remaining ids stay on the stub route.
  */
 export const gameRegistry: Partial<Record<GameId, RegisteredGame>> = {
   quiz: {
@@ -20,6 +26,30 @@ export const gameRegistry: Partial<Record<GameId, RegisteredGame>> = {
     titleHe: '🎧 איפה ה...?',
     minItems: minItemsFor('quiz'),
     Screen: QuizScreen,
+  },
+  memory: {
+    id: 'memory',
+    titleHe: '🃏 משחק זיכרון',
+    minItems: minItemsFor('memory'),
+    Screen: MemoryScreen,
+  },
+  missing: {
+    id: 'missing',
+    titleHe: '🙈 מה נעלם?',
+    minItems: minItemsFor('missing'),
+    Screen: MissingScreen,
+  },
+  match: {
+    id: 'match',
+    titleHe: '🔗 חיבורים',
+    minItems: minItemsFor('match'),
+    Screen: MatchScreen,
+  },
+  cards: {
+    id: 'cards',
+    titleHe: '🖼️ כרטיסיות',
+    minItems: 1,
+    Screen: CardsScreen,
   },
 };
 
