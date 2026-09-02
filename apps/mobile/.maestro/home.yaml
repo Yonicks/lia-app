@@ -1,0 +1,39 @@
+appId: com.yonicks.talki.dev
+---
+# Phase 7's native navigation spine: Home -> a category -> back -> the
+# Games tab -> the Rewards tab -> back to Home, using only hardware/gesture
+# back and the bespoke bottom nav (never a browser-only affordance).
+- launchApp:
+    arguments:
+      intro: '0'
+- assertVisible:
+    id: 'home-root'
+- takeScreenshot: phase-07-home
+- assertVisible:
+    id: 'home-category-animals'
+- tapOn:
+    id: 'home-category-animals'
+- assertVisible:
+    id: 'category-root'
+- takeScreenshot: phase-07-category
+- assertVisible:
+    id: 'category-word-0'
+- tapOn:
+    id: 'category-word-0'
+- back
+- assertVisible:
+    id: 'home-root'
+- tapOn:
+    id: 'bottom-nav-games'
+- assertVisible:
+    id: 'games-menu-root'
+- takeScreenshot: phase-07-games-menu
+- tapOn:
+    id: 'bottom-nav-stickers'
+- assertVisible:
+    id: 'rewards-root'
+- takeScreenshot: phase-07-rewards
+- tapOn:
+    id: 'bottom-nav-home'
+- assertVisible:
+    id: 'home-root'

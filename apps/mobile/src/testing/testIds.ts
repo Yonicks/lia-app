@@ -4,17 +4,62 @@
  * one-file change instead of a grep-and-pray across every spec.
  */
 export const testIds = {
-  bootstrap: {
-    root: 'bootstrap-root',
-    title: 'bootstrap-title',
-  },
-  /** app/index.tsx + src/features/intro/ — the native opening sequence
+  /** app/_layout.tsx + src/features/intro/ — the native opening sequence
    *  (phase-06-plan.md). `layer(id)` matches every `IntroLayerId` so a spec
    *  can assert on the exact same identifiers `layers.ts` exports. */
   intro: {
     root: 'intro-root',
     skipLayer: 'intro-skip-layer',
     layer: (id: string) => `intro-layer-${id}`,
+  },
+  /** app/(tabs)/index.tsx + src/features/home/ (phase-07-plan.md). Section
+   *  order is hero, categories, practice, games; every dynamic id is a
+   *  factory keyed by the same domain id (`CategoryId`/`GameId`/
+   *  `PracticeModeId`) the data layer already uses. */
+  home: {
+    root: 'home-root',
+    hero: 'home-hero',
+    heroContinue: 'home-hero-continue',
+    /** Reuses `TopBar`'s own points pill — Home does not render a second,
+     *  duplicate points node next to the persistent top bar. */
+    points: 'topbar-points',
+    sectionCategories: 'home-section-categories',
+    category: (id: string) => `home-category-${id}`,
+    sectionPractice: 'home-section-practice',
+    practice: (id: string) => `home-practice-${id}`,
+    allPractice: 'home-all-practice',
+    sectionGames: 'home-section-games',
+    game: (id: string) => `home-game-${id}`,
+    allGames: 'home-all-games',
+  },
+  /** BottomNavigation already emits `bottom-nav-<route>`; these three are
+   *  the plan's requested aliases, used by navigation.spec.ts. */
+  nav: {
+    home: 'bottom-nav-home',
+    games: 'bottom-nav-games',
+    rewards: 'bottom-nav-stickers',
+  },
+  /** app/category/[id].tsx + src/features/categories/. */
+  category: {
+    root: 'category-root',
+    title: 'category-title',
+    progress: 'category-progress',
+    back: 'category-back',
+    play: 'category-play',
+    cards: 'category-cards',
+    practice: 'category-practice',
+    word: (index: number) => `category-word-${index}`,
+  },
+  /** app/(tabs)/games.tsx. */
+  gamesMenu: {
+    root: 'games-menu-root',
+    card: (id: string) => `games-menu-card-${id}`,
+    chip: (id: string) => `games-menu-chip-${id}`,
+  },
+  /** app/practice/index.tsx. */
+  practiceMenu: {
+    root: 'practice-menu-root',
+    card: (id: string) => `practice-menu-card-${id}`,
   },
   /** Dev-only, native-only (never rendered on web — see
    *  app/index.tsx and phase-03-plan.md Tier 3 test plan). Lets

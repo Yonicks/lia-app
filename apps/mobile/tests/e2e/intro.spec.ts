@@ -170,7 +170,7 @@ test.describe('Phase 6 opening sequence', () => {
   test('?intro=0 bypasses the sequence entirely on the real app root', async ({ page }) => {
     await page.goto('/?intro=0');
     await page.waitForLoadState('networkidle');
-    await expect(page.getByTestId(testIds.bootstrap.root)).toBeVisible();
+    await expect(page.getByTestId(testIds.home.root)).toBeVisible();
     await expect(page.getByTestId(testIds.intro.root)).toHaveCount(0);
   });
 

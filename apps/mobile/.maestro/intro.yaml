@@ -18,7 +18,7 @@ appId: com.yonicks.talki.dev
 # deliberately longer than Tier 2's tolerance.
 - extendedWaitUntil:
     visible:
-      id: 'bootstrap-title'
+      id: 'home-root'
     timeout: 5000
 - assertNotVisible:
     id: 'intro-root'

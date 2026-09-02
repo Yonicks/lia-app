@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { navIcons } from '@/design-system/assets';
 import { TalkiText } from '@/design-system/components';
@@ -24,9 +24,20 @@ const ITEMS: { route: NavRoute; icon: (typeof navIcons)[keyof typeof navIcons]; 
   { route: 'stickers', icon: navIcons.stickers, label: 'פרסים' },
 ];
 
+/** Web-only `dir="rtl"` on this component's own root, mirroring
+ *  `TalkiScreen`'s mechanism (design-system/components/TalkiScreen.tsx):
+ *  this bar is rendered by the Tabs navigator's own `tabBar` prop
+ *  (`app/(tabs)/_layout.tsx`), never nested inside any `TalkiScreen`, so it
+ *  does not inherit `dir` from one. Without this, react-native-web's
+ *  `flexDirection: 'row'` renders in the browser's LTR default here even
+ *  though every screen it sits beside is RTL — the three items would sit
+ *  in DOM/array order (home, games, stickers) left-to-right instead of the
+ *  mirrored right-to-left order index.html's own `dir="rtl"` produces. */
+const webDirProp = Platform.OS === 'web' ? ({ dir: 'rtl' } as { dir: 'rtl' }) : {};
+
 export function BottomNavigation({ active, onNavigate, testID }: BottomNavigationProps) {
   return (
-    <View testID={testID} style={[styles.bar, shadowFloating]} accessibilityRole="tablist">
+    <View testID={testID} style={[styles.bar, shadowFloating]} accessibilityRole="tablist" {...webDirProp}>
       {ITEMS.map((item) => {
         const isActive = item.route === active;
         return (

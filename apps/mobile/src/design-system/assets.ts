@@ -21,10 +21,19 @@ export const uiIcons = {
   gift: require('../../assets/v2/icons/talki-ui-icon-gift.png'),
   chevron: require('../../assets/v2/icons/talki-chevron-left.png'),
   settings: require('../../assets/v2/icons/talki-ui-icon-settings.png'),
+  games: require('../../assets/v2/icons/talki-ui-icon-games.png'),
+} as const;
+
+export const practiceIcons = {
+  bubble: require('../../assets/v2/icons/talki-speech-bubble.png'),
+  focus: require('../../assets/v2/icons/talki-speech-target.png'),
+  receptive: require('../../assets/v2/icons/talki-speech-pointing-hand.png'),
+  cloze: require('../../assets/v2/icons/talki-speech-pause.png'),
 } as const;
 
 export const brand = {
   headerLogo: require('../../assets/v2/brand/talki-header-logo.png'),
+  starMark: require('../../assets/v2/brand/talki-star-mark.png'),
 } as const;
 
 /** Ten built-in categories' icon art (index.html `.cat-card .hero-chip img`
@@ -44,6 +53,32 @@ export const introAssets = {
   wordmark: require('../../assets/v2/brand/talki-logo-mark.png'),
 } as const;
 
+/** Home hero art (Phase 7). `talki-home-hero-mockup.png`'s newer intent —
+ *  these three files were untracked when the phase started (see
+ *  phase-07-report.md "Findings and drift"); `talki-home-hero-art.webp`
+ *  (the older single-scene asset the approved mock predates) was deleted
+ *  from the repository, so the compact/wide scene pair is the only art
+ *  available for the hero today. */
+export const homeAssets = {
+  heroSceneCompact: require('../../assets/v2/home/talki-hero-scene-compact.webp'),
+  heroSceneWide: require('../../assets/v2/home/talki-hero-scene-wide.webp'),
+  heroStar: require('../../assets/v2/home/talki-hero-star.webp'),
+} as const;
+
+/** Game card art — index.html 2355-2377 (renderGamesMenu). Seven of the
+ *  eleven games have a dedicated card image; the rest (`match`, `bubbles`,
+ *  `sort`, `speech`) render from an emoji/plain card in legacy and keep
+ *  doing so here — see gameCards.ts. */
+export const gameCardAssets = {
+  memory: require('../../assets/v2/game-menu/talki-game-card-memory.png'),
+  quiz: require('../../assets/v2/game-menu/talki-game-card-where-is.png'),
+  missing: require('../../assets/v2/game-menu/talki-game-card-missing.png'),
+  cards: require('../../assets/v2/game-menu/talki-game-card-flashcards.png'),
+  sounds: require('../../assets/v2/game-menu/talki-game-card-animal-sounds.png'),
+  count: require('../../assets/v2/game-menu/talki-game-card-counting.png'),
+  puzzle: require('../../assets/v2/game-menu/talki-game-card-challenge.png'),
+} as const;
+
 export const categoryIcons = {
   animals: require('../../assets/v2/categories/talki-cat-icon-animals.png'),
   food: require('../../assets/v2/categories/talki-cat-icon-food.png'),
@@ -55,4 +90,20 @@ export const categoryIcons = {
   numbers: require('../../assets/v2/categories/talki-cat-icon-numbers.png'),
   outside: require('../../assets/v2/categories/talki-cat-icon-outside.png'),
   emotions: require('../../assets/v2/categories/talki-cat-icon-emotions.png'),
+} as const;
+
+/** Richer illustrated category art used only by the Home hero tile
+ *  (`catHeroArt()`, index.html 2185-2188). The category grid keeps the
+ *  smaller `categoryIcons` set. `mine` falls back to `brand.starMark`. */
+export const categoryArt = {
+  animals: require('../../assets/v2/categories/talki-cat-art-animals.webp'),
+  food: require('../../assets/v2/categories/talki-cat-art-food.webp'),
+  colors: require('../../assets/v2/categories/talki-cat-art-colors.webp'),
+  home: require('../../assets/v2/categories/talki-cat-art-home.webp'),
+  family: require('../../assets/v2/categories/talki-cat-art-family.webp'),
+  body: require('../../assets/v2/categories/talki-cat-art-body.webp'),
+  actions: require('../../assets/v2/categories/talki-cat-art-actions.webp'),
+  numbers: require('../../assets/v2/categories/talki-cat-art-numbers.webp'),
+  outside: require('../../assets/v2/categories/talki-cat-art-outside.webp'),
+  emotions: require('../../assets/v2/categories/talki-cat-art-emotions.webp'),
 } as const;

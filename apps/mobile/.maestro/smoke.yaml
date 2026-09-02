@@ -1,7 +1,9 @@
 appId: com.yonicks.talki.dev
 ---
+# Phase 1 originally asserted the placeholder text "Talki Native
+# Migration"; Phase 7 replaced it with real Home (app/(tabs)/index.tsx),
+# so this smoke flow now asserts the real landing screen instead.
 - launchApp
 - assertVisible:
-    id: 'bootstrap-title'
-- assertVisible: 'Talki Native Migration'
+    id: 'home-root'
 - takeScreenshot: phase-01-bootstrap
