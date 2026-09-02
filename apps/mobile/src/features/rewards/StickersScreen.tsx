@@ -22,29 +22,29 @@ export function StickersScreen() {
   const items = filterStickers(filter);
 
   return (
-    <TalkiScreen testID="rewards-root">
-      <View testID={testIds.stickers.root} style={styles.fill}>
-      <TopBar
-        points={learned.size}
-        musicOn={settings.music}
-        onToggleMusic={() => void toggleMusic()}
-        onBrandLongPress={parent.onBrandLongPress}
-        onBrandShortPress={parent.onBrandShortPress}
-      />
-      <ToastHost message={parent.toast} onHide={parent.dismissToast} testID={testIds.parent.toast} />
-      <ScrollView>
-        <TalkiHeading level={1} align="center" style={styles.title}>
-          המדבקות שלי
-        </TalkiHeading>
-        <TalkiText align="center" color={v3.textSecondary}>
-          כל מילה חדשה — עוד מדבקה!
-        </TalkiText>
-        <TalkiText testID={testIds.stickers.counter} align="center" weight="semibold" style={styles.counter}>
-          {stickerCounter(learned, custom)}
-        </TalkiText>
-        <StickerFilters active={filter} onChange={setFilter} />
-        <StickerGrid items={items} learned={learned} custom={custom} />
-      </ScrollView>
+    <TalkiScreen testID={testIds.stickers.root}>
+      <View style={styles.fill}>
+        <TopBar
+          points={learned.size}
+          musicOn={settings.music}
+          onToggleMusic={() => void toggleMusic()}
+          onBrandLongPress={parent.onBrandLongPress}
+          onBrandShortPress={parent.onBrandShortPress}
+        />
+        <ToastHost message={parent.toast} onHide={parent.dismissToast} testID={testIds.parent.toast} />
+        <ScrollView>
+          <TalkiHeading level={1} align="center" style={styles.title}>
+            המדבקות שלי
+          </TalkiHeading>
+          <TalkiText align="center" color={v3.textSecondary}>
+            כל מילה חדשה — עוד מדבקה!
+          </TalkiText>
+          <TalkiText testID={testIds.stickers.counter} align="center" weight="semibold" style={styles.counter}>
+            {stickerCounter(learned, custom)}
+          </TalkiText>
+          <StickerFilters active={filter} onChange={setFilter} />
+          <StickerGrid items={items} learned={learned} custom={custom} />
+        </ScrollView>
       </View>
     </TalkiScreen>
   );

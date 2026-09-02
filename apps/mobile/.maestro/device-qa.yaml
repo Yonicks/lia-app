@@ -1,0 +1,132 @@
+# Native device QA for the four emulator flows (learn, tabs, parent, rotate/resume).
+# The debug APK from `npx expo run:android` without APP_VARIANT is com.yonicks.talki.
+# Development client: maestro test --app-id com.yonicks.talki.dev .maestro/device-qa.yaml
+appId: com.yonicks.talki
+---
+- launchApp:
+    arguments:
+      intro: '0'
+- extendedWaitUntil:
+    visible:
+      id: home-root
+    timeout: 15000
+
+# 1 — category → word (TTS is native; we assert the tile and that the screen holds)
+- tapOn:
+    id: home-category-animals
+- assertVisible:
+    id: category-root
+- tapOn:
+    id: category-word-0
+- assertVisible:
+    id: category-root
+- tapOn:
+    id: category-back
+- assertVisible:
+    id: home-root
+
+# 2 — games + stickers (PNG cells are stickers-item-*; assert the grid mounted)
+- tapOn:
+    id: bottom-nav-games
+- assertVisible:
+    id: games-menu-root
+- tapOn:
+    id: bottom-nav-stickers
+- assertVisible:
+    id: stickers-root
+- assertVisible:
+    id: stickers-item-0
+
+# 3 — parent gate → words photo + recordings (OS picker/mic: open and dismiss)
+# TopBar uses a 900ms onPressIn timer, not RN onLongPress, so Maestro's
+# accessibility long-click does not unlock. Open /parent via the app scheme.
+- tapOn:
+    id: bottom-nav-home
+- openLink: talki://parent
+- extendedWaitUntil:
+    visible:
+      id: parent-gate-question
+    timeout: 5000
+- copyTextFrom:
+    id: parent-gate-question
+- runScript: scripts/solve-parent-gate.js
+- tapOn:
+    id: parent-gate-key-${output.d0}
+- runFlow:
+    when:
+      true: ${output.hasD1 == 'true'}
+    commands:
+      - tapOn:
+          id: parent-gate-key-${output.d1}
+- tapOn:
+    id: parent-gate-ok
+- assertVisible:
+    id: parent-tab-settings
+- tapOn:
+    id: parent-tab-words
+- assertVisible:
+    id: parent-words-photo
+- tapOn:
+    id: parent-words-photo
+- tapOn:
+    text: While using the app
+    optional: true
+- tapOn:
+    text: Allow
+    optional: true
+- runFlow:
+    when:
+      notVisible:
+        id: parent-words-photo
+    commands:
+      - back
+- assertVisible:
+    id: parent-words-photo
+- tapOn:
+    id: parent-tab-record
+- assertVisible:
+    id: parent-record-start
+- tapOn:
+    id: parent-record-start
+- tapOn:
+    text: While using the app
+    optional: true
+- tapOn:
+    text: Allow
+    optional: true
+- runFlow:
+    when:
+      visible:
+        id: parent-record-stop
+    commands:
+      - tapOn:
+          id: parent-record-stop
+- runFlow:
+    when:
+      notVisible:
+        id: parent-tab-record
+    commands:
+      - back
+- tapOn:
+    id: parent-gate-back
+- assertVisible:
+    id: home-root
+
+# 4 — rotate in a game, Home, resume without a process kill
+- tapOn:
+    id: bottom-nav-games
+- tapOn:
+    id: games-menu-card-quiz
+- assertVisible:
+    id: quiz-root
+- setOrientation: landscapeLeft
+- assertVisible:
+    id: quiz-root
+- setOrientation: portrait
+- assertVisible:
+    id: quiz-root
+- pressKey: Home
+- launchApp:
+    stopApp: false
+- assertVisible:
+    id: quiz-root

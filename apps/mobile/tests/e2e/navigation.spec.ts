@@ -19,7 +19,7 @@ test.describe('Phase 7 navigation spine', () => {
     await expect(page.getByTestId(testIds.gamesMenu.root)).toBeVisible();
 
     await page.getByTestId(testIds.nav.rewards).click();
-    await expect(page.getByTestId('rewards-root')).toBeVisible();
+    await expect(page.getByTestId(testIds.stickers.root)).toBeVisible();
 
     await page.getByTestId(testIds.nav.home).click();
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();

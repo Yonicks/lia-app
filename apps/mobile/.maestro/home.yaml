@@ -31,7 +31,7 @@ appId: com.yonicks.talki.dev
 - tapOn:
     id: 'bottom-nav-stickers'
 - assertVisible:
-    id: 'rewards-root'
+    id: 'stickers-root'
 - takeScreenshot: phase-07-rewards
 - tapOn:
     id: 'bottom-nav-home'
