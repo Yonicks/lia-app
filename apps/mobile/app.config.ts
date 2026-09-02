@@ -60,6 +60,30 @@ const config: ExpoConfig = {
     'expo-sqlite',
     'expo-font',
     [
+      'expo-splash-screen',
+      {
+        backgroundColor: '#FFF6E4',
+        image: './assets/icon.png',
+        resizeMode: 'contain',
+      },
+    ],
+    [
+      'expo-image-picker',
+      {
+        photosPermission:
+          'Talki uses the photo library only when a parent picks a picture for a custom word. / Talki משתמשת בספריית התמונות רק כשההורה בוחר תמונה למילה אישית.',
+        cameraPermission:
+          'Talki uses the camera only when a parent adds a photo for a custom word. / Talki משתמשת במצלמה רק כשההורה מוסיף תמונה למילה אישית.',
+      },
+    ],
+    [
+      'react-native-google-mobile-ads',
+      {
+        androidAppId: 'ca-app-pub-3940256099942544~3347511713',
+        iosAppId: 'ca-app-pub-3940256099942544~1458002511',
+      },
+    ],
+    [
       'expo-audio',
       {
         microphonePermission:

@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { TalkiButton, TalkiCard, TalkiHeading, TalkiText } from '@/design-system/components';
 import { v3 } from '@/design-system/theme/colors';
 import { radii } from '@/design-system/theme/radii';
 import { RESET_CONFIRM_TEXT, RESET_DELETES_TEXT, RESET_KEEPS_TEXT } from '@/domain/parent/progressReset';
+import { formatStorageInfo, readStorageInfo } from '@/services/storage/readStorageInfo';
 import { audioEngine } from '@/services/audio';
 import { useProgressStore } from '@/state/progressStore';
 import { useSettingsStore } from '@/state/settingsStore';
@@ -29,6 +30,11 @@ export function SettingsTab() {
   const { settings, patchSettings } = useSettingsStore();
   const resetProgress = useProgressStore((s) => s.resetProgress);
   const [confirming, setConfirming] = useState(false);
+  const [storageLine, setStorageLine] = useState<string | null>(null);
+
+  useEffect(() => {
+    void readStorageInfo().then((info) => setStorageLine(formatStorageInfo(info)));
+  }, []);
 
   const toggle = (key: 'niqqud' | 'sounds' | 'effects' | 'music' | 'voice') => {
     const next = !settings[key];
@@ -110,6 +116,11 @@ export function SettingsTab() {
           אין חשבון ואין שרת. מילים והקלטות נשארות במכשיר. בגרסת החנות מוצג באנר מודעות לילדים (לא מותאם אישית).
         </TalkiText>
         <TalkiButton label="מדיניות פרטיות" variant="ghost" onPress={() => void Linking.openURL(PRIVACY)} />
+        {storageLine ? (
+          <TalkiText testID={testIds.parent.settingsStorage} color={v3.textSecondary}>
+            {storageLine}
+          </TalkiText>
+        ) : null}
       </TalkiCard>
 
       <TalkiCard>

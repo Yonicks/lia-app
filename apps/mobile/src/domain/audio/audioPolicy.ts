@@ -78,8 +78,8 @@ export const CELEBRATION_EVENTS: Partial<Record<SfxEvent, 1>> = {
   'game.levelComplete': 1,
 };
 
-// Pairs that must never sound in the same breath — enforced by callers choosing
-// ONE event for a "final answer" moment, but kept here so tests can assert the rule.
+// Pairs that must never sound in the same breath. Enforced by
+// `neverCombineBlocked` inside `shouldPlaySfx` when a partner was just played.
 export const NEVER_COMBINE: [SfxEvent, SfxEvent][] = [
   ['answer.correct', 'game.levelComplete'],
   ['reward.unlock', 'game.levelComplete'],
@@ -171,7 +171,25 @@ export function shouldPlaySfx(event: string, ctx?: ShouldPlaySfxCtx): boolean {
   if (now - last < cooldownFor(event as SfxEvent)) return false;
   const active = c.activeSfxCount || 0;
   if (active >= (c.maxSimultaneous || MAX_SIMULTANEOUS_SFX)) return false;
+  if (neverCombineBlocked(event as SfxEvent, c.lastPlay, now)) return false;
   return true;
+}
+
+/** Native enforcement of NEVER_COMBINE (legacy D10 left this to callers).
+ *  When `lastPlay` has no partner — the parity matrix — this is a no-op. */
+export function neverCombineBlocked(
+  event: SfxEvent,
+  lastPlay: Partial<Record<string, number>> | undefined,
+  now: number,
+): boolean {
+  if (!lastPlay) return false;
+  for (const [a, b] of NEVER_COMBINE) {
+    const partner = event === a ? b : event === b ? a : null;
+    if (!partner) continue;
+    const t = lastPlay[partner];
+    if (t != null && now - t < COOLDOWN_MS.celebration) return true;
+  }
+  return false;
 }
 
 export interface EffectiveMusicVolumeOpts {

@@ -45,6 +45,7 @@ export function useCategoryProgress(catId: CategoryId | undefined) {
     learnedCount,
     isLearned,
     niqqudEnabled: settings.niqqud,
-    markLearned: (word: string) => (category ? markLearned(category.id, word) : Promise.resolve()),
+    markLearned: (word: string) =>
+      category ? markLearned(category.id, word) : Promise.resolve(undefined as { added: boolean; size: number } | undefined),
   };
 }

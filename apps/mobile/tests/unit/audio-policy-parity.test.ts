@@ -179,3 +179,15 @@ describe('releaseDurationFor: every reason plus an unknown key', () => {
     expect(Port.releaseDurationFor(reason as never)).toBe(Legacy.releaseDurationFor(reason));
   });
 });
+
+describe('neverCombineBlocked (native-only enforcement; parity matrix has no partner)', () => {
+  it('blocks a pair when the partner was just played', () => {
+    expect(
+      Port.neverCombineBlocked('answer.correct', { 'game.levelComplete': 100 }, 100 + Port.COOLDOWN_MS.celebration - 1),
+    ).toBe(true);
+    expect(
+      Port.neverCombineBlocked('answer.correct', { 'game.levelComplete': 100 }, 100 + Port.COOLDOWN_MS.celebration),
+    ).toBe(false);
+    expect(Port.neverCombineBlocked('answer.correct', { 'answer.correct': 100 }, 150)).toBe(false);
+  });
+});

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { GAME_IDS } from '@/domain/games/ids';
 import { MIN_ITEMS, minItemsFor } from '@/domain/games/minItems';
-import { resolveStartCategory, START_GAME_TOAST } from '@/domain/games/startGame';
+import { resolveStartCategory, START_GAME_TOAST, startGameToastFor } from '@/domain/games/startGame';
 import { PRACTICE_LIST } from '@/domain/practice/list';
 import type { TalkiCategory, TalkiWord } from '@/domain/types';
 
@@ -59,6 +59,18 @@ describe('startGame — MIN_ITEMS gate and category fallback', () => {
     const cats = [cat('animals', 3)];
     expect(resolveStartCategory('puzzle', 'animals', cats).ok).toBe(true);
     expect(resolveStartCategory('quiz', 'animals', cats).ok).toBe(false);
+  });
+
+  it('fail toast uses minItemsFor(type), not a hardcoded 4', () => {
+    const short = [cat('mine', 1)];
+    expect(resolveStartCategory('puzzle', 'mine', short)).toEqual({
+      ok: false,
+      toast: startGameToastFor(2),
+    });
+    expect(resolveStartCategory('quiz', 'mine', short)).toEqual({
+      ok: false,
+      toast: START_GAME_TOAST,
+    });
   });
 });
 

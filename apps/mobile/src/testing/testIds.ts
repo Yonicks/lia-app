@@ -210,6 +210,7 @@ export const testIds = {
     settingsImportMerge: 'parent-settings-import-merge',
     settingsImportReplace: 'parent-settings-import-replace',
     settingsLastBackup: 'parent-settings-lastbackup',
+    settingsStorage: 'parent-settings-storage',
     recordCategory: 'parent-record-category',
     recordWord: (index: number) => `parent-record-word-${index}`,
     recordStart: 'parent-record-start',

@@ -3,11 +3,36 @@ import 'fake-indexeddb/auto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { K } from '@/services/storage/keys';
+import { formatStorageInfo } from '@/services/storage/storageInfo';
 import type { TalkiStorage } from '@/services/storage/TalkiStorage';
 
 /* ------------------------------------------------------------------ *
  * K key patterns — exact strings, verbatim from index.html 1633-1637.
  * ------------------------------------------------------------------ */
+describe('formatStorageInfo', () => {
+  it('matches legacy copy without a quota', () => {
+    expect(
+      formatStorageInfo({
+        engine: 'sqlite',
+        label: 'SQLite (קבוע במכשיר)',
+        usageBytes: null,
+        quotaBytes: null,
+      }),
+    ).toBe('שיטת אחסון: SQLite (קבוע במכשיר)');
+  });
+
+  it('appends usage when both usage and quota are known', () => {
+    expect(
+      formatStorageInfo({
+        engine: 'indexeddb',
+        label: 'IndexedDB (קבוע במכשיר)',
+        usageBytes: 1048576,
+        quotaBytes: 1073741824,
+      }),
+    ).toBe('שיטת אחסון: IndexedDB (קבוע במכשיר) · בשימוש: 1.0MB מתוך 1.0GB');
+  });
+});
+
 describe('K key patterns', () => {
   it('produces the exact seven expected strings', () => {
     expect(K.progress).toBe('lia:progress');

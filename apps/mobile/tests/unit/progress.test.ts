@@ -8,6 +8,7 @@ import { key } from '@/domain/progress/keys';
 import { catLearned, totalWords } from '@/domain/progress/totals';
 import { currentCategory } from '@/domain/progress/currentCategory';
 import { markSeen, weightedPick } from '@/domain/progress/selection';
+import { celebrateTitle, shouldCelebrate } from '@/domain/progress/celebrate';
 import { STAR_STEP, wordsToNextStar } from '@/domain/progress/stars';
 
 /** Marks every word of a category as learned, using the real key() so tests
@@ -177,6 +178,14 @@ describe('STAR_STEP / wordsToNextStar()', () => {
   it('wraps back to 10 exactly on a multiple of STAR_STEP', () => {
     expect(wordsToNextStar(10)).toBe(10);
     expect(wordsToNextStar(20)).toBe(10);
+  });
+
+  it('shouldCelebrate only on every STAR_STEP newly learned word', () => {
+    expect(shouldCelebrate(0)).toBe(false);
+    expect(shouldCelebrate(9)).toBe(false);
+    expect(shouldCelebrate(10)).toBe(true);
+    expect(shouldCelebrate(20)).toBe(true);
+    expect(celebrateTitle(10)).toBe('10 מילים!');
   });
 });
 

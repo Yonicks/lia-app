@@ -1,21 +1,11 @@
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 
-import { TalkiText } from '@/design-system/components';
 import { v3 } from '@/design-system/theme/colors';
 import { radii } from '@/design-system/theme/radii';
+import { stickerImage } from '@/domain/rewards/stickerArt';
 import { stickerUnlocked } from '@/domain/rewards/stickers';
 import type { Sticker, TalkiWord } from '@/domain/types';
-import { getCat } from '@/domain/vocabulary/allCats';
 import { testIds } from '@/testing/testIds';
-
-function stickerEmoji(s: Sticker): string {
-  if (s.milestone === 1) return '⭐';
-  if (s.milestone === 25) return '✨';
-  if (s.milestone === 75) return '🎁';
-  if (s.complete) return '🔢';
-  const cat = s.cat ? getCat(s.cat) : undefined;
-  return cat?.items.find((i) => i.word === s.word)?.emoji ?? '💜';
-}
 
 export function StickerGrid({
   items,
@@ -30,16 +20,19 @@ export function StickerGrid({
     <View style={styles.grid}>
       {items.map((s, index) => {
         const on = stickerUnlocked(s, learned, custom);
+        const src = stickerImage(s);
         return (
           <View
             key={`${s.img}-${index}`}
             testID={testIds.stickers.item(index)}
+            accessibilityRole="image"
             accessibilityState={{ disabled: !on }}
+            accessibilityLabel={s.word ?? s.img}
             style={[styles.cell, !on && styles.locked]}
           >
-            <TalkiText style={styles.emoji} align="center">
-              {stickerEmoji(s)}
-            </TalkiText>
+            {src ? (
+              <Image source={src} style={styles.art} resizeMode="contain" />
+            ) : null}
           </View>
         );
       })}
@@ -67,5 +60,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   locked: { opacity: 0.35 },
-  emoji: { fontSize: 32 },
+  art: { width: 56, height: 56 },
 });

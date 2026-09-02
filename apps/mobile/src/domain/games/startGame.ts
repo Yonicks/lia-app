@@ -1,7 +1,12 @@
 import type { CategoryId, GameId, PracticeModeId, TalkiCategory } from '../types';
 import { minItemsFor } from './minItems';
 
-export const START_GAME_TOAST = 'צריך לפחות 4 מילים בקטגוריה';
+export function startGameToastFor(need: number): string {
+  return `צריך לפחות ${need} מילים בקטגוריה`;
+}
+
+/** Default copy when MIN_ITEMS is 4 (legacy D7 always used this sentence). */
+export const START_GAME_TOAST = startGameToastFor(4);
 
 export interface StartGameOk {
   ok: true;
@@ -10,7 +15,7 @@ export interface StartGameOk {
 
 export interface StartGameFail {
   ok: false;
-  toast: typeof START_GAME_TOAST;
+  toast: string;
 }
 
 export type StartGameResult = StartGameOk | StartGameFail;
@@ -31,7 +36,7 @@ export function resolveStartCategory(
   if (!cat || cat.items.length < need) {
     cat = cats.find((c) => c.items.length >= need);
   }
-  if (!cat) return { ok: false, toast: START_GAME_TOAST };
+  if (!cat) return { ok: false, toast: startGameToastFor(need) };
   return { ok: true, category: cat };
 }
 

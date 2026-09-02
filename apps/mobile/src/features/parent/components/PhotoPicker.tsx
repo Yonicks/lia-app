@@ -2,7 +2,7 @@ import { Image, StyleSheet, View } from 'react-native';
 
 import { TalkiButton, TalkiText } from '@/design-system/components';
 import { v3 } from '@/design-system/theme/colors';
-import { photoService } from '@/services/photos/PhotoService';
+import { photoService } from '@/services/photos';
 import { testIds } from '@/testing/testIds';
 
 export function PhotoPicker({

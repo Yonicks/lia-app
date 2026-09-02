@@ -24,7 +24,12 @@ const NAME_TO_ROUTE: Record<string, NavRoute> = {
 export default function TabsLayout() {
   return (
     <Tabs
-      screenOptions={{ headerShown: false }}
+      detachInactiveScreens
+      screenOptions={{
+        headerShown: false,
+        freezeOnBlur: true,
+        lazy: true,
+      }}
       tabBar={({ state, navigation }) => {
         const activeName = state.routes[state.index]?.name ?? 'index';
         const active = NAME_TO_ROUTE[activeName] ?? 'home';

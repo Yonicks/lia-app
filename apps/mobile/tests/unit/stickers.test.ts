@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { key } from '@/domain/progress/keys';
@@ -5,9 +7,18 @@ import { filterStickers, stickerCounter, stickerFilterKeys } from '@/domain/rewa
 import { STICKERS, stickerUnlocked } from '@/domain/rewards/stickers';
 import { getCat } from '@/domain/vocabulary/allCats';
 
+const V2_OUT = resolve(__dirname, '../../src/data/assets/v2.generated.ts');
+
 describe('stickers', () => {
   it('all 24 are present', () => {
     expect(STICKERS).toHaveLength(24);
+  });
+
+  it('every sticker PNG is keyed in V2_ASSETS', () => {
+    const registry = readFileSync(V2_OUT, 'utf8');
+    for (const s of STICKERS) {
+      expect(registry).toContain(`"assets/v2/stickers/${s.img}"`);
+    }
   });
 
   it('milestones unlock at exactly 1, 25 and 75', () => {

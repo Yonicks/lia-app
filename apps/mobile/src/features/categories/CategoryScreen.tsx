@@ -1,16 +1,21 @@
+import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { RewardOverlay } from '@/components/shell';
 import { TalkiButton, TalkiHeading, TalkiIconButton, TalkiProgress, TalkiScreen, TalkiText } from '@/design-system/components';
 import { uiIcons } from '@/design-system/assets';
 import { useDevice } from '@/design-system/responsive/useDevice';
 import { homePaddingInline } from '@/design-system/theme/spacing';
 import { v3 } from '@/design-system/theme/colors';
+import { celebrateTitle, shouldCelebrate } from '@/domain/progress/celebrate';
 import { cardsHref, gameHref, practiceMenuHref } from '@/domain/navigation/routes';
 import type { CategoryId } from '@/domain/types';
 import { display, plain } from '@/domain/vocabulary/niqqud';
 import { useGoBack } from '@/hooks/useGoBack';
 import { useGuardedPush } from '@/hooks/useGuardedPush';
+import { audioEngine } from '@/services/audio';
 import { wordVoiceService } from '@/services/voice';
+import { useSettingsStore } from '@/state/settingsStore';
 import { testIds } from '@/testing/testIds';
 
 import { WordGrid } from './WordGrid';
@@ -40,6 +45,8 @@ export function CategoryScreen({ catId }: CategoryScreenProps) {
   const push = useGuardedPush();
   const { deviceClass } = useDevice();
   const { ready, category, learnedCount, isLearned, niqqudEnabled, markLearned } = useCategoryProgress(catId);
+  const effects = useSettingsStore((s) => s.settings.effects);
+  const [celebrate, setCelebrate] = useState<string | null>(null);
 
   if (!ready || !category) {
     return <TalkiScreen testID={testIds.category.root}>{null}</TalkiScreen>;
@@ -50,7 +57,12 @@ export function CategoryScreen({ catId }: CategoryScreenProps) {
 
   const speakAndLearn = (word: string) => {
     void wordVoiceService.say(category.id, plain(word));
-    void markLearned(word);
+    void markLearned(word).then((r) => {
+      if (r && r.added && shouldCelebrate(r.size) && effects) {
+        audioEngine.playSfx('reward.unlock');
+        setCelebrate(celebrateTitle(r.size));
+      }
+    });
   };
 
   return (
@@ -110,6 +122,12 @@ export function CategoryScreen({ catId }: CategoryScreenProps) {
           </TalkiText>
         )}
       </ScrollView>
+      <RewardOverlay
+        visible={celebrate !== null}
+        title={celebrate ?? ''}
+        onDismiss={() => setCelebrate(null)}
+        testID="category-celebrate"
+      />
     </TalkiScreen>
   );
 }
