@@ -61,6 +61,25 @@ export const testIds = {
     root: 'practice-menu-root',
     card: (id: string) => `practice-menu-card-${id}`,
   },
+  /** app/game/[id].tsx + src/features/games/shell/ (phase-08-plan.md). */
+  game: {
+    shellRoot: 'game-shell-root',
+    headerBack: 'game-header-back',
+    headerTitle: 'game-header-title',
+    chip: (index: number) => `game-chip-${index}`,
+    doneCard: 'game-done-card',
+    doneStars: 'game-done-stars',
+    doneReplay: 'game-done-replay',
+    doneHome: 'game-done-home',
+  },
+  quiz: {
+    root: 'quiz-root',
+    prompt: 'quiz-prompt',
+    replay: 'quiz-replay',
+    option: (index: number) => `quiz-option-${index}`,
+    optionCorrect: 'quiz-option-correct',
+    optionWrong: 'quiz-option-wrong',
+  },
   /** Dev-only, native-only (never rendered on web — see
    *  app/index.tsx and phase-03-plan.md Tier 3 test plan). Lets
    *  .maestro/persistence.yaml write a known value through TalkiStorage

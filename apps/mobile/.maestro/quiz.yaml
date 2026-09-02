@@ -1,0 +1,15 @@
+appId: com.yonicks.talki.dev
+---
+# Phase 8: open quiz, answer, reach the done card. Not executed in this
+# sandbox (no Android SDK / Maestro binary) — same limitation as
+# .maestro/home.yaml. See phase-08-report.md Native coverage.
+- launchApp:
+    arguments:
+      intro: '0'
+- tapOn:
+    id: 'home-game-quiz'
+- assertVisible:
+    id: 'quiz-root'
+- tapOn:
+    id: 'quiz-option-0'
+- takeScreenshot: phase-08-quiz-board

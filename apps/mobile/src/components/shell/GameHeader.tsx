@@ -8,6 +8,7 @@ export interface GameHeaderProps {
   progress?: number;
   onBack: () => void;
   testID?: string;
+  titleTestID?: string;
 }
 
 /** A per-game header: back control at the reading-start edge, title, and an
@@ -15,12 +16,12 @@ export interface GameHeaderProps {
  *  inside `<main>` below the persistent topbar and layer their own
  *  in-content header for the round/back control (e.g. quiz/memory headers),
  *  which is what this primitive stands in for. */
-export function GameHeader({ title, progress, onBack, testID }: GameHeaderProps) {
+export function GameHeader({ title, progress, onBack, testID, titleTestID }: GameHeaderProps) {
   return (
     <View testID={testID} style={styles.row}>
       <TalkiIconButton testID="game-header-back" icon={uiIcons.back} onPress={onBack} accessibilityLabel="חזרה" />
       <View style={styles.titleWrap}>
-        <TalkiHeading level={3} align="center">
+        <TalkiHeading testID={titleTestID} level={3} align="center">
           {title}
         </TalkiHeading>
         {progress !== undefined ? (

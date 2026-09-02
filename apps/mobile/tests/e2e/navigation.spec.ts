@@ -57,7 +57,7 @@ test.describe('Phase 7 navigation spine', () => {
     await expect(page.getByTestId(testIds.gamesMenu.chip('animals'))).toBeVisible();
     await expect(page.getByTestId(testIds.gamesMenu.chip('mine'))).toHaveCount(0);
     await page.getByTestId(testIds.gamesMenu.card('quiz')).click();
-    await expect(page.getByTestId('game-stub-root')).toBeVisible();
+    await expect(page.getByTestId(testIds.game.shellRoot)).toBeVisible();
 
     await pushRoute(page, '/practice');
     await expect(page.getByTestId(testIds.practiceMenu.root)).toBeVisible();
