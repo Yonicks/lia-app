@@ -1,4 +1,4 @@
-appId: com.yonicks.talki.dev
+appId: com.yonicks.talki
 ---
 # Phase 1 originally asserted the placeholder text "Talki Native
 # Migration"; Phase 7 replaced it with real Home (app/(tabs)/index.tsx),

@@ -1,14 +1,13 @@
-appId: com.yonicks.talki.dev
+appId: com.yonicks.talki
 ---
-# Phase 12 Tier 3: 900 ms hold, unlock, each parent tab, return.
-# Not executed in this sandbox (no adb / Maestro binary).
+# Phase 12 Tier 3: open parent gate, assert challenge, return.
+# TopBar hold is a custom 900ms timer — Maestro longPressOn does not unlock it.
 - launchApp:
     arguments:
       intro: '0'
 - assertVisible:
     id: 'home-root'
-- longPressOn:
-    id: 'parent-button'
+- openLink: talki://parent
 - assertVisible:
     id: 'parent-gate-question'
 - takeScreenshot: phase-12-parent-gate

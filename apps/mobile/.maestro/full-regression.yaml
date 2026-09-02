@@ -1,15 +1,17 @@
-appId: com.yonicks.talki.dev
+# Debug APK from `npx expo run:android` (no APP_VARIANT) is com.yonicks.talki.
+# Dev-client builds with APP_VARIANT=development use com.yonicks.talki.dev.
+appId: com.yonicks.talki
 ---
 # Phase 14 full regression — every game and every practice mode.
-# Device-attested. Not run in CI. Not executed in this sandbox
-# (no Android SDK / Maestro binary). See phase-14-device-qa.md.
 - launchApp:
     arguments:
       intro: '0'
-- assertVisible:
-    id: home-root
+- extendedWaitUntil:
+    visible:
+      id: home-root
+    timeout: 15000
 
-# Home → category → cards → back
+# Home → category → cards → Home (use hardware back; in-app back can race the shell)
 - tapOn:
     id: home-category-animals
 - assertVisible:
@@ -18,10 +20,18 @@ appId: com.yonicks.talki.dev
     id: category-cards
 - assertVisible:
     id: cards-root
-- tapOn:
-    id: game-header-back
+- back
+- runFlow:
+    when:
+      visible:
+        id: category-root
+    commands:
+      - tapOn:
+          id: category-back
+- assertVisible:
+    id: home-root
 
-# Games menu: quiz, memory, missing, match, speech, sounds, count, sort, bubbles, puzzle
+# Games menu (scroll — lower cards sit below the fold on phone)
 - tapOn:
     id: bottom-nav-games
 - assertVisible:
@@ -30,66 +40,117 @@ appId: com.yonicks.talki.dev
     id: games-menu-card-quiz
 - assertVisible:
     id: quiz-root
-- tapOn:
-    id: game-header-back
+- back
+- assertVisible:
+    id: games-menu-root
 - tapOn:
     id: games-menu-card-memory
 - assertVisible:
     id: memory-root
-- tapOn:
-    id: game-header-back
+- back
+- assertVisible:
+    id: games-menu-root
 - tapOn:
     id: games-menu-card-missing
 - assertVisible:
     id: missing-root
-- tapOn:
-    id: game-header-back
-- tapOn:
-    id: games-menu-card-match
+- back
 - assertVisible:
-    id: match-root
-- tapOn:
-    id: game-header-back
-- tapOn:
-    id: games-menu-card-speech
-- assertVisible:
-    id: speech-root
-- tapOn:
-    id: game-header-back
+    id: games-menu-root
+- scrollUntilVisible:
+    element:
+      id: games-menu-card-sounds
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: games-menu-card-sounds
 - assertVisible:
     id: sounds-root
-- tapOn:
-    id: game-header-back
+- back
+- assertVisible:
+    id: games-menu-root
+- scrollUntilVisible:
+    element:
+      id: games-menu-card-count
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: games-menu-card-count
 - assertVisible:
     id: count-root
-- tapOn:
-    id: game-header-back
-- tapOn:
-    id: games-menu-card-sort
+- back
 - assertVisible:
-    id: sort-root
-- tapOn:
-    id: game-header-back
-- tapOn:
-    id: games-menu-card-bubbles
-- assertVisible:
-    id: bubbles-root
-- tapOn:
-    id: game-header-back
+    id: games-menu-root
+- scrollUntilVisible:
+    element:
+      id: games-menu-card-puzzle
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: games-menu-card-puzzle
 - assertVisible:
     id: puzzle-root
+- back
+- assertVisible:
+    id: games-menu-root
+- scrollUntilVisible:
+    element:
+      id: games-menu-card-match
+    direction: DOWN
+    timeout: 10000
 - tapOn:
-    id: game-header-back
+    id: games-menu-card-match
+- assertVisible:
+    id: match-root
+- back
+- assertVisible:
+    id: games-menu-root
+- scrollUntilVisible:
+    element:
+      id: games-menu-card-bubbles
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: games-menu-card-bubbles
+- assertVisible:
+    id: bubbles-root
+- back
+- assertVisible:
+    id: games-menu-root
+- scrollUntilVisible:
+    element:
+      id: games-menu-card-sort
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: games-menu-card-sort
+- assertVisible:
+    id: sort-root
+- back
+- assertVisible:
+    id: games-menu-root
+- scrollUntilVisible:
+    element:
+      id: games-menu-card-speech
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: games-menu-card-speech
+# Speech stays behind SPEECH_GAME_ENABLED_DEFAULT=false on device
+- assertVisible:
+    id: speech-unsupported
+- back
 
-# Practice modes
+# Practice (stack outside tabs — return to Home before stickers)
 - tapOn:
     id: bottom-nav-home
+- assertVisible:
+    id: home-root
+- scrollUntilVisible:
+    element:
+      id: home-all-practice
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: home-all-practice
 - assertVisible:
@@ -98,38 +159,72 @@ appId: com.yonicks.talki.dev
     id: practice-menu-card-focus
 - assertVisible:
     id: focus-root
-- tapOn:
-    id: game-header-back
+- back
+- assertVisible:
+    id: practice-menu-root
+- scrollUntilVisible:
+    element:
+      id: practice-menu-card-cloze
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: practice-menu-card-cloze
 - assertVisible:
     id: cloze-root
-- tapOn:
-    id: game-header-back
+- back
+- assertVisible:
+    id: practice-menu-root
+- scrollUntilVisible:
+    element:
+      id: practice-menu-card-temptation
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: practice-menu-card-temptation
 - assertVisible:
     id: temptation-root
-- tapOn:
-    id: game-header-back
+- back
+- assertVisible:
+    id: practice-menu-root
+- scrollUntilVisible:
+    element:
+      id: practice-menu-card-receptive
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: practice-menu-card-receptive
 - assertVisible:
     id: receptive-root
-- tapOn:
-    id: game-header-back
+- back
+- assertVisible:
+    id: practice-menu-root
+- scrollUntilVisible:
+    element:
+      id: practice-menu-card-pairs
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: practice-menu-card-pairs
 - assertVisible:
     id: pairs-root
-- tapOn:
-    id: game-header-back
+- back
+- assertVisible:
+    id: practice-menu-root
+- scrollUntilVisible:
+    element:
+      id: practice-menu-card-combine
+    direction: DOWN
+    timeout: 10000
 - tapOn:
     id: practice-menu-card-combine
 - assertVisible:
     id: combine-root
-- tapOn:
-    id: game-header-back
+- back
+- assertVisible:
+    id: practice-menu-root
+- back
+- assertVisible:
+    id: home-root
 
 # Rewards / stickers
 - tapOn:
@@ -137,11 +232,10 @@ appId: com.yonicks.talki.dev
 - assertVisible:
     id: stickers-root
 
-# Parent gate (hold is Maestro longPressOn)
+# Parent gate via deep link (TopBar hold is a custom timer)
 - tapOn:
     id: bottom-nav-home
-- longPressOn:
-    id: parent-button
+- openLink: talki://parent
 - assertVisible:
     id: parent-gate-question
 - tapOn:

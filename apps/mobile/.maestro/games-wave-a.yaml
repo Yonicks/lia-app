@@ -1,6 +1,6 @@
 # Phase 9 — one round of memory, missing, match, and cards.
 # Device-attested. Not run in CI.
-appId: com.talki.app
+appId: com.yonicks.talki
 ---
 - launchApp
 - tapOn:

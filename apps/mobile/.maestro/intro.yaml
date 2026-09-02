@@ -1,4 +1,4 @@
-appId: com.yonicks.talki.dev
+appId: com.yonicks.talki
 ---
 # Phase 6 Tier 3: launches the real app root (no ?intro=0 — the actual boot
 # path a user hits) and proves the opening sequence renders on a real

@@ -1,4 +1,4 @@
-appId: com.yonicks.talki.dev
+appId: com.yonicks.talki
 ---
 # Phase 7's native navigation spine: Home -> a category -> back -> the
 # Games tab -> the Rewards tab -> back to Home, using only hardware/gesture

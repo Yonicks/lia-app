@@ -96,31 +96,44 @@ export async function auditTouchTargets(
  * hit-tests it with elementFromPoint. Fails when a child could never
  * actually tap the control because something else — a header, a bottom bar,
  * an ad slot — sits on top of it. Mirrors REACHABILITY.
+ *
+ * When `rootTestId` is set, only descendants of that root are checked. Expo
+ * Router tabs often leave sibling screens in the DOM; a document-wide audit
+ * then reports those off-screen controls as "covered" by the active TopBar.
  */
-export async function auditReachability(page: Page): Promise<ReachabilityViolation[]> {
-  return page.evaluate((selector) => {
-    const out: { testId: string; coveredBy: string }[] = [];
-    const els = Array.from(document.querySelectorAll<HTMLElement>(selector)).filter((el) => {
-      const cs = getComputedStyle(el);
-      if (cs.display === 'none' || cs.visibility === 'hidden' || cs.pointerEvents === 'none') return false;
-      const r = el.getBoundingClientRect();
-      return r.width >= 2 && r.height >= 2;
-    });
-    for (const el of els) {
-      el.scrollIntoView({ block: 'center', behavior: 'instant' as ScrollBehavior });
-      const r = el.getBoundingClientRect();
-      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-      const ok = !!top && (el === top || el.contains(top) || top.contains(el));
-      if (!ok) {
-        out.push({
-          testId: el.getAttribute('data-testid') || '',
-          coveredBy: top ? `${top.tagName}.${String(top.className || '')}` : 'nothing',
-        });
+export async function auditReachability(
+  page: Page,
+  rootTestId?: string,
+): Promise<ReachabilityViolation[]> {
+  return page.evaluate(
+    ({ selector, rootId }) => {
+      const out: { testId: string; coveredBy: string }[] = [];
+      const scope: ParentNode = rootId
+        ? document.querySelector(`[data-testid="${rootId}"]`) ?? document
+        : document;
+      const els = Array.from(scope.querySelectorAll<HTMLElement>(selector)).filter((el) => {
+        const cs = getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden' || cs.pointerEvents === 'none') return false;
+        const r = el.getBoundingClientRect();
+        return r.width >= 2 && r.height >= 2;
+      });
+      for (const el of els) {
+        el.scrollIntoView({ block: 'center', behavior: 'instant' as ScrollBehavior });
+        const r = el.getBoundingClientRect();
+        const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        const ok = !!top && (el === top || el.contains(top) || top.contains(el));
+        if (!ok) {
+          out.push({
+            testId: el.getAttribute('data-testid') || '',
+            coveredBy: top ? `${top.tagName}.${String(top.className || '')}` : 'nothing',
+          });
+        }
       }
-    }
-    window.scrollTo(0, 0);
-    return out;
-  }, INTERACTIVE_SELECTOR);
+      window.scrollTo(0, 0);
+      return out;
+    },
+    { selector: INTERACTIVE_SELECTOR, rootId: rootTestId ?? null },
+  );
 }
 
 /** Fires n synchronous clicks with no delay between them, for

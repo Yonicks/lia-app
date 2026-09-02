@@ -122,7 +122,7 @@ test.describe('Phase 12 parent centre', () => {
 
     const touch = (await auditTouchTargets(page)).filter((v) => v.testId.startsWith('parent-'));
     expect(touch, JSON.stringify(touch)).toHaveLength(0);
-    const reach = (await auditReachability(page)).filter((v) => v.testId.startsWith('parent-'));
+    const reach = await auditReachability(page, testIds.parent.root);
     expect(reach, JSON.stringify(reach)).toHaveLength(0);
   });
 });

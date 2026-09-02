@@ -1,20 +1,23 @@
 import { useMemo, useReducer, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { TalkiHeading, TalkiScreen, TalkiText } from '@/design-system/components';
 import { ToastHost } from '@/components/shell';
 import { v3 } from '@/design-system/theme/colors';
 import { radii } from '@/design-system/theme/radii';
 import { gateReducer, initGate } from '@/domain/parent/gate';
+import { makeRnd } from '@/features/games/shell/e2eSeed';
 import { testIds } from '@/testing/testIds';
 
 const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'ok'] as const;
 
 export function ParentGateScreen({ onUnlocked }: { onUnlocked: () => void }) {
   const router = useRouter();
-  const seed = useMemo(() => Math.random, []);
-  const [state, dispatch] = useReducer(gateReducer, undefined, () => initGate(seed));
+  const params = useLocalSearchParams<{ seed?: string }>();
+  const seedParam = params.seed != null ? Number(params.seed) : undefined;
+  const rnd = useMemo(() => makeRnd(Number.isFinite(seedParam) ? seedParam : undefined), [seedParam]);
+  const [state, dispatch] = useReducer(gateReducer, undefined, () => initGate(rnd));
   const [toast, setToast] = useState<string | null>(null);
 
   const onKey = (k: (typeof KEYS)[number]) => {

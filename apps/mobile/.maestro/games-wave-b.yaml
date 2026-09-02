@@ -1,6 +1,6 @@
 # Phase 10 — one round of sounds, count, sort, bubbles, puzzle.
 # Device-attested. Not run in CI.
-appId: com.talki.app
+appId: com.yonicks.talki
 ---
 - launchApp
 - tapOn:

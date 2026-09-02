@@ -1,4 +1,4 @@
-appId: com.yonicks.talki.dev
+appId: com.yonicks.talki
 ---
 # Phase 3 Tier 3: proves expo-sqlite durability across a genuine process
 # kill, which nothing else in this phase can prove — a web page reload is

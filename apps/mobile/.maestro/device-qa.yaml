@@ -1,6 +1,6 @@
 # Native device QA for the four emulator flows (learn, tabs, parent, rotate/resume).
-# The debug APK from `npx expo run:android` without APP_VARIANT is com.yonicks.talki.
-# Development client: maestro test --app-id com.yonicks.talki.dev .maestro/device-qa.yaml
+# Debug APK from `npx expo run:android` (no APP_VARIANT) is com.yonicks.talki.
+# For APP_VARIANT=development builds, change appId to com.yonicks.talki.dev.
 appId: com.yonicks.talki
 ---
 - launchApp:

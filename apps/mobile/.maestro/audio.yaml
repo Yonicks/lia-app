@@ -1,4 +1,4 @@
-appId: com.yonicks.talki.dev
+appId: com.yonicks.talki
 ---
 # Phase 4 Tier 3: automates what a device/emulator run can prove that
 # nothing else in this phase can — real `expo-audio` playback surviving a

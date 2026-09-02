@@ -45,7 +45,7 @@ const SCREENS: SweepScreen[] = [
   { name: 'receptive', path: '/practice/receptive?catId=animals&seed=42', root: testIds.receptive.root },
   { name: 'pairs', path: '/practice/pairs?catId=animals&seed=42', root: testIds.pairs.root },
   { name: 'combine', path: '/practice/combine?catId=animals&seed=42', root: testIds.combine.root },
-  { name: 'parent-locked', path: '/parent', root: testIds.parent.root },
+  { name: 'parent-locked', path: '/parent?seed=42', root: testIds.parent.root },
 ];
 
 async function pushRoute(page: Page, path: string): Promise<void> {
@@ -127,7 +127,7 @@ test.describe('Phase 14 full sweep', () => {
       const touch = (await auditTouchTargets(page)).filter((v) => scope.has(v.testId));
       expect(touch, JSON.stringify(touch)).toHaveLength(0);
 
-      const reach = (await auditReachability(page)).filter((v) => scope.has(v.testId));
+      const reach = await auditReachability(page, screen.root);
       expect(reach, JSON.stringify(reach)).toHaveLength(0);
     });
   }

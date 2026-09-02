@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet, type ImageSourcePropType } from 'react-native';
+import { Image, Pressable, StyleSheet, View, type ImageSourcePropType } from 'react-native';
 
 import { radii } from '../theme/radii';
 import { shadowSm } from '../theme/shadows';
@@ -24,7 +24,9 @@ export function TalkiIconButton({ icon, onPress, accessibilityLabel, testID, act
       accessibilityLabel={accessibilityLabel}
       style={({ pressed }) => [styles.base, shadowSm, active && styles.active, pressed && styles.pressed]}
     >
-      <Image source={icon} style={styles.icon} resizeMode="contain" />
+      <View pointerEvents="none">
+        <Image source={icon} style={styles.icon} resizeMode="contain" />
+      </View>
     </Pressable>
   );
 }
