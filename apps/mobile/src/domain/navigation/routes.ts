@@ -23,8 +23,11 @@ export function cardsHref(catId: CategoryId) {
   return { pathname: '/cards/[id]' as const, params: { id: catId } };
 }
 
-export function practiceHref(id: PracticeModeId) {
-  return { pathname: '/practice/[id]' as const, params: { id } };
+export function practiceHref(id: PracticeModeId, catId?: CategoryId | null) {
+  return {
+    pathname: '/practice/[id]' as const,
+    params: catId ? { id, catId } : { id },
+  };
 }
 
 export const gamesMenuHref = '/games' as const;

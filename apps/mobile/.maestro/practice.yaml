@@ -1,0 +1,51 @@
+# Phase 11 — one visit to each practice mode plus the speech game.
+# Device-attested. Not run in CI.
+appId: com.talki.app
+---
+- launchApp:
+    arguments:
+      intro: '0'
+- tapOn:
+    id: home-all-practice
+- tapOn:
+    id: practice-menu-card-focus
+- assertVisible:
+    id: focus-card
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: practice-menu-card-cloze
+- assertVisible:
+    id: cloze-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: practice-menu-card-temptation
+- assertVisible:
+    id: temptation-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: practice-menu-card-receptive
+- assertVisible:
+    id: receptive-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: practice-menu-card-pairs
+- assertVisible:
+    id: pairs-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: practice-menu-card-combine
+- assertVisible:
+    id: combine-root
+- tapOn:
+    id: game-header-back
+- tapOn:
+    id: bottom-nav-games
+- tapOn:
+    id: games-menu-card-speech
+- assertVisible:
+    id: speech-unsupported

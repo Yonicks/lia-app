@@ -12,6 +12,7 @@ import { MissingScreen } from '../missing/MissingScreen';
 import { PuzzleScreen } from '../puzzle/PuzzleScreen';
 import { QuizScreen } from '../quiz/QuizScreen';
 import { SortScreen } from '../sort/SortScreen';
+import { SpeechScreen } from '../speech/SpeechScreen';
 import { SoundsScreen } from '../sounds/SoundsScreen';
 import type { GameScreenProps } from './types';
 
@@ -85,6 +86,12 @@ export const gameRegistry: Partial<Record<GameId, RegisteredGame>> = {
     titleHe: '🧩 שִׂימִי בַּמָּקוֹם',
     minItems: minItemsFor('puzzle'),
     Screen: PuzzleScreen,
+  },
+  speech: {
+    id: 'speech',
+    titleHe: '🎤 תגידי את זה',
+    minItems: minItemsFor('speech'),
+    Screen: SpeechScreen,
   },
 };
 

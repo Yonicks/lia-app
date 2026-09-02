@@ -19,7 +19,7 @@ import { testIds } from '@/testing/testIds';
 /**
  * index.html `renderPractice()` (2394-2414) — the full six-entry
  * `PRACTICE_LIST` (Home shows only three) plus `gameCatChips()` (2412).
- * Cards route to a stub — no practice mode is built in this phase.
+ * Cards route to the Phase 11 practice modes.
  */
 export function PracticeMenuScreen() {
   const push = useGuardedPush();
@@ -56,7 +56,7 @@ export function PracticeMenuScreen() {
           <TalkiCard
             key={id}
             testID={testIds.practiceMenu.card(id)}
-            onPress={() => push(practiceHref(id))}
+            onPress={() => push(practiceHref(id, currentChip))}
             style={styles.card}
           >
             <TalkiHeading level={3}>{title}</TalkiHeading>

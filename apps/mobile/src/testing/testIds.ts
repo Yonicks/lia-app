@@ -134,6 +134,60 @@ export const testIds = {
     done: 'puzzle-done',
     together: 'puzzle-together-prompt',
   },
+  practice: {
+    root: 'practice-root',
+    title: 'practice-title',
+  },
+  focus: {
+    root: 'focus-root',
+    card: 'focus-card',
+    word: 'focus-word',
+    phrase: 'focus-phrase',
+    dots: 'focus-dots',
+    nextWord: 'focus-next-word',
+    done: 'focus-done',
+  },
+  cloze: {
+    root: 'cloze-root',
+    phrase: 'cloze-phrase',
+    phaseSay: 'cloze-phase-say',
+    phaseWait: 'cloze-phase-wait',
+    phaseModel: 'cloze-phase-model',
+    said: 'cloze-said',
+    next: 'cloze-next',
+  },
+  temptation: {
+    root: 'temptation-root',
+    jar: 'temptation-jar',
+    mic: 'temptation-mic',
+    open: 'temptation-open',
+    next: 'temptation-next',
+  },
+  receptive: {
+    root: 'receptive-root',
+    replay: 'receptive-replay',
+    level: 'receptive-level',
+    option: (index: number) => `receptive-option-${index}`,
+  },
+  pairs: {
+    root: 'pairs-root',
+    replay: 'pairs-replay',
+    option: (index: number) => `pairs-option-${index}`,
+  },
+  combine: {
+    root: 'combine-root',
+    modifier: (index: number) => `combine-mod-${index}`,
+    picture: (index: number) => `combine-pic-${index}`,
+    phrase: 'combine-phrase',
+  },
+  speech: {
+    root: 'speech-root',
+    unsupported: 'speech-unsupported',
+    mic: 'speech-mic',
+    skip: 'speech-skip',
+    say: 'speech-say',
+    feedback: 'speech-feedback',
+  },
   /** Dev-only, native-only (never rendered on web — see
    *  app/index.tsx and phase-03-plan.md Tier 3 test plan). Lets
    *  .maestro/persistence.yaml write a known value through TalkiStorage

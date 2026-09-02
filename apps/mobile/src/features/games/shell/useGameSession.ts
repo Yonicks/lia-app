@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { resolveStartCategory, START_GAME_TOAST } from '@/domain/games/startGame';
-import type { CategoryId, GameId, TalkiCategory } from '@/domain/types';
+import type { CategoryId, GameId, PracticeModeId, TalkiCategory } from '@/domain/types';
 import { allCats } from '@/domain/vocabulary/allCats';
 import { orientationService } from '@/services/orientation';
 import { useProgressStore } from '@/state/progressStore';
@@ -10,7 +10,7 @@ import { createManagedTimers, type TimerId } from './managedTimers';
 import { useGameAudio } from './useGameAudio';
 
 export interface UseGameSessionArgs {
-  gameId: GameId;
+  gameId: GameId | PracticeModeId;
   requestedCatId: string | null;
   /** `browse` is cards: no MIN_ITEMS gate, no levelStart, empty → home. */
   mode?: 'game' | 'browse';

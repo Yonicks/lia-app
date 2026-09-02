@@ -45,7 +45,7 @@ test.describe('Phase 7 navigation spine', () => {
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
 
     await page.getByTestId(testIds.home.practice('focus')).click();
-    await expect(page.getByTestId('practice-stub-root')).toBeVisible();
+    await expect(page.getByTestId(testIds.focus.card)).toBeVisible();
     await page.goBack();
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
   });

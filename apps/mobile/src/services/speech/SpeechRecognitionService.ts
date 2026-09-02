@@ -1,12 +1,9 @@
 /**
- * Interface ONLY this phase (phase-04-plan.md, "Speech recognition is
- * proven in isolation and integrated nowhere"). No implementation of this
- * interface is registered or wired into anything — the POC at
- * `poc/heIlRecognitionPoc.ts` is a separate, isolated exploration of
- * whether `he-IL` single-word recognition is viable at all, and is
- * imported by no application code (see that file's header for the honest
- * result, and phase-04-native-report.md for what could and could not be
- * verified in this environment).
+ * The production seam for recognition. Phase 4 left this as an interface
+ * only; Phase 11 registers `expoSpeechRecognition.ts`, which reports
+ * unsupported until the he-IL POC is attested on a device. The isolated
+ * POC at `poc/heIlRecognitionPoc.ts` is still imported by no application
+ * code.
  */
 export interface RecognitionResult {
   recognized: boolean;
