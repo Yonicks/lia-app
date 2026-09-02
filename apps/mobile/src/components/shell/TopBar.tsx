@@ -138,7 +138,7 @@ export function TopBar({
           }}
         >
           <View testID="topbar-brand" pointerEvents="none">
-            <Image source={brand.headerLogo} style={styles.logo} resizeMode="contain" pointerEvents="none" />
+            <Image source={brand.headerLogo} style={styles.logo} resizeMode="contain" />
           </View>
         </Pressable>
       </View>
