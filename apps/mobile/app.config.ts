@@ -12,14 +12,19 @@ const config: ExpoConfig = {
   name: IS_DEV ? 'Talki (Dev)' : 'Talki',
   slug: 'talki',
   version: '1.0.0',
-  /* 'default' (not 'portrait'): Phase 4 replaces the legacy app-wide
-     portrait lock (index.html 4088-4090, and this same field previously)
-     with OrientationService's per-route policy — games and practice are
-     landscape (deliberate deviation, feature-parity-checklist.md §14). A
-     static 'portrait' here would bake a portrait-only restriction into the
-     native manifest/Info.plist that expo-screen-orientation's runtime
-     lockAsync(LANDSCAPE) would then have to fight rather than simply set. */
-  orientation: 'default',
+  /* 'landscape' (not 'default' or 'portrait'): Phase 4 replaced the legacy
+     app-wide portrait lock (index.html 4088-4090, and this same field
+     previously) with a per-route runtime policy — only games and practice
+     were landscape. Phase 17 (docs/migration/phase-17-report.md) replaced
+     that per-route policy with a single app-wide contract: the whole
+     product, child and parent, is landscape-only now (AGENTS.md
+     "LANDSCAPE REDESIGN NON-NEGOTIABLES" #1). Baking that into the native
+     manifest/Info.plist here means the OS itself never offers a portrait
+     frame; `orientationService.lockLandscape()` (called once at boot,
+     app/_layout.tsx) is the runtime belt to this manifest-level suspenders
+     — it is also the only mechanism that has any effect on Expo web, which
+     does not read this field. */
+  orientation: 'landscape',
   icon: './assets/icon.png',
   userInterfaceStyle: 'light',
   scheme: 'talki',

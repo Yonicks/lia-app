@@ -1,53 +1,95 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  classifyDevice,
+  classifyDeviceClass,
   classifyOrientation,
-  BREAKPOINT_LARGE_PHONE,
-  BREAKPOINT_LARGE_TABLET,
-  BREAKPOINT_TABLET,
+  computeUiScale,
+  computeUsableHeight,
+  computeUsableWidth,
+  longEdgeOf,
+  shortEdgeOf,
+  SHORT_EDGE_COMPACT_PHONE,
+  SHORT_EDGE_LARGE_TABLET,
+  SHORT_EDGE_TABLET,
+  UI_SCALE_MAX,
+  UI_SCALE_MIN,
+  type DeviceClass,
 } from '@/design-system/responsive/breakpoints';
 import { adHeight, barHeight } from '@/design-system/theme/spacing';
 import { VIEWPORTS } from '../e2e/viewports';
 
-/** Expected DeviceClass for each of the ten Tier 2 viewports, so the same
- *  ten sizes tested visually are also unit-tested for classification. */
-const EXPECTED_CLASS_BY_VIEWPORT: Record<string, string> = {
-  'iphone-se1': 'phone',
-  'android-compact': 'phone',
-  'iphone-13': 'phone',
-  'iphone-pro-max': 'largePhone',
-  'ipad-mini': 'smallTablet',
-  'ipad-air': 'smallTablet',
-  // classifyDevice reads width only; a landscape viewport's width is its
-  // long edge, so these classify as tablets purely by that width even
-  // though they are phones held sideways — see useDevice.ts.
-  'landscape-844': 'smallTablet',
-  'landscape-932': 'smallTablet',
-  'tablet-4-3': 'smallTablet',
-  'tablet-16-10': 'largeTablet',
+/**
+ * Phase 17 (docs/migration/phase-17-report.md) replaced the width-only
+ * classifier Phase 16 proved misclassified landscape phones as tablets
+ * (docs/migration/phase-16-audit.md §2: 844×390 and 932×430 both landed in
+ * the same bucket as a 1024-wide tablet) with short-edge classification.
+ * Expected DeviceClass for each of the eight Phase 17 landscape viewports —
+ * the same eight sizes tested visually are also unit-tested here.
+ */
+const EXPECTED_CLASS_BY_VIEWPORT: Record<string, DeviceClass> = {
+  'compact-phone': 'compactPhone',
+  'compact-android-phone': 'compactPhone',
+  'landscape-844': 'phone',
+  'landscape-932': 'phone',
+  'tablet-4-3': 'tablet',
+  'tablet-1133': 'tablet',
+  'tablet-16-10': 'tablet',
+  'large-tablet': 'largeTablet',
 };
 
-describe('classifyDevice — the ten Tier 2 viewports', () => {
-  it.each(VIEWPORTS)('$name ($width x $height) classifies as expected', ({ name, width }) => {
-    expect(classifyDevice(width)).toBe(EXPECTED_CLASS_BY_VIEWPORT[name]);
+describe('classifyDeviceClass — the eight Phase 17 landscape viewports', () => {
+  it.each(VIEWPORTS)('$name ($width x $height) classifies as expected', ({ name, width, height }) => {
+    expect(classifyDeviceClass(shortEdgeOf(width, height))).toBe(EXPECTED_CLASS_BY_VIEWPORT[name]);
+  });
+
+  it('844×390 and 932×430 classify as phones, not tablets (the Phase 16 defect)', () => {
+    expect(classifyDeviceClass(shortEdgeOf(844, 390))).toBe('phone');
+    expect(classifyDeviceClass(shortEdgeOf(932, 430))).toBe('phone');
+  });
+
+  it('1024×768 and 1280×800 classify as tablets', () => {
+    expect(classifyDeviceClass(shortEdgeOf(1024, 768))).toBe('tablet');
+    expect(classifyDeviceClass(shortEdgeOf(1280, 800))).toBe('tablet');
   });
 });
 
-describe('classifyDevice — boundaries at 430 and 768, both sides', () => {
-  it('429 is phone, 430 is largePhone', () => {
-    expect(classifyDevice(BREAKPOINT_LARGE_PHONE - 1)).toBe('phone');
-    expect(classifyDevice(BREAKPOINT_LARGE_PHONE)).toBe('largePhone');
+describe('classifyDeviceClass — boundaries, both sides', () => {
+  it('389 is compactPhone, 390 is phone', () => {
+    expect(classifyDeviceClass(SHORT_EDGE_COMPACT_PHONE - 1)).toBe('compactPhone');
+    expect(classifyDeviceClass(SHORT_EDGE_COMPACT_PHONE)).toBe('phone');
   });
 
-  it('767 is largePhone, 768 is smallTablet', () => {
-    expect(classifyDevice(BREAKPOINT_TABLET - 1)).toBe('largePhone');
-    expect(classifyDevice(BREAKPOINT_TABLET)).toBe('smallTablet');
+  it('599 is phone, 600 is tablet', () => {
+    expect(classifyDeviceClass(SHORT_EDGE_TABLET - 1)).toBe('phone');
+    expect(classifyDeviceClass(SHORT_EDGE_TABLET)).toBe('tablet');
   });
 
-  it('1099 is smallTablet, 1100 is largeTablet', () => {
-    expect(classifyDevice(BREAKPOINT_LARGE_TABLET - 1)).toBe('smallTablet');
-    expect(classifyDevice(BREAKPOINT_LARGE_TABLET)).toBe('largeTablet');
+  it('899 is tablet, 900 is largeTablet', () => {
+    expect(classifyDeviceClass(SHORT_EDGE_LARGE_TABLET - 1)).toBe('tablet');
+    expect(classifyDeviceClass(SHORT_EDGE_LARGE_TABLET)).toBe('largeTablet');
+  });
+});
+
+describe('shortEdgeOf / longEdgeOf — width/height order independence', () => {
+  it('gives the same short edge whichever argument order the caller uses', () => {
+    expect(shortEdgeOf(844, 390)).toBe(390);
+    expect(shortEdgeOf(390, 844)).toBe(390);
+  });
+
+  it('gives the same long edge whichever argument order the caller uses', () => {
+    expect(longEdgeOf(844, 390)).toBe(844);
+    expect(longEdgeOf(390, 844)).toBe(844);
+  });
+
+  it('classifyDeviceClass agrees for a device whether measured landscape or portrait', () => {
+    // A 932x430 landscape phone and the same phone rotated to 430x932
+    // portrait are the same physical device — the classifier must not
+    // flip class depending on which way it happens to be held.
+    expect(classifyDeviceClass(shortEdgeOf(932, 430))).toBe(classifyDeviceClass(shortEdgeOf(430, 932)));
+  });
+
+  it.each(VIEWPORTS)('$name classifies identically landscape or portrait', ({ width, height }) => {
+    expect(classifyDeviceClass(shortEdgeOf(width, height))).toBe(classifyDeviceClass(shortEdgeOf(height, width)));
   });
 });
 
@@ -64,9 +106,39 @@ describe('classifyOrientation', () => {
     expect(classifyOrientation(500, 500)).toBe('landscape');
   });
 
-  it.each(VIEWPORTS)('$name matches its own width/height comparison', ({ name, width, height }) => {
-    const expected = width >= height ? 'landscape' : 'portrait';
-    expect(classifyOrientation(width, height)).toBe(expected);
+  it.each(VIEWPORTS)('$name is landscape (the active matrix is all-landscape)', ({ width, height }) => {
+    expect(classifyOrientation(width, height)).toBe('landscape');
+  });
+});
+
+describe('computeUsableWidth / computeUsableHeight — safe-area subtraction, no double counting', () => {
+  it('subtracts left+right from width exactly once', () => {
+    expect(computeUsableWidth(932, { top: 0, right: 24, bottom: 0, left: 24 })).toBe(932 - 48);
+  });
+
+  it('subtracts top+bottom from height exactly once', () => {
+    expect(computeUsableHeight(430, { top: 20, right: 0, bottom: 10, left: 0 })).toBe(430 - 30);
+  });
+
+  it('a notchless device (all-zero insets) keeps the full dimension', () => {
+    expect(computeUsableWidth(932, { top: 0, right: 0, bottom: 0, left: 0 })).toBe(932);
+    expect(computeUsableHeight(430, { top: 0, right: 0, bottom: 0, left: 0 })).toBe(430);
+  });
+});
+
+describe('computeUiScale — bounded, one value per device class', () => {
+  const classes: DeviceClass[] = ['compactPhone', 'phone', 'tablet', 'largeTablet'];
+
+  it.each(classes)('%s is within [UI_SCALE_MIN, UI_SCALE_MAX]', (deviceClass) => {
+    const scale = computeUiScale(deviceClass);
+    expect(scale).toBeGreaterThanOrEqual(UI_SCALE_MIN);
+    expect(scale).toBeLessThanOrEqual(UI_SCALE_MAX);
+  });
+
+  it('scales up monotonically from compactPhone to largeTablet', () => {
+    expect(computeUiScale('compactPhone')).toBeLessThan(computeUiScale('phone'));
+    expect(computeUiScale('phone')).toBeLessThan(computeUiScale('tablet'));
+    expect(computeUiScale('tablet')).toBeLessThan(computeUiScale('largeTablet'));
   });
 });
 

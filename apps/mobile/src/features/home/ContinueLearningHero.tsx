@@ -39,9 +39,7 @@ export function ContinueLearningHero({ category, learned, points, onContinue }: 
   const remaining = wordsToNextStar(points);
   const heroTile = category.id === 'mine' ? brand.starMark : categoryArt[category.id as Exclude<CategoryId, 'mine'>];
   const scene =
-    deviceClass === 'smallTablet' || deviceClass === 'largeTablet'
-      ? homeAssets.heroSceneWide
-      : homeAssets.heroSceneCompact;
+    deviceClass === 'tablet' || deviceClass === 'largeTablet' ? homeAssets.heroSceneWide : homeAssets.heroSceneCompact;
 
   return (
     <View testID={testIds.home.hero} style={[styles.card, shadowCard]}>

@@ -6,7 +6,7 @@ import { ExpoSpeechRecognitionModule } from 'expo-speech-recognition';
 import { MUSIC_FILES, SFX_FILES, type MusicStateKey, type SfxEvent } from '@/domain/audio/audioPolicy';
 import { CATEGORIES } from '@/domain/vocabulary/categories';
 import { audioEngine, type AudioDebugState } from '@/services/audio';
-import { orientationPolicy, orientationService, type RouteKind } from '@/services/orientation';
+import { orientationService } from '@/services/orientation';
 import { recordingService } from '@/services/recording';
 import { wordVoiceService, type VoiceSource } from '@/services/voice';
 import { testIds } from '@/testing/testIds';
@@ -22,13 +22,17 @@ import { testIds } from '@/testing/testIds';
  * "does ducking work?" cannot be answered by a unit test and should not
  * require building a game first — this screen exists purely to make that
  * answerable, on both Tier 2 (this exact screen, through the real web
- * bundle, at all ten viewports) and Tier 3 (a real device — see
+ * bundle, at all landscape viewports) and Tier 3 (a real device — see
  * docs/migration/phase-04-native-report.md).
+ *
+ * The orientation section exercises `OrientationService` directly
+ * (lock/unlock/current) rather than a per-route policy — Phase 17 removed
+ * the route-to-policy table since the whole app is landscape-only now
+ * (docs/migration/phase-17-report.md).
  */
 
 const MUSIC_KEYS = Object.keys(MUSIC_FILES) as MusicStateKey[];
 const SFX_EVENTS = Object.keys(SFX_FILES) as SfxEvent[];
-const ORIENTATION_ROUTES = Object.keys(orientationPolicy) as RouteKind[];
 
 const DEMO_CAT = 'animals' as const;
 const DEMO_WORD = CATEGORIES.animals.items[0].word;
@@ -151,10 +155,16 @@ export default function AudioLab() {
     await wordVoiceService.say(DEMO_CAT, DEMO_WORD, { core: true });
   }, [lastRecordingUri]);
 
-  const handleOrientation = useCallback(async (route: RouteKind) => {
-    await orientationService.applyFor(route);
+  const handleOrientationLock = useCallback(async () => {
+    await orientationService.lockLandscape();
     const current = await orientationService.current();
-    setOrientationCurrent(`${route} -> ${orientationPolicy[route]} (device reports: ${current})`);
+    setOrientationCurrent(`lockLandscape() -> device reports: ${current}`);
+  }, []);
+
+  const handleOrientationUnlock = useCallback(async () => {
+    await orientationService.unlock();
+    const current = await orientationService.current();
+    setOrientationCurrent(`unlock() -> device reports: ${current}`);
   }, []);
 
   const handleRunRecognitionPoc = useCallback(async () => {
@@ -277,16 +287,14 @@ export default function AudioLab() {
         </Text>
       </Section>
 
-      <Section title="Orientation policy">
+      <Section title="Orientation (app-wide landscape contract, Phase 17)">
         <View style={styles.row}>
-          {ORIENTATION_ROUTES.map((route) => (
-            <LabButton
-              key={route}
-              testID={testIds.audioLab.orientationButton(route)}
-              label={`${route} (${orientationPolicy[route]})`}
-              onPress={() => handleOrientation(route)}
-            />
-          ))}
+          <LabButton
+            testID={testIds.audioLab.orientationLockButton}
+            label="lockLandscape()"
+            onPress={handleOrientationLock}
+          />
+          <LabButton testID={testIds.audioLab.orientationUnlockButton} label="unlock()" onPress={handleOrientationUnlock} />
         </View>
         <Text style={styles.debug} testID={testIds.audioLab.orientationCurrentLabel}>
           {orientationCurrent}

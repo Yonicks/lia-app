@@ -252,7 +252,8 @@ export const testIds = {
    *  screen, deliberately unreachable"). Unlike devStorageProbe, this
    *  screen is NOT gated behind __DEV__/Platform.OS: Tier 2
    *  (audio-lab.spec.ts) exercises it through the real exported web bundle
-   *  at all ten viewports, so it has to actually render there. Its
+   *  at all eight landscape viewports (tests/e2e/viewports.ts), so it has
+   *  to actually render there. Its
    *  "developer-only" property comes entirely from no navigation ever
    *  linking to it, not from being absent from the bundle. */
   audioLab: {
@@ -274,7 +275,8 @@ export const testIds = {
     recordStopButton: 'audio-lab-record-stop',
     recordPlaybackButton: 'audio-lab-record-playback',
     recordStatusLabel: 'audio-lab-record-status',
-    orientationButton: (route: string) => `audio-lab-orientation-${route}`,
+    orientationLockButton: 'audio-lab-orientation-lock',
+    orientationUnlockButton: 'audio-lab-orientation-unlock',
     orientationCurrentLabel: 'audio-lab-orientation-current',
     recognitionRunButton: 'audio-lab-recognition-run',
     recognitionResultLabel: 'audio-lab-recognition-result',
