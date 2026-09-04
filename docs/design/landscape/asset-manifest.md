@@ -26,10 +26,10 @@ during the Phase 16 audit (see `docs/migration/phase-16-audit.md` §7).
 
 | Asset family | Status | Notes |
 |---|---|---|
-| Home world background | DESIGN-BLOCKED | No full-bleed world art exists. `homeAssets.heroSceneCompact/Wide` (`assets/v2/home/talki-hero-scene-*.webp`) is a bounded hero-tile scene, not the full-bleed painterly world behind the whole hub shown in `reference/home.png` |
-| Games world background | DESIGN-BLOCKED | No background art registered for Games at all |
-| Practice world background | DESIGN-BLOCKED | No background art registered for Practice at all |
-| Tablet-compatible crops/source | DESIGN-BLOCKED | Blocked on the three backgrounds above existing first |
+| Home world background | EXISTING | `assets/v2/landscape/talki-landscape-bg-home.png` — full-bleed painterly meadow/treehouse/castle scene, no baked UI. Not yet wired into a registry entry in `assets.ts` (Phase 18's job) |
+| Games world background | EXISTING | `assets/v2/landscape/talki-landscape-bg-games.png` |
+| Practice world background | EXISTING | `assets/v2/landscape/talki-landscape-bg-practice.png` |
+| Tablet-compatible crops/source | VERIFY | Source images are 1448×1086; Phase 18 should confirm this is sufficient resolution/aspect for the largest target tablet (1366×1024) without visible upscaling, and decide the crop/focal-point strategy per `README.md`'s asset rules |
 
 ### Shared brand/chrome
 
@@ -60,7 +60,7 @@ The current app registers **11 games** (`src/features/games/shell/gameRegistry.t
 | Asset family | Status | Notes |
 |---|---|---|
 | Card art — memory, quiz, missing, cards, sounds, count, puzzle (7) | EXISTING | `gameCardAssets` in `assets.ts` |
-| Card art — match, bubbles, sort, speech (4) | DESIGN-BLOCKED | No dedicated illustration; render as emoji/plain card today (`src/domain/games/gameCards.ts` documents this as inherited from legacy, not invented). Phase 21's art-dominant 3×2 hub cannot claim full parity until supplied |
+| Card art — match, bubbles, sort, speech (4) | EXISTING | `assets/v2/game-menu/talki-game-card-{match,bubbles,sort,speech}.png` — supplied and verified against the reference style. Not yet added to `gameCardAssets`/`gameCards.ts` (Phase 21's job) |
 
 ### Practice
 
@@ -69,7 +69,7 @@ card illustrations matching the reference visual language.
 
 | Asset family | Status | Notes |
 |---|---|---|
-| Card art — focus, cloze, temptation, receptive, pairs, combine (6) | DESIGN-BLOCKED | Zero dedicated card illustrations exist. `practiceIcons` only has 4 small line-icons (bubble, focus, receptive, cloze) — not full card art — and `temptation`/`pairs` have no icon at all. Current `PracticeMenuScreen` is a plain text list. Phase 22 is fully asset-blocked for the reference's art-dominant cards |
+| Card art — focus, cloze, temptation, receptive, pairs, combine (6) | EXISTING | `assets/v2/practice-menu/talki-practice-card-{focus,cloze,temptation,receptive,pairs,combine}.png` — supplied and verified. No registry entry/component wiring yet (Phase 22's job); `PracticeMenuScreen` is still the plain text list from Phase 11 |
 
 ## Asset implementation rules
 
