@@ -12,63 +12,64 @@ Status values:
 
 | Asset | Status | Purpose |
 |---|---|---|
-| `reference/talki-landscape-master.jpg` | REFERENCE | Original composite landscape mock |
-| `reference/home.jpg` | REFERENCE | Home crop |
-| `reference/games.jpg` | REFERENCE | Games hub crop |
-| `reference/practice.jpg` | REFERENCE | Practice hub crop |
+| `reference/talki-landscape-master.*` | REFERENCE (not committed, optional) | Original composite landscape mock — never supplied; absence is not a gate failure per `reference/README.md` |
+| `reference/home.png` | REFERENCE | Home crop (1448×1086) |
+| `reference/games.png` | REFERENCE | Games hub crop (1672×941) |
+| `reference/practice.png` | REFERENCE | Practice hub crop (1448×1086) |
 
 ## Production asset families
+
+Statuses below were verified against `apps/mobile/src/design-system/assets.ts`
+during the Phase 16 audit (see `docs/migration/phase-16-audit.md` §7).
 
 ### World backgrounds
 
 | Asset family | Status | Notes |
 |---|---|---|
-| Home world background | NEEDED | High-resolution, no UI baked in |
-| Games world background | NEEDED | Same storybook world, distinct place/scene |
-| Practice world background | NEEDED | Same storybook world, distinct place/scene |
-| Tablet-compatible crops/source | NEEDED | Prefer high-res master/focal crop strategy |
+| Home world background | DESIGN-BLOCKED | No full-bleed world art exists. `homeAssets.heroSceneCompact/Wide` (`assets/v2/home/talki-hero-scene-*.webp`) is a bounded hero-tile scene, not the full-bleed painterly world behind the whole hub shown in `reference/home.png` |
+| Games world background | DESIGN-BLOCKED | No background art registered for Games at all |
+| Practice world background | DESIGN-BLOCKED | No background art registered for Practice at all |
+| Tablet-compatible crops/source | DESIGN-BLOCKED | Blocked on the three backgrounds above existing first |
 
 ### Shared brand/chrome
 
 | Asset family | Status | Notes |
 |---|---|---|
-| Talki logo | EXISTING / VERIFY | Verify current high-quality asset fits landscape |
-| Yellow Talki mascot | EXISTING / VERIFY | Verify correct transparent high-res version |
-| Music control art | EXISTING / VERIFY | Reuse if visually compatible |
-| Parent/profile control art | EXISTING / VERIFY | Reuse if visually compatible |
-| Star/reward art | EXISTING / VERIFY | Reuse if visually compatible |
-| Side navigation arrows | NEEDED / CAN-BE-UI | Prefer real vector/UI primitive if matching mock |
+| Talki logo | EXISTING | `brand.headerLogo` (`assets/v2/brand/talki-header-logo.png`); verify fit at landscape scale |
+| Yellow Talki mascot | EXISTING | Two variants registered — `introAssets.star` and `homeAssets.heroStar`; Phase 18/20 must pick one |
+| Music control art | EXISTING | `uiIcons.music` (`assets/v2/icons/talki-ui-icon-music.png`) |
+| Parent/profile control art | VERIFY | `uiIcons.settings` exists but is not wired into `TopBar` today — the logo itself is the only tappable/long-press parent trigger (`src/components/shell/TopBar.tsx`); the reference shows a separate small parent icon. Open wiring decision, not a missing-art blocker |
+| Star/reward art | EXISTING | `uiIcons.star` (`assets/v2/icons/talki-ui-icon-star.png`); note the current `TopBar` points pill is display-only, not tappable — see interaction-map "Stars/rewards" |
+| Side navigation arrows | OPTIONAL / CAN-BE-UI | `uiIcons.chevron` (`assets/v2/icons/talki-chevron-left.png`) exists; the mirrored forward arrow can be a transform, no new art required |
 
 ### Home categories
 
-The final category count comes from the current domain, not from the reference image.
+10 built-in categories (verified via `src/domain/vocabulary/categories.ts`) plus
+the synthetic `mine` (custom words) category.
 
-Required:
-
-- one production art asset per visible category;
-- transparent/high-quality source where card composition requires separation;
-- no baked Hebrew text inside the art.
-
-Status: `VERIFY` current assets, then mark missing assets explicitly during Phase 16 audit.
+| Asset family | Status | Notes |
+|---|---|---|
+| Category icons (small) | EXISTING | `categoryIcons` — all 10 built-ins registered (`assets/v2/categories/talki-cat-icon-*.png`) |
+| Category hero art | EXISTING | `categoryArt` — all 10 built-ins registered (`assets/v2/categories/talki-cat-art-*.webp`) |
+| `mine` (custom words) art | EXISTING (fallback) | No dedicated art; falls back to `brand.starMark`, matching legacy behavior |
 
 ### Games
 
-The current app registers 11 games.
+The current app registers **11 games** (`src/features/games/shell/gameRegistry.ts`).
 
-Required:
-
-- one high-quality card illustration per game;
-- no title text baked into the illustration;
-- consistent storybook style;
-- safe crop area for phone/tablet card ratios.
-
-Status: `VERIFY` current generated/assets registry during Phase 16 audit.
+| Asset family | Status | Notes |
+|---|---|---|
+| Card art — memory, quiz, missing, cards, sounds, count, puzzle (7) | EXISTING | `gameCardAssets` in `assets.ts` |
+| Card art — match, bubbles, sort, speech (4) | DESIGN-BLOCKED | No dedicated illustration; render as emoji/plain card today (`src/domain/games/gameCards.ts` documents this as inherited from legacy, not invented). Phase 21's art-dominant 3×2 hub cannot claim full parity until supplied |
 
 ### Practice
 
-Six practice modes require six card illustrations matching the reference visual language.
+**Six practice modes** (`src/features/practice/practiceRegistry.ts`) require six
+card illustrations matching the reference visual language.
 
-Status: `VERIFY` current assets, mark gaps during Phase 16 audit.
+| Asset family | Status | Notes |
+|---|---|---|
+| Card art — focus, cloze, temptation, receptive, pairs, combine (6) | DESIGN-BLOCKED | Zero dedicated card illustrations exist. `practiceIcons` only has 4 small line-icons (bubble, focus, receptive, cloze) — not full card art — and `temptation`/`pairs` have no icon at all. Current `PracticeMenuScreen` is a plain text list. Phase 22 is fully asset-blocked for the reference's art-dominant cards |
 
 ## Asset implementation rules
 

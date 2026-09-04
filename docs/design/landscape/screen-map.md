@@ -83,7 +83,10 @@ All must remain usable in landscape:
 
 Current implementation:
 
-`src/features/parent/`
+`src/features/parent/` — `ParentScreen.tsx` plus 5 tabs under
+`src/features/parent/tabs/`: `MethodTab`, `RecordTab`, `ReportTab`,
+`SettingsTab`, `WordsTab` (verified during Phase 16 audit,
+`docs/migration/phase-16-audit.md` §5–6).
 
 ## Global surfaces
 

@@ -21,12 +21,12 @@ There is no portrait child layout to preserve.
 
 Visual reference order:
 
-1. `reference/home.jpg`
-2. `reference/games.jpg`
-3. `reference/practice.jpg`
-4. `reference/talki-landscape-master.jpg`
+1. `reference/home.png`
+2. `reference/games.png`
+3. `reference/practice.png`
+4. `reference/talki-landscape-master.*` (optional; not committed — see `reference/README.md`)
 
-The cropped images are easier for an agent to inspect per screen. The master preserves the original composite reference supplied for this redesign.
+The cropped images are easier for an agent to inspect per screen. The optional master, if ever added, would preserve the original composite reference supplied for this redesign; its absence is not a gate failure.
 
 These images define:
 
