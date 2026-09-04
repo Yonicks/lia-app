@@ -42,6 +42,13 @@ Shared child chrome exposes stable actions:
 - opens the rewards/stickers destination;
 - retains current progress/reward data.
 
+  Current-code note (Phase 16 audit): `TopBar`'s points pill
+  (`src/components/shell/TopBar.tsx`) is display-only today —
+  `accessibilityRole="image"`, no `onPress`. Rewards is reached only
+  through `BottomNavigation`'s "stickers" tab. Once Phase 19 removes
+  `BottomNavigation`, this control must become interactive or Rewards
+  reachability regresses.
+
 ### Talki branding
 
 - visual brand anchor;
