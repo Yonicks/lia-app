@@ -2,7 +2,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { TalkiButton, TalkiText } from '@/design-system/components';
-import { useDevice } from '@/design-system/responsive/useDevice';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { radii } from '@/design-system/theme/radii';
 import { shadowSm } from '@/design-system/theme/shadows';
 import { v3 } from '@/design-system/theme/colors';
@@ -87,14 +88,14 @@ function SoundsPlay({
 }) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const { stats, recordSeen, markLearned } = useProgressStore();
   const settings = useSettingsStore((s) => s.settings);
   const [celebrate, setCelebrate] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ word: string; ok: boolean } | null>(null);
   const spoken = useRef<number | null>(null);
   const completeFired = useRef(false);
-  const { orientation, height } = useDevice();
-  const compact = orientation === 'landscape' && height < 500;
   const [state, dispatch] = useReducer(soundsReducer, undefined, () => initialSounds(category, stats, settings, seed));
 
   useEffect(() => {
@@ -152,6 +153,9 @@ function SoundsPlay({
     [session, state.target.word, markLearned, recordSeen, seed],
   );
 
+  const split = tokens.soundsSplitLayout;
+  const optMin = tokens.soundsOptionMin;
+
   return (
     <GameShell
       title="🐮 מי אמר את זה?"
@@ -166,14 +170,33 @@ function SoundsPlay({
       celebrateMessage={celebrate}
       onDismissCelebrate={() => setCelebrate(null)}
     >
-      <View testID={testIds.sounds.root} style={[styles.board, compact && styles.boardCompact]}>
-        <View style={styles.prompt}>
-          <TalkiText align="center" color={v3.textSecondary}>
+      <View
+        testID={testIds.sounds.root}
+        style={[
+          styles.board,
+          {
+            gap: Math.max(6, tokens.gap - 2),
+            paddingInline: tokens.padInline,
+            flexDirection: split ? 'row' : 'column',
+            alignItems: split ? 'center' : 'stretch',
+          },
+        ]}
+      >
+        <View style={[styles.prompt, { gap: Math.max(6, tokens.gap - 2) }]}>
+          <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
             איזו חיה עושה את הקול הזה?
           </TalkiText>
           <TalkiButton testID={testIds.sounds.play} label="🔊 לשמוע שוב" variant="secondary" onPress={replay} />
         </View>
-        <View style={[styles.grid, compact && styles.gridCompact]}>
+        <View
+          style={[
+            styles.grid,
+            {
+              gap: Math.max(6, tokens.gap - 2),
+              flexWrap: split ? 'nowrap' : 'wrap',
+            },
+          ]}
+        >
           {state.options.map((opt, index) => (
             <Pressable
               key={`${state.i}:${opt.word}`}
@@ -183,8 +206,14 @@ function SoundsPlay({
               onPress={() => answer(opt.word)}
               style={[
                 styles.opt,
-                compact && styles.optCompact,
                 shadowSm,
+                {
+                  minWidth: optMin,
+                  minHeight: optMin,
+                  maxWidth: split ? optMin + 24 : undefined,
+                  flexGrow: split ? 0 : 1,
+                  flexBasis: split ? optMin : 100,
+                },
                 feedback?.word === opt.word && feedback.ok && styles.ok,
                 feedback?.word === opt.word && !feedback.ok && styles.bad,
               ]}
@@ -199,16 +228,17 @@ function SoundsPlay({
 }
 
 const styles = StyleSheet.create({
-  board: { flex: 1, paddingInline: 14, paddingBlock: 8, gap: 12 },
-  boardCompact: { flexDirection: 'row', alignItems: 'center' },
-  prompt: { alignItems: 'center', gap: 8, zIndex: 2 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, justifyContent: 'center', flex: 1, alignContent: 'center' },
-  gridCompact: { flex: 1, flexWrap: 'nowrap', maxHeight: 160 },
+  board: { flex: 1, minHeight: 0, paddingBlock: 4 },
+  prompt: { alignItems: 'center', zIndex: 2, flexShrink: 0 },
+  grid: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    minHeight: 0,
+  },
   opt: {
-    flexGrow: 1,
-    flexBasis: 100,
-    minWidth: 96,
-    minHeight: 96,
     aspectRatio: 1,
     borderRadius: radii.card,
     backgroundColor: v3.surface,
@@ -216,13 +246,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 3,
     borderColor: 'transparent',
-  },
-  optCompact: {
-    minWidth: 72,
-    minHeight: 72,
-    maxWidth: 120,
-    flexGrow: 0,
-    flexBasis: 88,
   },
   ok: { borderColor: v3.green500 },
   bad: { borderColor: v3.pink500 },

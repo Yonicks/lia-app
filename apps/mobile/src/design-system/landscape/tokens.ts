@@ -187,6 +187,66 @@ const QUIZ_GRID_MODE: Record<DeviceClass, QuizGridMode> = {
   largeTablet: '1x4',
 };
 
+/**
+ * Game-detail board metrics (Phase 25 Wave B). Same DeviceClass-only rule —
+ * Sounds/Count/Bubbles/Sort/Puzzle/Speech must not invent local breakpoints.
+ */
+const SOUNDS_OPTION_MIN: Record<DeviceClass, number> = {
+  compactPhone: 72,
+  phone: 84,
+  tablet: 108,
+  largeTablet: 120,
+};
+
+const COUNT_PIC_MAX: Record<DeviceClass, number> = {
+  compactPhone: 64,
+  phone: 80,
+  tablet: 104,
+  largeTablet: 116,
+};
+
+const COUNT_OPTION_MIN: Record<DeviceClass, number> = {
+  compactPhone: 56,
+  phone: 64,
+  tablet: 80,
+  largeTablet: 88,
+};
+
+const BUBBLE_SIZE_MIN: Record<DeviceClass, number> = {
+  compactPhone: 64,
+  phone: 72,
+  tablet: 88,
+  largeTablet: 96,
+};
+
+const BUBBLE_SIZE_MAX: Record<DeviceClass, number> = {
+  compactPhone: 96,
+  phone: 112,
+  tablet: 132,
+  largeTablet: 144,
+};
+
+const SORT_BOX_MIN: Record<DeviceClass, number> = {
+  compactPhone: 72,
+  phone: 88,
+  tablet: 112,
+  largeTablet: 124,
+};
+
+const PUZZLE_PIECE_MIN: Record<DeviceClass, number> = {
+  compactPhone: 64,
+  phone: 72,
+  tablet: 96,
+  largeTablet: 108,
+};
+
+const SPEECH_ART: Record<DeviceClass, number> = {
+  compactPhone: 96,
+  phone: 120,
+  tablet: 160,
+  largeTablet: 180,
+};
+
 export interface LandscapeTokens {
   gap: number;
   padInline: number;
@@ -223,6 +283,20 @@ export interface LandscapeTokens {
   cardsStageMaxWidth: number;
   /** Whether cards stage prefers art | controls side-by-side. */
   cardsSplitLayout: boolean;
+  /** Sounds option tile minimum edge (dp). */
+  soundsOptionMin: number;
+  /** Sounds: phones put prompt beside options; tablets stack. */
+  soundsSplitLayout: boolean;
+  /** Count stage object max edge so n=5 fits the play strip. */
+  countPicMax: number;
+  countOptionMin: number;
+  bubbleSizeMin: number;
+  bubbleSizeMax: number;
+  sortBoxMinHeight: number;
+  /** Sort: tablet prompt | boxes side-by-side. */
+  sortSplitLayout: boolean;
+  puzzlePieceMin: number;
+  speechArtSize: number;
 }
 
 export function landscapeTokens(deviceClass: DeviceClass, uiScale = 1): LandscapeTokens {
@@ -258,6 +332,16 @@ export function landscapeTokens(deviceClass: DeviceClass, uiScale = 1): Landscap
     matchRowMinHeight: Math.max(LANDSCAPE_MIN_TOUCH, scale(MATCH_ROW_MIN[deviceClass])),
     cardsStageMaxWidth: scale(CARDS_STAGE_MAX_W[deviceClass]),
     cardsSplitLayout: isTablet,
+    soundsOptionMin: Math.max(LANDSCAPE_MIN_TOUCH, scale(SOUNDS_OPTION_MIN[deviceClass])),
+    soundsSplitLayout: !isTablet,
+    countPicMax: Math.max(48, scale(COUNT_PIC_MAX[deviceClass])),
+    countOptionMin: Math.max(LANDSCAPE_MIN_TOUCH, scale(COUNT_OPTION_MIN[deviceClass])),
+    bubbleSizeMin: Math.max(LANDSCAPE_MIN_TOUCH, scale(BUBBLE_SIZE_MIN[deviceClass])),
+    bubbleSizeMax: Math.max(LANDSCAPE_MIN_TOUCH, scale(BUBBLE_SIZE_MAX[deviceClass])),
+    sortBoxMinHeight: Math.max(LANDSCAPE_MIN_TOUCH, scale(SORT_BOX_MIN[deviceClass])),
+    sortSplitLayout: isTablet,
+    puzzlePieceMin: Math.max(LANDSCAPE_MIN_TOUCH, scale(PUZZLE_PIECE_MIN[deviceClass])),
+    speechArtSize: Math.max(72, scale(SPEECH_ART[deviceClass])),
   };
 }
 

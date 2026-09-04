@@ -27,7 +27,7 @@ async function gotoSounds(page: Page): Promise<void> {
   await page.waitForSelector(`[data-testid="${testIds.sounds.root}"]`);
 }
 
-test.describe('Phase 10 sounds', () => {
+test.describe('Phase 25 sounds', () => {
   test('three options; play replays the onomatopoeia; ignores requested category', async ({ page }) => {
     const spy = await speechSpy(page);
     await gotoSounds(page);
@@ -39,7 +39,7 @@ test.describe('Phase 10 sounds', () => {
     await page.getByTestId(testIds.sounds.play).click();
     const after = await spy.calls();
     expect(after.length).toBe(first.length + 1);
-    await captureMatrix(page, '10', 'sounds-board');
+    await captureMatrix(page, '25', 'sounds-board');
     await expect(page).toHaveScreenshot();
   });
 
@@ -52,7 +52,7 @@ test.describe('Phase 10 sounds', () => {
       await page.waitForTimeout(1200);
     }
     await expect(page.getByTestId(testIds.game.doneCard)).toBeVisible();
-    await captureMatrix(page, '10', 'sounds-done');
+    await captureMatrix(page, '25', 'sounds-done');
   });
 
   test('audits; degradeNativeApis; no listener growth', async ({ page }) => {

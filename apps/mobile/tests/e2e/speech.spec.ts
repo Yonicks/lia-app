@@ -4,11 +4,11 @@ import { testIds } from '../../src/testing/testIds';
 import { auditReachability, auditTouchTargets, captureMatrix, countListeners, degradeNativeApis, speechSpy } from './_helpers';
 import { gotoPath } from './_practice';
 
-test.describe('Phase 11 speech game', () => {
+test.describe('Phase 25 speech game', () => {
   test('unsupported screen when recognition is not available', async ({ page }) => {
     await gotoPath(page, '/game/speech?catId=animals&seed=42', testIds.speech.unsupported);
     await expect(page.getByText('הדפדפן הזה לא תומך בזיהוי דיבור')).toBeVisible();
-    await captureMatrix(page, '11', 'speech-unsupported');
+    await captureMatrix(page, '25', 'speech-unsupported');
     await expect(page).toHaveScreenshot();
   });
 
@@ -21,8 +21,13 @@ test.describe('Phase 11 speech game', () => {
     });
     await expect(page.getByTestId(testIds.speech.skip)).toBeVisible();
     await expect(page.getByTestId(testIds.speech.mic)).toBeVisible();
+    // Mic must not be clipped by the viewport / safe bottom.
+    const micBox = await page.getByTestId(testIds.speech.mic).boundingBox();
+    const vp = page.viewportSize();
+    expect(micBox).toBeTruthy();
+    expect(micBox!.y + micBox!.height).toBeLessThanOrEqual((vp?.height ?? 0) + 1);
     expect((await spy.calls()).length).toBe(1);
-    await captureMatrix(page, '11', 'speech-board');
+    await captureMatrix(page, '25', 'speech-board');
     await page.getByTestId(testIds.speech.skip).click();
     await expect(page.getByTestId(testIds.speech.skip)).toBeVisible();
   });

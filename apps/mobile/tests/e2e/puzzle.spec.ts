@@ -43,12 +43,12 @@ async function tapPlace(page: Page, id: string): Promise<void> {
   await page.getByTestId(testIds.puzzle.slot(id)).click();
 }
 
-test.describe('Phase 10 puzzle', () => {
+test.describe('Phase 25 puzzle', () => {
   test('lowest-level board (2 pieces) screenshot', async ({ page }) => {
     await gotoPuzzle(page, { __talkiPuzzleLevel: 1 });
     const ids = await pieceIds(page);
     expect(ids.length).toBe(2);
-    await captureMatrix(page, '10', 'puzzle-board-2');
+    await captureMatrix(page, '25', 'puzzle-board-2');
     await expect(page).toHaveScreenshot();
   });
 
@@ -56,11 +56,12 @@ test.describe('Phase 10 puzzle', () => {
     await gotoPuzzle(page, { __talkiPuzzleLevel: 5 });
     const ids = await pieceIds(page);
     const size = page.viewportSize();
+    // Capacity uses usable landscape geometry (same thresholds as puzzleCapacity).
     const h = size?.height ?? 800;
     const w = size?.width ?? 400;
     const cap = h < 620 || w < 360 ? 3 : h < 780 ? 4 : 6;
     expect(ids.length).toBe(Math.max(2, Math.min(6, cap)));
-    await captureMatrix(page, '10', 'puzzle-board-6');
+    await captureMatrix(page, '25', 'puzzle-board-6');
   });
 
   test('tap-then-tap places; wrong drop returns; second miss shows hint; board always completes', async ({ page }) => {
@@ -73,12 +74,12 @@ test.describe('Phase 10 puzzle', () => {
     await expect(page.getByTestId(testIds.puzzle.piece(a!))).toBeVisible();
     await page.getByTestId(testIds.puzzle.slot(b!)).click();
     await expect(page.locator('[data-testid^="puzzle-slot-"]').first()).toBeVisible();
-    await captureMatrix(page, '10', 'puzzle-hint');
+    await captureMatrix(page, '25', 'puzzle-hint');
 
     await page.getByTestId(testIds.puzzle.slot(a!)).click();
     await tapPlace(page, b!);
     await expect(page.getByTestId(testIds.puzzle.done)).toBeVisible({ timeout: 3000 });
-    await captureMatrix(page, '10', 'puzzle-done');
+    await captureMatrix(page, '25', 'puzzle-done');
     await expect(page).toHaveScreenshot();
   });
 

@@ -2,6 +2,8 @@ import { useEffect, useReducer, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { TalkiButton, TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { speechMatch } from '@/domain/speech/levenshtein';
 import { display } from '@/domain/vocabulary/niqqud';
 import { gamesMenuHref, homeHref } from '@/domain/navigation/routes';
@@ -33,6 +35,8 @@ export function SpeechScreen({ catId, seed }: { catId: string | null; seed?: num
 function SpeechPlay({ session, seed }: { session: GameSession; seed?: number }) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const { stats, markLearned, recordSeen } = useProgressStore();
   const niqqud = useSettingsStore((s) => s.settings.niqqud);
   const spoken = useRef<number | null>(null);
@@ -94,6 +98,8 @@ function SpeechPlay({ session, seed }: { session: GameSession; seed?: number }) 
     }
   };
 
+  const padBottom = Math.max(tokens.padBlock, layout.safeInsets.bottom);
+
   return (
     <GameShell
       title="🎤 תגידי את זה"
@@ -109,20 +115,34 @@ function SpeechPlay({ session, seed }: { session: GameSession; seed?: number }) 
       onDismissCelebrate={() => undefined}
     >
       {state.unsupported || supported === false ? (
-        <View testID={testIds.speech.unsupported} style={styles.box}>
+        <View testID={testIds.speech.unsupported} style={[styles.box, { gap: tokens.gap, padding: tokens.padInline, paddingBottom: padBottom }]}>
           <TalkiText align="center">
             הדפדפן הזה לא תומך בזיהוי דיבור. כדאי לנסות בכרום באנדרואיד או במחשב.
           </TalkiText>
           <TalkiButton label="חזרה למשחקים" onPress={() => push(gamesMenuHref)} />
         </View>
       ) : (
-        <View testID={testIds.speech.root} style={styles.box}>
-          {it ? <WordArt word={it} size="56%" /> : null}
-          {it ? <TalkiText>{display(it.word, niqqud)}</TalkiText> : null}
-          <TalkiText testID={testIds.speech.feedback} align="center">
-            {state.feedback || 'לוחצים על המיקרופון ואומרים את המילה'}
-          </TalkiText>
-          <View style={styles.row}>
+        <View
+          testID={testIds.speech.root}
+          style={[
+            styles.box,
+            {
+              gap: Math.max(8, tokens.gap - 2),
+              paddingInline: tokens.padInline,
+              paddingBottom: padBottom,
+              flexDirection: layout.deviceClass === 'tablet' || layout.deviceClass === 'largeTablet' ? 'row' : 'column',
+              flexWrap: 'wrap',
+            },
+          ]}
+        >
+          <View style={[styles.prompt, { gap: Math.max(6, tokens.gap - 2) }]}>
+            {it ? <WordArt word={it} size={tokens.speechArtSize} /> : null}
+            {it ? <TalkiText style={{ fontSize: tokens.gameTitleSize + 4 }}>{display(it.word, niqqud)}</TalkiText> : null}
+            <TalkiText testID={testIds.speech.feedback} align="center" style={{ fontSize: tokens.subtitleSize }}>
+              {state.feedback || 'לוחצים על המיקרופון ואומרים את המילה'}
+            </TalkiText>
+          </View>
+          <View style={[styles.row, { gap: Math.max(8, tokens.gap - 2) }]}>
             <TalkiButton
               testID={testIds.speech.say}
               label="🔊 לשמוע"
@@ -142,6 +162,7 @@ function SpeechPlay({ session, seed }: { session: GameSession; seed?: number }) 
 }
 
 const styles = StyleSheet.create({
-  box: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 16 },
-  row: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 10 },
+  box: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 0 },
+  prompt: { alignItems: 'center', justifyContent: 'center' },
+  row: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' },
 });

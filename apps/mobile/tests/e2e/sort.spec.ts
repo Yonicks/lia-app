@@ -30,12 +30,29 @@ async function clickCorrectBox(page: Page): Promise<string> {
   return id;
 }
 
-test.describe('Phase 10 sort', () => {
+test.describe('Phase 25 sort', () => {
   test('two boxes; a correct tap scores; six rounds complete', async ({ page }) => {
     await gotoSort(page);
     await expect(page.locator('[data-testid^="sort-box-"]')).toHaveCount(2);
     await expect(page.getByTestId(testIds.sort.item)).toBeAttached();
-    await captureMatrix(page, '10', 'sort-board');
+    // Drop zones: each box ≥48×48 and fully inside the board (layout-local).
+    const geometry = await page.evaluate((rootId) => {
+      const root = document.querySelector(`[data-testid="${rootId}"]`) as HTMLElement | null;
+      if (!root) return { ok: false, reason: 'missing' };
+      const rr = root.getBoundingClientRect();
+      const boxes = [...root.querySelectorAll('[data-testid^="sort-box-"]')] as HTMLElement[];
+      if (boxes.length < 2) return { ok: false, reason: 'count' };
+      for (const el of boxes) {
+        const b = el.getBoundingClientRect();
+        if (Math.min(b.width, b.height) < 48) return { ok: false, reason: 'touch' };
+        if (b.left < rr.left - 2 || b.right > rr.right + 2 || b.top < rr.top - 2 || b.bottom > rr.bottom + 2) {
+          return { ok: false, reason: 'oob' };
+        }
+      }
+      return { ok: true, reason: 'ok' };
+    }, testIds.sort.root);
+    expect(geometry.ok, geometry.reason).toBe(true);
+    await captureMatrix(page, '25', 'sort-board');
     await expect(page).toHaveScreenshot();
 
     const first = await page.evaluate(() => (window as unknown as { __talkiSortCorrect: string }).__talkiSortCorrect);
@@ -46,7 +63,7 @@ test.describe('Phase 10 sort', () => {
       await page.waitForTimeout(1200);
     }
     await expect(page.getByTestId(testIds.game.doneCard)).toBeVisible();
-    await captureMatrix(page, '10', 'sort-done');
+    await captureMatrix(page, '25', 'sort-done');
   });
 
   test('audits and degradeNativeApis', async ({ page }) => {

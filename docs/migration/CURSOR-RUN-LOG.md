@@ -1,7 +1,7 @@
 # Cursor unattended landscape run log
 
-**Last phase attempted:** 24  
-**Exact final status:** `GAMES WAVE A READY FOR PHASE 25`  
+**Last phase attempted:** 25  
+**Exact final status:** `GAMES WAVE B READY FOR PHASE 26`  
 **Blocked reason:** (none)
 
 ---
@@ -12,4 +12,5 @@ Phase 20: HOME HUB READY FOR PHASE 21
 Phase 21: GAMES HUB READY FOR PHASE 22  
 Phase 22: PRACTICE HUB READY FOR PHASE 23  
 Phase 23: CATEGORIES READY FOR PHASE 24  
-Phase 24: GAMES WAVE A READY FOR PHASE 25
+Phase 24: GAMES WAVE A READY FOR PHASE 25  
+Phase 25: GAMES WAVE B READY FOR PHASE 26

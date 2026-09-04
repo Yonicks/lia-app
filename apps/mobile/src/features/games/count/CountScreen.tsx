@@ -2,6 +2,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { radii } from '@/design-system/theme/radii';
 import { shadowSm } from '@/design-system/theme/shadows';
 import { v3 } from '@/design-system/theme/colors';
@@ -22,6 +24,7 @@ import { GameShell } from '../shell/GameShell';
 import { WordArt } from '../shell/WordArt';
 import { useGameSession, type GameSession } from '../shell/useGameSession';
 import { COUNT_ROUNDS, countChips, countReducer, countResult, initCount, setupCountRound } from './countReducer';
+import { countPicSize } from './countDensity';
 
 export interface CountScreenProps {
   catId: string | null;
@@ -79,10 +82,13 @@ function CountPlay({
 }) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const { stats, markLearned } = useProgressStore();
   const settings = useSettingsStore((s) => s.settings);
   const [celebrate, setCelebrate] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<number | null>(null);
+  const [stageWidth, setStageWidth] = useState(layout.usableWidth);
   const spoken = useRef<number | null>(null);
   const completeFired = useRef(false);
   const [state, dispatch] = useReducer(countReducer, undefined, () => initialCount(category, stats, settings, seed));
@@ -140,8 +146,11 @@ function CountPlay({
         });
       }
     },
-    [session, state.n, state.it.word, state.round, state.score, category, stats, settings, seed, markLearned],
+    [session, state.n, state.it.word, state.round, state.score, category, stats, settings, seed, markLearned, setCelebrate],
   );
+
+  const pic = countPicSize(state.n, stageWidth, tokens.countPicMax);
+  const optMin = tokens.countOptionMin;
 
   return (
     <GameShell
@@ -157,18 +166,25 @@ function CountPlay({
       celebrateMessage={celebrate}
       onDismissCelebrate={() => setCelebrate(null)}
     >
-      <View testID={testIds.count.root} style={styles.board}>
-        <TalkiText align="center" color={v3.textSecondary}>
+      <View
+        testID={testIds.count.root}
+        style={[styles.board, { gap: Math.max(6, tokens.gap - 2), paddingInline: tokens.padInline }]}
+      >
+        <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
           {`כמה ${display(state.it.word, settings.niqqud)} יש כאן?`}
         </TalkiText>
-        <View testID={testIds.count.stage} style={styles.stage}>
+        <View
+          testID={testIds.count.stage}
+          style={[styles.stage, { gap: Math.max(4, tokens.gap - 4) }]}
+          onLayout={(e) => setStageWidth(e.nativeEvent.layout.width)}
+        >
           {Array.from({ length: state.n }, (_, i) => (
-            <View key={i} style={styles.pic}>
+            <View key={i} style={[styles.pic, { width: pic, height: pic, maxWidth: pic }]}>
               <WordArt word={state.it} size="80%" />
             </View>
           ))}
         </View>
-        <View style={styles.grid}>
+        <View style={[styles.grid, { gap: Math.max(6, tokens.gap - 2) }]}>
           {state.options.map((n, index) => (
             <Pressable
               key={`${state.round}:${n}`}
@@ -176,9 +192,14 @@ function CountPlay({
               accessibilityRole="button"
               accessibilityLabel={String(n)}
               onPress={() => answer(n)}
-              style={[styles.opt, shadowSm, feedback === n && (n === state.n ? styles.ok : styles.bad)]}
+              style={[
+                styles.opt,
+                shadowSm,
+                { minHeight: optMin },
+                feedback === n && (n === state.n ? styles.ok : styles.bad),
+              ]}
             >
-              <TalkiText style={styles.num}>{n}</TalkiText>
+              <TalkiText style={[styles.num, { fontSize: Math.max(24, tokens.gameTitleSize + 10) }]}>{n}</TalkiText>
             </Pressable>
           ))}
         </View>
@@ -188,21 +209,21 @@ function CountPlay({
 }
 
 const styles = StyleSheet.create({
-  board: { flex: 1, paddingInline: 14, paddingBlock: 8, gap: 10 },
+  board: { flex: 1, minHeight: 0, paddingBlock: 4 },
   stage: {
     flexDirection: 'row',
     flexWrap: 'nowrap',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 6,
     flexGrow: 1,
-    minHeight: 80,
+    flexShrink: 1,
+    minHeight: 64,
+    overflow: 'hidden',
   },
-  pic: { flex: 1, maxWidth: 96, aspectRatio: 1, alignItems: 'center', justifyContent: 'center' },
-  grid: { flexDirection: 'row', gap: 10, justifyContent: 'center' },
+  pic: { alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  grid: { flexDirection: 'row', justifyContent: 'center', flexShrink: 0 },
   opt: {
     flex: 1,
-    minHeight: 72,
     borderRadius: radii.card,
     backgroundColor: v3.surface,
     alignItems: 'center',
@@ -210,7 +231,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: 'transparent',
   },
-  num: { fontSize: 32 },
+  num: {},
   ok: { borderColor: v3.green500 },
   bad: { borderColor: v3.pink500 },
 });

@@ -14,12 +14,14 @@ export function PuzzleSlot({
   piece,
   hinted,
   niqqud,
+  minSize = 72,
   onPress,
   onLayoutBox,
 }: {
   piece: PuzzlePieceState;
   hinted: boolean;
   niqqud: boolean;
+  minSize?: number;
   onPress: () => void;
   onLayoutBox: (box: { x: number; y: number; width: number; height: number }) => void;
 }) {
@@ -36,7 +38,7 @@ export function PuzzleSlot({
           onLayoutBox({ x, y, width, height });
         });
       }}
-      style={[styles.slot, piece.placed && styles.filled, hinted && styles.hint]}
+      style={[styles.slot, { minWidth: minSize, minHeight: minSize, flexBasis: minSize }, piece.placed && styles.filled, hinted && styles.hint]}
     >
       <View style={styles.shadow} pointerEvents="none">
         <WordArt word={piece.it} size="70%" />
@@ -54,9 +56,6 @@ export function PuzzleSlot({
 const styles = StyleSheet.create({
   slot: {
     flexGrow: 1,
-    flexBasis: 88,
-    minWidth: 72,
-    minHeight: 88,
     aspectRatio: 1,
     borderRadius: radii.card,
     borderWidth: 3,

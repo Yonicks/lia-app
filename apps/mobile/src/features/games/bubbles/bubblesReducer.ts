@@ -1,5 +1,7 @@
 import type { TalkiWord } from '@/domain/types';
 
+import { bubbleSpawnLayout, type BubbleStageBounds } from './bubbleSpawn';
+
 export const BUBBLE_TOTAL = 12;
 export const BUBBLE_INTERVAL_MS = 1400;
 
@@ -21,7 +23,7 @@ export interface BubblesState {
 }
 
 export type BubblesAction =
-  | { type: 'SPAWN'; word: TalkiWord; rnd: () => number }
+  | { type: 'SPAWN'; word: TalkiWord; rnd: () => number; stage: BubbleStageBounds }
   | { type: 'POP'; id: number }
   | { type: 'EXPIRE'; id: number };
 
@@ -33,13 +35,14 @@ export function bubblesReducer(state: BubblesState, action: BubblesAction): Bubb
   switch (action.type) {
     case 'SPAWN': {
       if (state.done) return state;
+      const layout = bubbleSpawnLayout(action.rnd, action.stage);
       const bubble: Bubble = {
         id: state.nextId,
         word: action.word,
-        size: 84 + action.rnd() * 46,
-        start: 4 + action.rnd() * 74,
-        drift: action.rnd() * 60 - 30,
-        duration: 8 + action.rnd() * 4,
+        size: layout.size,
+        start: layout.start,
+        drift: layout.drift,
+        duration: layout.duration,
       };
       return { ...state, nextId: state.nextId + 1, live: [...state.live, bubble] };
     }

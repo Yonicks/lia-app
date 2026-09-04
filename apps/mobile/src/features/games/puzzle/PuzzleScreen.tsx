@@ -2,7 +2,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { TalkiText } from '@/design-system/components';
-import { useDevice } from '@/design-system/responsive/useDevice';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { v3 } from '@/design-system/theme/colors';
 import { puzzleAdvance, puzzleLevel } from '@/domain/games/puzzle';
 import type { TalkiCategory, TalkiSettings, WordStats } from '@/domain/types';
@@ -124,15 +125,18 @@ function PuzzlePlay({
 }) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const { stats, recordSeen, markLearned } = useProgressStore();
   const settings = useSettingsStore((s) => s.settings);
   const setPuzzleLevel = useSettingsStore((s) => s.setPuzzleLevel);
-  const { height, width } = useDevice();
   const told = useRef(false);
   const finishFired = useRef(false);
+  /** Slot rects in board-local coordinates (Phase 25). */
   const layouts = useRef<Record<string, Omit<SlotRect, 'id' | 'filled'>>>({});
+  const boardOrigin = useRef({ x: 0, y: 0 });
   const [state, dispatch] = useReducer(puzzleReducer, undefined, () =>
-    initialPuzzle(category, stats, settings, height, width, boards, seed),
+    initialPuzzle(category, stats, settings, layout.usableHeight, layout.usableWidth, boards, seed),
   );
 
   useEffect(() => {
@@ -188,22 +192,33 @@ function PuzzlePlay({
   );
 
   const onDragEnd = useCallback(
-    (pieceId: string, cx: number, cy: number, box: { x: number; y: number; width: number; height: number }) => {
+    (pieceId: string, pageX: number, pageY: number, box: { x: number; y: number; width: number; height: number }) => {
+      const origin = boardOrigin.current;
+      const localCx = pageX - origin.x;
+      const localCy = pageY - origin.y;
+      const localBox = {
+        x: box.x - origin.x,
+        y: box.y - origin.y,
+        width: box.width,
+        height: box.height,
+      };
       const slots: SlotRect[] = state.slots.map((id) => {
         const piece = state.pieces.find((p) => p.id === id)!;
-        const box = layouts.current[id] ?? { x: 0, y: 0, width: 0, height: 0 };
-        return { id, ...box, filled: piece.placed };
+        const rect = layouts.current[id] ?? { x: 0, y: 0, width: 0, height: 0 };
+        return { id, ...rect, filled: piece.placed };
       });
-      const hit = puzzleSlotUnder(cx, cy, box, slots, state.tolerance);
+      const hit = puzzleSlotUnder(localCx, localCy, localBox, slots, state.tolerance);
       if (hit) place(pieceId, hit);
     },
     [state.slots, state.pieces, state.tolerance, place],
   );
 
-  const demo = state.placed === 0 && state.misses === 0 && !state.sel
-    ? state.tray.map((id) => state.pieces.find((p) => p.id === id)!).find((p) => !p.placed)
-    : null;
+  const demo =
+    state.placed === 0 && state.misses === 0 && !state.sel
+      ? state.tray.map((id) => state.pieces.find((p) => p.id === id)!).find((p) => !p.placed)
+      : null;
   const guide = state.sel ? 'עַכְשָׁיו לוֹחֲצִים עַל הַצֵּל' : 'גּוֹרְרִים כָּל תְּמוּנָה אֶל הַצֵּל שֶׁלָּהּ';
+  const pieceMin = tokens.puzzlePieceMin;
 
   return (
     <GameShell
@@ -223,8 +238,19 @@ function PuzzlePlay({
       {state.done ? (
         <PuzzleDoneCard state={state} niqqud={settings.niqqud} onReplay={session.restart} onHome={() => push(homeHref)} />
       ) : (
-        <View testID={testIds.puzzle.root} style={styles.board}>
-          <View style={styles.slots}>
+        <View
+          testID={testIds.puzzle.root}
+          style={[styles.board, { gap: Math.max(6, tokens.gap - 2), paddingInline: tokens.padInline }]}
+          onLayout={(e) => {
+            const node = e.target as unknown as {
+              measureInWindow?: (cb: (x: number, y: number) => void) => void;
+            };
+            node.measureInWindow?.((x, y) => {
+              boardOrigin.current = { x, y };
+            });
+          }}
+        >
+          <View style={[styles.slots, { gap: Math.max(6, tokens.gap - 2) }]}>
             {state.slots.map((id) => {
               const piece = state.pieces.find((p) => p.id === id)!;
               return (
@@ -233,18 +259,25 @@ function PuzzlePlay({
                   piece={piece}
                   hinted={state.hint === id}
                   niqqud={settings.niqqud}
+                  minSize={pieceMin}
                   onPress={() => onSlot(id)}
                   onLayoutBox={(box) => {
-                    layouts.current[id] = box;
+                    // Convert window coords → board-local for hit testing.
+                    layouts.current[id] = {
+                      x: box.x - boardOrigin.current.x,
+                      y: box.y - boardOrigin.current.y,
+                      width: box.width,
+                      height: box.height,
+                    };
                   }}
                 />
               );
             })}
           </View>
-          <TalkiText testID={testIds.puzzle.guide} align="center" color={v3.textSecondary}>
+          <TalkiText testID={testIds.puzzle.guide} align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
             {guide}
           </TalkiText>
-          <View style={styles.tray}>
+          <View style={[styles.tray, { gap: Math.max(6, tokens.gap - 2) }]}>
             {state.tray.map((id) => {
               const piece = state.pieces.find((p) => p.id === id)!;
               return (
@@ -254,6 +287,7 @@ function PuzzlePlay({
                   selected={state.sel === id}
                   nudge={demo?.id === id}
                   niqqud={settings.niqqud}
+                  minSize={pieceMin}
                   onTap={() => {
                     session.audio.secondaryTap();
                     dispatch({ type: 'SELECT', id });
@@ -273,20 +307,19 @@ function PuzzlePlay({
 const styles = StyleSheet.create({
   board: {
     flex: 1,
-    paddingInline: 12,
-    paddingBlock: 8,
-    gap: 10,
+    minHeight: 0,
+    paddingBlock: 4,
   },
   slots: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
     justifyContent: 'center',
+    flexShrink: 1,
   },
   tray: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
     justifyContent: 'center',
+    flexShrink: 0,
   },
 });

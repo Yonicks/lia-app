@@ -2,6 +2,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { radii } from '@/design-system/theme/radii';
 import { shadowSm } from '@/design-system/theme/shadows';
 import { v3 } from '@/design-system/theme/colors';
@@ -70,19 +72,25 @@ export function SortScreen({ catId, seed }: SortScreenProps) {
 function SortPlay({ session, seed }: { session: GameSession; seed?: number }) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const { recordSeen, markLearned } = useProgressStore();
   const niqqud = useSettingsStore((s) => s.settings.niqqud);
   const [celebrate, setCelebrate] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
   const spoken = useRef<number | null>(null);
   const completeFired = useRef(false);
+  /** Play-area-local box rects (relative to board), for geometry tests / future drag. */
+  const boxLayouts = useRef<Record<string, { x: number; y: number; width: number; height: number }>>({});
+  const boardOrigin = useRef({ x: 0, y: 0 });
   const [state, dispatch] = useReducer(sortReducer, undefined, () => initialSort({} as TalkiSettings, seed));
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       (window as unknown as { __talkiSortCorrect?: string }).__talkiSortCorrect = state.correctCatId;
+      (window as unknown as { __talkiSortBoxes?: typeof boxLayouts.current }).__talkiSortBoxes = boxLayouts.current;
     }
-  }, [state.correctCatId]);
+  }, [state.correctCatId, state.round]);
 
   useEffect(() => {
     if (state.done) return;
@@ -129,6 +137,9 @@ function SortPlay({ session, seed }: { session: GameSession; seed?: number }) {
     [session, state.correctCatId, state.it.word, state.round, state.score, seed, recordSeen, markLearned],
   );
 
+  const split = tokens.sortSplitLayout;
+  const boxMin = tokens.sortBoxMinHeight;
+
   return (
     <GameShell
       title="📦 לאיזו קופסה?"
@@ -143,15 +154,40 @@ function SortPlay({ session, seed }: { session: GameSession; seed?: number }) {
       celebrateMessage={celebrate}
       onDismissCelebrate={() => setCelebrate(null)}
     >
-      <View testID={testIds.sort.root} style={styles.board}>
-        <View style={styles.prompt}>
-          <WordArt word={state.it} size="88%" />
-          <TalkiText style={styles.word}>{display(state.it.word, niqqud)}</TalkiText>
-          <TalkiText align="center" color={v3.textSecondary}>
+      <View
+        testID={testIds.sort.root}
+        style={[
+          styles.board,
+          {
+            gap: Math.max(8, tokens.gap - 2),
+            paddingInline: tokens.padInline,
+            flexDirection: split ? 'row' : 'column',
+          },
+        ]}
+        onLayout={(e) => {
+          const t = e.target as unknown as { measureInWindow?: (cb: (x: number, y: number) => void) => void };
+          t.measureInWindow?.((x, y) => {
+            boardOrigin.current = { x, y };
+          });
+        }}
+      >
+        <View style={[styles.prompt, { gap: Math.max(4, tokens.gap - 4), flex: split ? 1 : undefined }]}>
+          <WordArt word={state.it} size={split ? '70%' : '88%'} />
+          <TalkiText style={{ fontSize: tokens.gameTitleSize + 6 }}>{display(state.it.word, niqqud)}</TalkiText>
+          <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
             לאיזו קופסה זה שייך?
           </TalkiText>
         </View>
-        <View style={styles.boxes}>
+        <View
+          style={[
+            styles.boxes,
+            {
+              gap: Math.max(8, tokens.gap - 2),
+              flex: split ? 1.2 : undefined,
+              flexDirection: split ? 'column' : 'row',
+            },
+          ]}
+        >
           {state.boxes.map((box) => (
             <Pressable
               key={box.id}
@@ -159,13 +195,33 @@ function SortPlay({ session, seed }: { session: GameSession; seed?: number }) {
               accessibilityRole="button"
               accessibilityLabel={plain(box.title)}
               onPress={() => answer(box.id)}
+              onLayout={(e) => {
+                const { width, height } = e.nativeEvent.layout;
+                // Layout event x/y are relative to the boxes row — record board-local via window.
+                const node = e.target as unknown as {
+                  measureInWindow?: (cb: (wx: number, wy: number, w: number, h: number) => void) => void;
+                };
+                node.measureInWindow?.((wx, wy, w, h) => {
+                  boxLayouts.current[box.id] = {
+                    x: wx - boardOrigin.current.x,
+                    y: wy - boardOrigin.current.y,
+                    width: w || width,
+                    height: h || height,
+                  };
+                  if (typeof window !== 'undefined') {
+                    (window as unknown as { __talkiSortBoxes?: typeof boxLayouts.current }).__talkiSortBoxes =
+                      boxLayouts.current;
+                  }
+                });
+              }}
               style={[
                 styles.box,
                 shadowSm,
+                { minHeight: boxMin, flex: split ? undefined : 1 },
                 feedback === box.id && (box.id === state.correctCatId ? styles.ok : styles.bad),
               ]}
             >
-              <TalkiText style={styles.icon}>{box.icon}</TalkiText>
+              <TalkiText style={{ fontSize: Math.max(28, tokens.gameTitleSize + 12) }}>{box.icon}</TalkiText>
               <TalkiText align="center">{display(box.title, niqqud)}</TalkiText>
             </Pressable>
           ))}
@@ -177,13 +233,10 @@ function SortPlay({ session, seed }: { session: GameSession; seed?: number }) {
 }
 
 const styles = StyleSheet.create({
-  board: { flex: 1, paddingInline: 14, paddingBlock: 8, gap: 12 },
-  prompt: { alignItems: 'center', gap: 6, flexGrow: 1, justifyContent: 'center' },
-  word: { fontSize: 28 },
-  boxes: { flexDirection: 'row', gap: 12, justifyContent: 'center' },
+  board: { flex: 1, minHeight: 0, paddingBlock: 4, alignItems: 'stretch' },
+  prompt: { alignItems: 'center', justifyContent: 'center', flexGrow: 1, minHeight: 0 },
+  boxes: { justifyContent: 'center', flexShrink: 0 },
   box: {
-    flex: 1,
-    minHeight: 96,
     borderRadius: radii.card,
     backgroundColor: v3.surface,
     alignItems: 'center',
@@ -192,8 +245,6 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: 'transparent',
   },
-  icon: { fontSize: 36 },
   ok: { borderColor: v3.green500 },
   bad: { borderColor: v3.pink500 },
-  sr: { position: 'absolute', width: 1, height: 1, overflow: 'hidden' },
 });

@@ -21,6 +21,7 @@ export function PuzzlePiece({
   selected,
   nudge,
   niqqud,
+  minSize = 88,
   onTap,
   onDragStart,
   onDragEnd,
@@ -29,6 +30,7 @@ export function PuzzlePiece({
   selected: boolean;
   nudge: boolean;
   niqqud: boolean;
+  minSize?: number;
   onTap: () => void;
   onDragStart: () => void;
   onDragEnd: (cx: number, cy: number, box: { x: number; y: number; width: number; height: number }) => void;
@@ -136,6 +138,7 @@ export function PuzzlePiece({
           style={[
             styles.piece,
             shadowSm,
+            { minWidth: minSize, minHeight: minSize },
             piece.placed && styles.placed,
             selected && styles.sel,
             nudge && styles.nudge,
@@ -151,8 +154,6 @@ export function PuzzlePiece({
 
 const styles = StyleSheet.create({
   piece: {
-    minWidth: 88,
-    minHeight: 96,
     padding: 8,
     borderRadius: radii.card,
     backgroundColor: v3.surface,

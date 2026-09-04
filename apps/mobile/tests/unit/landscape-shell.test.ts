@@ -79,6 +79,24 @@ describe('landscapeTokens', () => {
     expect(landscapeTokens('compactPhone').cardsSplitLayout).toBe(false);
     expect(landscapeTokens('tablet').cardsSplitLayout).toBe(true);
   });
+
+  it('exposes Phase 25 Wave B game-board tokens without local breakpoints', () => {
+    for (const deviceClass of CLASSES) {
+      const t = landscapeTokens(deviceClass);
+      expect(t.soundsOptionMin).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.countOptionMin).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.countPicMax).toBeGreaterThanOrEqual(48);
+      expect(t.bubbleSizeMin).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.bubbleSizeMax).toBeGreaterThanOrEqual(t.bubbleSizeMin);
+      expect(t.sortBoxMinHeight).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.puzzlePieceMin).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.speechArtSize).toBeGreaterThanOrEqual(72);
+    }
+    expect(landscapeTokens('compactPhone').soundsSplitLayout).toBe(true);
+    expect(landscapeTokens('tablet').soundsSplitLayout).toBe(false);
+    expect(landscapeTokens('compactPhone').sortSplitLayout).toBe(false);
+    expect(landscapeTokens('tablet').sortSplitLayout).toBe(true);
+  });
 });
 
 describe('landscape backgrounds', () => {

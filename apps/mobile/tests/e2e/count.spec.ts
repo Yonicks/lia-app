@@ -29,7 +29,7 @@ async function clickCorrect(page: Page): Promise<void> {
   await page.getByRole('button', { name: String(n) }).click();
 }
 
-test.describe('Phase 10 count', () => {
+test.describe('Phase 25 count', () => {
   test('stage shows exactly n images; three options; playthrough completes', async ({ page }) => {
     await gotoCount(page);
     const n = await page.evaluate(() => (window as unknown as { __talkiCountN: number }).__talkiCountN);
@@ -40,7 +40,14 @@ test.describe('Phase 10 count', () => {
     await expect(page.getByTestId(testIds.count.option(3))).toHaveCount(0);
     const stageChildren = await page.locator(`[data-testid="${testIds.count.stage}"] > *`).count();
     expect(stageChildren).toBe(n);
-    await captureMatrix(page, '10', 'count-board');
+    // Density: objects must fit the measured stage without overflow.
+    const overflow = await page.evaluate((stageId) => {
+      const stage = document.querySelector(`[data-testid="${stageId}"]`) as HTMLElement | null;
+      if (!stage) return true;
+      return stage.scrollWidth > stage.clientWidth + 1;
+    }, testIds.count.stage);
+    expect(overflow).toBe(false);
+    await captureMatrix(page, '25', 'count-board');
     await expect(page).toHaveScreenshot();
 
     const firstN = await page.evaluate(() => (window as unknown as { __talkiCountN: number }).__talkiCountN);
@@ -53,7 +60,7 @@ test.describe('Phase 10 count', () => {
       await page.waitForTimeout(1400);
     }
     await expect(page.getByTestId(testIds.game.doneCard)).toBeVisible();
-    await captureMatrix(page, '10', 'count-done');
+    await captureMatrix(page, '25', 'count-done');
   });
 
   test('audits and degradeNativeApis', async ({ page }) => {

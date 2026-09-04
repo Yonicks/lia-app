@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useReducer, useRef } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import { TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { v3 } from '@/design-system/theme/colors';
 import type { TalkiCategory } from '@/domain/types';
-import { display } from '@/domain/vocabulary/niqqud';
 import { homeHref } from '@/domain/navigation/routes';
 import { useGoBack } from '@/hooks/useGoBack';
 import { useGuardedPush } from '@/hooks/useGuardedPush';
@@ -15,8 +16,9 @@ import { testIds } from '@/testing/testIds';
 
 import { makeRnd } from '../shell/e2eSeed';
 import { GameShell } from '../shell/GameShell';
-import { WordArt } from '../shell/WordArt';
 import { useGameSession, type GameSession } from '../shell/useGameSession';
+import { BubbleView } from './BubbleView';
+import type { BubbleStageBounds } from './bubbleSpawn';
 import { BUBBLE_TOTAL, bubblesChips, bubblesReducer, bubblesResult, initBubbles } from './bubblesReducer';
 import { useBubbleSpawner } from './useBubbleSpawner';
 
@@ -74,17 +76,40 @@ function BubblesPlay({
 }) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const { markLearned } = useProgressStore();
   const niqqud = useSettingsStore((s) => s.settings.niqqud);
   const completeFired = useRef(false);
   const rnd = useRef(makeRnd(seed));
+  const initialW = layout.usableWidth;
+  const initialH = Math.max(120, layout.usableHeight * 0.55);
+  const stageRef = useRef<BubbleStageBounds>({
+    width: initialW,
+    height: initialH,
+    sizeMin: tokens.bubbleSizeMin,
+    sizeMax: tokens.bubbleSizeMax,
+  });
+  const [stageSize, setStageSize] = useState({ width: initialW, height: initialH });
   const [state, dispatch] = useReducer(bubblesReducer, undefined, initBubbles);
 
   const spawn = useCallback(() => {
+    if (typeof window !== 'undefined' && (window as unknown as { __talkiBubblesFreeze?: boolean }).__talkiBubblesFreeze) {
+      return;
+    }
     if (!category.items.length) return;
     const word = category.items[Math.floor(rnd.current() * category.items.length)]!;
-    dispatch({ type: 'SPAWN', word, rnd: rnd.current });
-  }, [category.items]);
+    dispatch({
+      type: 'SPAWN',
+      word,
+      rnd: rnd.current,
+      stage: {
+        ...stageRef.current,
+        sizeMin: tokens.bubbleSizeMin,
+        sizeMax: tokens.bubbleSizeMax,
+      },
+    });
+  }, [category.items, tokens.bubbleSizeMin, tokens.bubbleSizeMax]);
 
   useBubbleSpawner(!state.done, spawn);
 
@@ -103,7 +128,6 @@ function BubblesPlay({
       void wordVoiceService.say(category.id, bubble.word.word);
       void markLearned(category.id, bubble.word.word);
       if (state.popped + 1 < state.total) session.audio.correct();
-      session.schedule(bubble.duration * 1000 + 300, () => dispatch({ type: 'EXPIRE', id }));
     },
     [state.live, state.popped, state.total, category.id, markLearned, session],
   );
@@ -122,31 +146,33 @@ function BubblesPlay({
       celebrateMessage={null}
       onDismissCelebrate={() => undefined}
     >
-      <View testID={testIds.bubbles.root} style={styles.board}>
-        <TalkiText align="center" color={v3.textSecondary}>
+      <View testID={testIds.bubbles.root} style={[styles.board, { gap: Math.max(4, tokens.gap - 4), paddingInline: tokens.padInline }]}>
+        <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
           לוחצים על הבועות כדי לפוצץ ולשמוע את המילה
         </TalkiText>
-        <View testID={testIds.bubbles.stage} style={styles.stage}>
+        <View
+          testID={testIds.bubbles.stage}
+          style={styles.stage}
+          onLayout={(e) => {
+            const { width, height } = e.nativeEvent.layout;
+            stageRef.current = {
+              width,
+              height,
+              sizeMin: tokens.bubbleSizeMin,
+              sizeMax: tokens.bubbleSizeMax,
+            };
+            setStageSize({ width, height });
+          }}
+        >
           {state.live.map((b) => (
-            <Pressable
+            <BubbleView
               key={b.id}
-              testID={testIds.bubbles.bubble(b.id)}
-              accessibilityRole="button"
-              accessibilityLabel={display(b.word.word, niqqud)}
-              onPress={() => pop(b.id)}
-              style={[
-                styles.bubble,
-                {
-                  width: b.size,
-                  height: b.size,
-                  insetInlineStart: `${b.start}%`,
-                  animationDuration: `${b.duration}s`,
-                } as never,
-              ]}
-            >
-              <WordArt word={b.word} size="56%" />
-              <TalkiText align="center">{display(b.word.word, niqqud)}</TalkiText>
-            </Pressable>
+              bubble={b}
+              stageHeight={stageSize.height}
+              niqqud={niqqud}
+              onPop={() => pop(b.id)}
+              onExpire={() => dispatch({ type: 'EXPIRE', id: b.id })}
+            />
           ))}
         </View>
       </View>
@@ -155,15 +181,6 @@ function BubblesPlay({
 }
 
 const styles = StyleSheet.create({
-  board: { flex: 1, paddingInline: 10, paddingBlock: 8, gap: 8 },
-  stage: { flex: 1, position: 'relative', overflow: 'hidden' },
-  bubble: {
-    position: 'absolute',
-    bottom: 8,
-    borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.88)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 6,
-  },
+  board: { flex: 1, minHeight: 0, paddingBlock: 4 },
+  stage: { flex: 1, minHeight: 0, position: 'relative', overflow: 'hidden' },
 });
