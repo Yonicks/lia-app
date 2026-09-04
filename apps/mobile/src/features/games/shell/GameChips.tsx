@@ -6,11 +6,14 @@ import { testIds } from '@/testing/testIds';
 export interface GameChipsProps {
   chips: string[];
   chipTestIDs?: (string | undefined)[];
+  /** Token-driven gap from GameShell; defaults keep legacy spacing. */
+  gap?: number;
 }
 
-export function GameChips({ chips, chipTestIDs }: GameChipsProps) {
+export function GameChips({ chips, chipTestIDs, gap = 8 }: GameChipsProps) {
+  if (chips.length === 0) return null;
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, { gap }]}>
       {chips.map((label, index) => (
         <TalkiPill
           key={`${index}:${label}`}
@@ -26,8 +29,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
-    paddingInline: 14,
     justifyContent: 'center',
   },
 });

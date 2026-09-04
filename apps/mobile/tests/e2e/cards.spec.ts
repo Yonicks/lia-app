@@ -28,12 +28,12 @@ test.describe('Phase 9 cards', () => {
   test('prev and next move through the category; counter is correct at both ends', async ({ page }) => {
     await gotoCards(page);
     await expect(page.getByTestId(testIds.cards.counter)).toContainText('1/');
-    await captureMatrix(page, '09', 'cards-first');
+    await captureMatrix(page, '24', 'cards-first');
     const label = await page.getByTestId(testIds.cards.counter).innerText();
     const total = Number(label.split('/')[1]);
     await page.getByTestId(testIds.cards.next).click();
     await expect(page.getByTestId(testIds.cards.counter)).toHaveText('2/' + total);
-    await captureMatrix(page, '09', 'cards-middle');
+    await captureMatrix(page, '24', 'cards-middle');
     for (let i = 2; i < total; i++) await page.getByTestId(testIds.cards.next).click();
     await expect(page.getByTestId(testIds.cards.counter)).toHaveText(`${total}/${total}`);
     await page.getByTestId(testIds.cards.next).click();

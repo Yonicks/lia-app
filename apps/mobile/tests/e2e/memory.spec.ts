@@ -42,7 +42,7 @@ test.describe('Phase 9 memory', () => {
       return root.scrollHeight > root.clientHeight + 4 || document.documentElement.scrollWidth > document.documentElement.clientWidth + 1;
     });
     expect(overflow).toBe(false);
-    await captureMatrix(page, '09', 'memory-board');
+    await captureMatrix(page, '24', 'memory-board');
     await expect(page).toHaveScreenshot();
   });
 
@@ -70,11 +70,11 @@ test.describe('Phase 9 memory', () => {
     for (const [pair, idxs] of pairs) {
       await page.getByTestId(testIds.memory.card(idxs[0]!)).click();
       await page.getByTestId(testIds.memory.card(idxs[1]!)).click();
-      if (pair === 0) await captureMatrix(page, '09', 'memory-matched');
+      if (pair === 0) await captureMatrix(page, '24', 'memory-matched');
     }
     await expect(page.getByTestId(testIds.game.doneCard)).toBeVisible();
     await expect(page.getByTestId(testIds.game.doneCard)).toContainText('ניסיונות');
-    await captureMatrix(page, '09', 'memory-done');
+    await captureMatrix(page, '24', 'memory-done');
     await expect(page).toHaveScreenshot();
   });
 

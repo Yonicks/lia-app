@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { useDevice } from '@/design-system/responsive/useDevice';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { STAR_STEP } from '@/domain/progress/stars';
 import type { TalkiCategory, TalkiSettings, WordStats } from '@/domain/types';
 import { homeHref } from '@/domain/navigation/routes';
@@ -78,7 +79,8 @@ function MemoryPlay({
   const push = useGuardedPush();
   const { stats, markLearned } = useProgressStore();
   const settings = useSettingsStore((s) => s.settings);
-  const { orientation } = useDevice();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const completeFired = useRef(false);
   const [state, dispatch] = useReducer(memoryReducer, undefined, () => initialMemory(category, stats, settings, seed));
 
@@ -119,7 +121,7 @@ function MemoryPlay({
     [state, category.id, session, markLearned],
   );
 
-  const cols = orientation === 'landscape' ? 4 : 3;
+  const cols = tokens.memoryColumns;
 
   return (
     <GameShell
@@ -136,10 +138,10 @@ function MemoryPlay({
       onDismissCelebrate={() => undefined}
       chipTestIDs={[testIds.memory.chipPairs]}
     >
-      <View testID={testIds.memory.root} style={[styles.grid, { maxWidth: cols === 4 ? '100%' : 420 }]}>
+      <View testID={testIds.memory.root} style={styles.grid}>
         {state.cards.map((card) => (
-          <View key={card.idx} style={[styles.cell, { width: `${100 / cols}%` }]}>
-            <MemoryCard card={card} niqqud={settings.niqqud} onPress={() => flip(card.idx)} />
+          <View key={card.idx} style={[styles.cell, { width: `${100 / cols}%`, padding: Math.max(2, tokens.gap / 3) }]}>
+            <MemoryCard card={card} niqqud={settings.niqqud} onPress={() => flip(card.idx)} minSize={tokens.memoryCardMin} />
           </View>
         ))}
       </View>
@@ -153,10 +155,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignContent: 'center',
     justifyContent: 'center',
-    paddingInline: 10,
     flex: 1,
+    minHeight: 0,
   },
   cell: {
-    padding: 4,
+    aspectRatio: 1,
+    maxHeight: '33%',
   },
 });

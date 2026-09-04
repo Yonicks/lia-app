@@ -45,7 +45,7 @@ test.describe('Phase 9 match', () => {
     await gotoMatch(page);
     await page.getByTestId(testIds.match.word(0)).click();
     await expect(page.getByTestId(testIds.match.wordSelected)).toBeVisible();
-    await captureMatrix(page, '09', 'match-selected');
+    await captureMatrix(page, '24', 'match-selected');
     const word0 = await page.getByTestId(testIds.match.wordSelected).innerText();
     for (let i = 0; i < 5; i++) {
       const label = await page.getByTestId(testIds.match.picture(i)).getAttribute('aria-label');
@@ -55,7 +55,7 @@ test.describe('Phase 9 match', () => {
       }
     }
     await expect(page.getByTestId(testIds.game.chip(0))).toContainText('0/');
-    await captureMatrix(page, '09', 'match-board');
+    await captureMatrix(page, '24', 'match-board');
     await expect(page).toHaveScreenshot();
   });
 
@@ -67,7 +67,7 @@ test.describe('Phase 9 match', () => {
       await playPair(page, i);
     }
     await expect(page.getByTestId(testIds.game.doneCard)).toBeVisible();
-    await captureMatrix(page, '09', 'match-done');
+    await captureMatrix(page, '24', 'match-done');
   });
 
   test('board fits; audits; degradeNativeApis; no listener growth', async ({ page }) => {

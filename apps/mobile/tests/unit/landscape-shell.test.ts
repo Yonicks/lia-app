@@ -60,6 +60,25 @@ describe('landscapeTokens', () => {
     const tablet = landscapeTokens('tablet');
     expect(tablet.wordGridColumns).toBeGreaterThan(compact.wordGridColumns);
   });
+
+  it('exposes Phase 24 game-board tokens without local breakpoints', () => {
+    for (const deviceClass of CLASSES) {
+      const t = landscapeTokens(deviceClass);
+      expect(t.quizOptionMin).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.memoryCardMin).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.missingCardSize).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.matchRowMinHeight).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.memoryColumns).toBe(4);
+      expect(t.gameTitleSize).toBeGreaterThanOrEqual(14);
+      expect(t.cardsStageMaxWidth).toBeGreaterThan(200);
+    }
+    expect(landscapeTokens('compactPhone').quizGridMode).toBe('2x2');
+    expect(landscapeTokens('phone').quizGridMode).toBe('2x2');
+    expect(landscapeTokens('tablet').quizGridMode).toBe('1x4');
+    expect(landscapeTokens('largeTablet').quizGridMode).toBe('1x4');
+    expect(landscapeTokens('compactPhone').cardsSplitLayout).toBe(false);
+    expect(landscapeTokens('tablet').cardsSplitLayout).toBe(true);
+  });
 });
 
 describe('landscape backgrounds', () => {

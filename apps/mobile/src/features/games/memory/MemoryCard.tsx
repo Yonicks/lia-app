@@ -14,10 +14,13 @@ export function MemoryCard({
   card,
   niqqud,
   onPress,
+  minSize = 64,
 }: {
   card: MemoryCardModel;
   niqqud: boolean;
   onPress: () => void;
+  /** Token-driven minimum edge (Phase 24). */
+  minSize?: number;
 }) {
   const shown = card.open || card.matched;
   return (
@@ -26,7 +29,13 @@ export function MemoryCard({
       accessibilityRole="button"
       accessibilityLabel={shown ? display(card.it.word, niqqud) : 'סגור'}
       onPress={onPress}
-      style={[styles.card, shadowSm, shown && styles.open, card.matched && styles.matched]}
+      style={[
+        styles.card,
+        shadowSm,
+        { minWidth: minSize, minHeight: minSize },
+        shown && styles.open,
+        card.matched && styles.matched,
+      ]}
     >
       {shown ? (
         card.kind === 'pic' ? (
@@ -49,10 +58,8 @@ export function MemoryCard({
 
 const styles = StyleSheet.create({
   card: {
-    flexGrow: 1,
-    flexBasis: 72,
-    minWidth: 64,
-    minHeight: 64,
+    flex: 1,
+    width: '100%',
     aspectRatio: 1,
     borderRadius: radii.card,
     backgroundColor: v3.surface,

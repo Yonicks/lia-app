@@ -2,7 +2,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { TalkiButton, TalkiText } from '@/design-system/components';
-import { useDevice } from '@/design-system/responsive/useDevice';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { v3 } from '@/design-system/theme/colors';
 import { mulberry32 } from '@/domain/games/shuffle';
 import { STAR_STEP } from '@/domain/progress/stars';
@@ -117,7 +118,8 @@ function QuizPlay({
   const push = useGuardedPush();
   const { stats, recordSeen, markLearned } = useProgressStore();
   const settings = useSettingsStore((s) => s.settings);
-  const { orientation, height, width } = useDevice();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const [celebrate, setCelebrate] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ word: string; ok: boolean } | null>(null);
   const spokenRound = useRef<number | null>(null);
@@ -177,12 +179,11 @@ function QuizPlay({
     [session, state.target.word, state.catId, recordSeen, markLearned, category.items, seed],
   );
 
-  const twoByTwo = orientation === 'landscape' && height < 500;
-  const oneRow = width >= 900;
   const optionFeedback = (w: string): QuizOptionFeedback => {
     if (!feedback || feedback.word !== w) return 'idle';
     return feedback.ok ? 'correct' : 'wrong';
   };
+  const oneRow = tokens.quizGridMode === '1x4';
 
   return (
     <GameShell
@@ -198,14 +199,25 @@ function QuizPlay({
       celebrateMessage={celebrate}
       onDismissCelebrate={() => setCelebrate(null)}
     >
-      <View testID={testIds.quiz.root} style={styles.board}>
-        <View style={styles.prompt}>
-          <TalkiText testID={testIds.quiz.prompt} align="center" color={v3.textSecondary}>
+      <View testID={testIds.quiz.root} style={[styles.board, { gap: Math.max(4, tokens.gap - 4) }]}>
+        <View style={[styles.prompt, { gap: Math.max(6, tokens.gap - 2) }]}>
+          <TalkiText
+            testID={testIds.quiz.prompt}
+            align="center"
+            color={v3.textSecondary}
+            style={{ fontSize: tokens.subtitleSize, flexShrink: 1 }}
+          >
             לוחצים על התמונה של המילה שאתם שומעים
           </TalkiText>
           <TalkiButton testID={testIds.quiz.replay} label="להשמיע שוב" variant="secondary" onPress={replayPrompt} />
         </View>
-        <View style={[styles.grid, twoByTwo && styles.grid2, oneRow && styles.gridRow]}>
+        <View
+          style={[
+            styles.grid,
+            { gap: Math.max(6, tokens.gap - 2) },
+            oneRow ? styles.gridRow : styles.grid2x2,
+          ]}
+        >
           {state.options.map((opt, index) => (
             <QuizOption
               key={`${state.i}:${opt.word}`}
@@ -224,24 +236,27 @@ function QuizPlay({
 const styles = StyleSheet.create({
   board: {
     flex: 1,
-    paddingInline: 14,
-    paddingBlock: 8,
-    gap: 12,
+    minHeight: 0,
+    overflow: 'hidden',
   },
   prompt: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    flexShrink: 0,
   },
   grid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
     flex: 1,
+    minHeight: 0,
     alignContent: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
   },
-  grid2: {
-    maxHeight: 280,
+  grid2x2: {
+    flexWrap: 'wrap',
   },
   gridRow: {
     flexWrap: 'nowrap',

@@ -4,6 +4,8 @@ import { GestureDetector } from 'react-native-gesture-handler';
 import { useRouter } from 'expo-router';
 
 import { TalkiButton, TalkiHeading, TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { radii } from '@/design-system/theme/radii';
 import { shadowCard } from '@/design-system/theme/shadows';
 import { v3 } from '@/design-system/theme/colors';
@@ -34,6 +36,8 @@ export function CardsScreen({ catId }: CardsScreenProps) {
   const session = useGameSession({ gameId: 'cards', requestedCatId: catId, mode: 'browse' });
   const settings = useSettingsStore((s) => s.settings);
   const markLearned = useProgressStore((s) => s.markLearned);
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -69,6 +73,7 @@ export function CardsScreen({ catId }: CardsScreenProps) {
 
   const title = session.category ? `🖼️ ${session.category.title}` : '🖼️ כרטיסיות';
   const counter = items.length ? `${safeIndex + 1}/${items.length}` : '0/0';
+  const split = tokens.cardsSplitLayout;
 
   return (
     <GameShell
@@ -87,28 +92,43 @@ export function CardsScreen({ catId }: CardsScreenProps) {
       chipTestIDs={[testIds.cards.counter]}
     >
       {current ? (
-        <View testID={testIds.cards.root} style={styles.stage}>
+        <View
+          testID={testIds.cards.root}
+          style={[
+            styles.stage,
+            {
+              gap: tokens.gap,
+              maxWidth: tokens.cardsStageMaxWidth,
+              alignSelf: 'center',
+              width: '100%',
+              flexDirection: split ? 'row' : 'column',
+              alignItems: split ? 'stretch' : undefined,
+            },
+          ]}
+        >
           <GestureDetector gesture={swipe}>
             <Pressable
               testID={testIds.cards.word}
               accessibilityRole="button"
               onPress={say}
-              style={[styles.card, shadowCard]}
+              style={[styles.card, shadowCard, split && styles.cardSplit]}
             >
-              <WordArt word={current} size="64%" />
+              <WordArt word={current} size={split ? '56%' : '64%'} />
               <TalkiHeading level={1} align="center">
                 {display(current.word, settings.niqqud)}
               </TalkiHeading>
             </Pressable>
           </GestureDetector>
-          <View style={styles.nav}>
-            <TalkiButton testID={testIds.cards.prev} label="הקודם" variant="secondary" onPress={() => go(-1)} />
-            <TalkiButton testID={testIds.cards.say} label="שוב" onPress={say} />
-            <TalkiButton testID={testIds.cards.next} label="הבא" variant="secondary" onPress={() => go(1)} />
+          <View style={[styles.side, split && styles.sideSplit, { gap: tokens.gap }]}>
+            <View style={styles.nav}>
+              <TalkiButton testID={testIds.cards.prev} label="הקודם" variant="secondary" onPress={() => go(-1)} />
+              <TalkiButton testID={testIds.cards.say} label="שוב" onPress={say} />
+              <TalkiButton testID={testIds.cards.next} label="הבא" variant="secondary" onPress={() => go(1)} />
+            </View>
+            <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
+              מחליקים ימינה ושמאלה כדי להחליף מילה
+            </TalkiText>
           </View>
-          <TalkiText align="center" color={v3.textSecondary}>
-            מחליקים ימינה ושמאלה כדי להחליף מילה
-          </TalkiText>
         </View>
       ) : null}
     </GameShell>
@@ -118,20 +138,30 @@ export function CardsScreen({ catId }: CardsScreenProps) {
 const styles = StyleSheet.create({
   stage: {
     flex: 1,
-    paddingInline: 16,
-    paddingBlock: 12,
-    gap: 14,
+    minHeight: 0,
     justifyContent: 'center',
   },
   card: {
     flex: 1,
-    minHeight: 220,
+    minHeight: 160,
     borderRadius: radii.hero,
     backgroundColor: v3.surface,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
     gap: 12,
+  },
+  cardSplit: {
+    flex: 1.4,
+    minHeight: 0,
+  },
+  side: {
+    alignItems: 'center',
+  },
+  sideSplit: {
+    flex: 1,
+    justifyContent: 'center',
+    minWidth: 160,
   },
   nav: {
     flexDirection: 'row',

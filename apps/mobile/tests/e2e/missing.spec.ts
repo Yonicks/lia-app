@@ -41,15 +41,18 @@ test.describe('Phase 9 missing', () => {
     await gotoMissing(page);
     await expect(page.getByTestId(testIds.missing.phaseShow)).toBeVisible();
     await expect(page.getByTestId(testIds.missing.guess(0))).toHaveCount(0);
-    await captureMatrix(page, '09', 'missing-show');
+    // Assert no prompt speech before the slow matrix capture — show window is
+    // only 200ms under e2e (`__talkiMissingShowMs`) and tablets can exceed that
+    // while screenshotting.
     expect(await spy.calls()).toHaveLength(0);
+    await captureMatrix(page, '24', 'missing-show');
 
     await waitAsk(page);
     await expect(page.getByTestId(testIds.missing.phaseAsk)).toBeVisible();
     await expect(page.getByTestId(testIds.missing.guess(0))).toBeVisible();
     const calls = await spy.calls();
     expect(calls).toHaveLength(1);
-    await captureMatrix(page, '09', 'missing-ask');
+    await captureMatrix(page, '24', 'missing-ask');
     await expect(page).toHaveScreenshot();
   });
 
@@ -66,7 +69,7 @@ test.describe('Phase 9 missing', () => {
       }
     }
     await expect(page.getByTestId(testIds.game.doneCard)).toBeVisible();
-    await captureMatrix(page, '09', 'missing-done');
+    await captureMatrix(page, '24', 'missing-done');
   });
 
   test('board fits; audits; degradeNativeApis; no listener growth', async ({ page }) => {

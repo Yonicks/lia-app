@@ -2,6 +2,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { AppState, Pressable, StyleSheet, View } from 'react-native';
 
 import { TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { radii } from '@/design-system/theme/radii';
 import { shadowSm } from '@/design-system/theme/shadows';
 import { v3 } from '@/design-system/theme/colors';
@@ -100,6 +102,8 @@ function MissingPlay({
   const push = useGuardedPush();
   const { stats, recordSeen, markLearned } = useProgressStore();
   const settings = useSettingsStore((s) => s.settings);
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const [celebrate, setCelebrate] = useState<string | null>(null);
   const spoken = useRef(false);
   const completeFired = useRef(false);
@@ -176,6 +180,8 @@ function MissingPlay({
   );
 
   const showing = state.phase === 'show';
+  const cardSize = tokens.missingCardSize;
+  const askSplit = !showing && tokens.cardsSplitLayout;
 
   return (
     <GameShell
@@ -193,47 +199,59 @@ function MissingPlay({
     >
       <View
         testID={testIds.missing.root}
-        style={styles.board}
+        style={[styles.board, { gap: tokens.gap }]}
         accessibilityState={{ busy: showing }}
       >
         <View testID={showing ? testIds.missing.phaseShow : testIds.missing.phaseAsk}>
-          <TalkiText align="center" color={v3.textSecondary}>
+          <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
             {showing ? 'מסתכלים טוב על התמונות...' : 'איזו תמונה נעלמה? לוחצים על השם שלה'}
           </TalkiText>
         </View>
-        <View style={styles.grid}>
-          {state.set.map((it, index) => {
-            const gone = !showing && it.word === state.missing.word;
-            return (
-              <Pressable
-                key={`item-${it.word}`}
-                testID={testIds.missing.item(index)}
-                disabled
-                style={[styles.card, shadowSm, gone && styles.gone]}
-              >
-                {gone ? null : <WordArt word={it} />}
-              </Pressable>
-            );
-          })}
-        </View>
-        {showing ? null : (
-          <View style={styles.grid}>
-            {state.askOrder.map((it, index) => (
-              <Pressable
-                key={`guess-${it.word}`}
-                testID={testIds.missing.guess(index)}
-                accessibilityRole="button"
-                accessibilityLabel={display(it.word, settings.niqqud)}
-                onPress={() => guess(it.word)}
-                style={[styles.card, styles.guess, shadowSm]}
-              >
-                <TalkiText weight="extrabold" align="center">
-                  {display(it.word, settings.niqqud)}
-                </TalkiText>
-              </Pressable>
-            ))}
+        <View style={[askSplit ? styles.askSplit : styles.stack, { gap: tokens.gap, flex: 1, minHeight: 0 }]}>
+          <View style={[styles.grid, { gap: Math.max(6, tokens.gap - 2) }]}>
+            {state.set.map((it, index) => {
+              const gone = !showing && it.word === state.missing.word;
+              return (
+                <Pressable
+                  key={`item-${it.word}`}
+                  testID={testIds.missing.item(index)}
+                  disabled
+                  style={[
+                    styles.card,
+                    shadowSm,
+                    { width: cardSize, minHeight: cardSize, minWidth: cardSize },
+                    gone && styles.gone,
+                  ]}
+                >
+                  {gone ? null : <WordArt word={it} />}
+                </Pressable>
+              );
+            })}
           </View>
-        )}
+          {showing ? null : (
+            <View style={[styles.grid, { gap: Math.max(6, tokens.gap - 2) }]}>
+              {state.askOrder.map((it, index) => (
+                <Pressable
+                  key={`guess-${it.word}`}
+                  testID={testIds.missing.guess(index)}
+                  accessibilityRole="button"
+                  accessibilityLabel={display(it.word, settings.niqqud)}
+                  onPress={() => guess(it.word)}
+                  style={[
+                    styles.card,
+                    styles.guess,
+                    shadowSm,
+                    { width: cardSize, minHeight: cardSize, minWidth: cardSize },
+                  ]}
+                >
+                  <TalkiText weight="extrabold" align="center">
+                    {display(it.word, settings.niqqud)}
+                  </TalkiText>
+                </Pressable>
+              ))}
+            </View>
+          )}
+        </View>
       </View>
     </GameShell>
   );
@@ -242,28 +260,31 @@ function MissingPlay({
 const styles = StyleSheet.create({
   board: {
     flex: 1,
-    paddingInline: 14,
-    paddingBlock: 8,
-    gap: 12,
+    minHeight: 0,
+  },
+  stack: {
+    justifyContent: 'center',
+  },
+  askSplit: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
     justifyContent: 'center',
+    alignContent: 'center',
+    flexShrink: 1,
   },
   card: {
-    width: 96,
-    minHeight: 96,
     borderRadius: radii.card,
     backgroundColor: v3.surface,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 8,
   },
-  guess: {
-    minWidth: 96,
-  },
+  guess: {},
   gone: {
     opacity: 0.15,
   },

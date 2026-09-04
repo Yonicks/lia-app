@@ -100,7 +100,7 @@ test.describe('Phase 8 quiz', () => {
     }
     await expect(page.getByTestId(testIds.game.doneCard)).toBeVisible();
     await expect(page.getByTestId(testIds.game.doneStars)).toHaveAttribute('aria-label', '3 כוכבים');
-    await captureMatrix(page, '08', 'quiz-done-3star');
+    await captureMatrix(page, '24', 'quiz-done-3star');
     await expect(page).toHaveScreenshot();
   });
 
@@ -119,7 +119,7 @@ test.describe('Phase 8 quiz', () => {
     });
     expect(overflow).toBe(false);
     await waitForQuizArt(page);
-    await captureMatrix(page, '08', 'quiz-board');
+    await captureMatrix(page, '24', 'quiz-board');
     await expect(page).toHaveScreenshot();
   });
 
@@ -127,11 +127,11 @@ test.describe('Phase 8 quiz', () => {
     await gotoQuiz(page);
     await page.getByTestId(testIds.quiz.option(1)).click();
     await expect(page.getByTestId(testIds.quiz.optionWrong)).toBeVisible();
-    await captureMatrix(page, '08', 'quiz-wrong');
+    await captureMatrix(page, '24', 'quiz-wrong');
     await page.waitForTimeout(500);
     await page.getByTestId(testIds.quiz.option(0)).click();
     await expect(page.getByTestId(testIds.quiz.optionCorrect)).toBeVisible();
-    await captureMatrix(page, '08', 'quiz-correct');
+    await captureMatrix(page, '24', 'quiz-correct');
   });
 
   test('forced 1-star done card', async ({ page }) => {
@@ -149,7 +149,7 @@ test.describe('Phase 8 quiz', () => {
     );
     await expect(page.getByTestId(testIds.game.doneCard)).toBeVisible();
     await expect(page.getByTestId(testIds.game.doneStars)).toHaveAttribute('aria-label', '1 כוכבים');
-    await captureMatrix(page, '08', 'quiz-done-1star');
+    await captureMatrix(page, '24', 'quiz-done-1star');
   });
 
   test('touch targets, reachability, degradeNativeApis, no listener growth', async ({ page }) => {

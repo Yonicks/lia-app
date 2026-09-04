@@ -131,6 +131,62 @@ const WORD_LABEL: Record<DeviceClass, number> = {
   largeTablet: 17,
 };
 
+/**
+ * Game-detail board metrics (Phase 24). Derived only from DeviceClass —
+ * feature screens must not invent width/height breakpoints for quiz grids,
+ * memory columns, missing cards, match rows, or cards stage width.
+ */
+export type QuizGridMode = '2x2' | '1x4';
+
+const GAME_TITLE: Record<DeviceClass, number> = {
+  compactPhone: 16,
+  phone: 18,
+  tablet: 22,
+  largeTablet: 24,
+};
+
+const QUIZ_OPTION_MIN: Record<DeviceClass, number> = {
+  compactPhone: 72,
+  phone: 84,
+  tablet: 108,
+  largeTablet: 120,
+};
+
+const MEMORY_CARD_MIN: Record<DeviceClass, number> = {
+  compactPhone: 56,
+  phone: 64,
+  tablet: 88,
+  largeTablet: 96,
+};
+
+const MISSING_CARD: Record<DeviceClass, number> = {
+  compactPhone: 68,
+  phone: 80,
+  tablet: 100,
+  largeTablet: 110,
+};
+
+const MATCH_ROW_MIN: Record<DeviceClass, number> = {
+  compactPhone: 48,
+  phone: 52,
+  tablet: 64,
+  largeTablet: 72,
+};
+
+const CARDS_STAGE_MAX_W: Record<DeviceClass, number> = {
+  compactPhone: 420,
+  phone: 480,
+  tablet: 720,
+  largeTablet: 820,
+};
+
+const QUIZ_GRID_MODE: Record<DeviceClass, QuizGridMode> = {
+  compactPhone: '2x2',
+  phone: '2x2',
+  tablet: '1x4',
+  largeTablet: '1x4',
+};
+
 export interface LandscapeTokens {
   gap: number;
   padInline: number;
@@ -153,11 +209,26 @@ export interface LandscapeTokens {
   wordGridRows: number;
   wordArtSize: number;
   wordLabelSize: number;
+  /** Compact in-game title under the landscape top bar. */
+  gameTitleSize: number;
+  /** Quiz option tile minimum edge (dp). */
+  quizOptionMin: number;
+  /** Quiz answer layout — 2×2 on phones, single row on tablets. */
+  quizGridMode: QuizGridMode;
+  /** Memory board column count (landscape always 4). */
+  memoryColumns: 4;
+  memoryCardMin: number;
+  missingCardSize: number;
+  matchRowMinHeight: number;
+  cardsStageMaxWidth: number;
+  /** Whether cards stage prefers art | controls side-by-side. */
+  cardsSplitLayout: boolean;
 }
 
 export function landscapeTokens(deviceClass: DeviceClass, uiScale = 1): LandscapeTokens {
   const scale = (n: number) => Math.round(n * uiScale);
   const sideNavSize = Math.max(48, scale(SIDE_NAV_SIZE[deviceClass]));
+  const isTablet = deviceClass === 'tablet' || deviceClass === 'largeTablet';
   return {
     gap: scale(GAP[deviceClass]),
     padInline: scale(PAD_INLINE[deviceClass]),
@@ -178,6 +249,15 @@ export function landscapeTokens(deviceClass: DeviceClass, uiScale = 1): Landscap
     wordGridRows: WORD_GRID_ROWS[deviceClass],
     wordArtSize: Math.max(32, scale(WORD_ART[deviceClass])),
     wordLabelSize: Math.max(12, scale(WORD_LABEL[deviceClass])),
+    gameTitleSize: Math.max(14, scale(GAME_TITLE[deviceClass])),
+    quizOptionMin: Math.max(LANDSCAPE_MIN_TOUCH, scale(QUIZ_OPTION_MIN[deviceClass])),
+    quizGridMode: QUIZ_GRID_MODE[deviceClass],
+    memoryColumns: 4,
+    memoryCardMin: Math.max(LANDSCAPE_MIN_TOUCH, scale(MEMORY_CARD_MIN[deviceClass])),
+    missingCardSize: Math.max(LANDSCAPE_MIN_TOUCH, scale(MISSING_CARD[deviceClass])),
+    matchRowMinHeight: Math.max(LANDSCAPE_MIN_TOUCH, scale(MATCH_ROW_MIN[deviceClass])),
+    cardsStageMaxWidth: scale(CARDS_STAGE_MAX_W[deviceClass]),
+    cardsSplitLayout: isTablet,
   };
 }
 

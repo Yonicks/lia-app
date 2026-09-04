@@ -1,4 +1,10 @@
-export { landscapeTokens, LANDSCAPE_MIN_TOUCH, type LandscapeShellVariant, type LandscapeTokens } from './tokens';
+export {
+  landscapeTokens,
+  LANDSCAPE_MIN_TOUCH,
+  type LandscapeShellVariant,
+  type LandscapeTokens,
+  type QuizGridMode,
+} from './tokens';
 export {
   LANDSCAPE_BG_SOURCE,
   LANDSCAPE_BG_FOCAL,

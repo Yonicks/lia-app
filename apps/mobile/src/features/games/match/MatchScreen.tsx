@@ -2,6 +2,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { radii } from '@/design-system/theme/radii';
 import { shadowSm } from '@/design-system/theme/shadows';
 import { v3 } from '@/design-system/theme/colors';
@@ -80,6 +82,8 @@ function MatchPlay({
   const push = useGuardedPush();
   const { stats, recordSeen, markLearned } = useProgressStore();
   const settings = useSettingsStore((s) => s.settings);
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const [celebrate, setCelebrate] = useState<string | null>(null);
   const [wrongWord, setWrongWord] = useState<string | null>(null);
   const completeFired = useRef(false);
@@ -145,12 +149,12 @@ function MatchPlay({
       celebrateMessage={celebrate}
       onDismissCelebrate={() => setCelebrate(null)}
     >
-      <View testID={testIds.match.root} style={styles.board}>
-        <TalkiText align="center" color={v3.textSecondary}>
+      <View testID={testIds.match.root} style={[styles.board, { gap: tokens.gap }]}>
+        <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
           לוחצים על מילה, ואז על התמונה שמתאימה לה
         </TalkiText>
-        <View style={styles.cols}>
-          <View style={styles.col}>
+        <View style={[styles.cols, { gap: tokens.gap }]}>
+          <View style={[styles.col, { gap: Math.max(6, tokens.gap - 2) }]}>
             {state.words.map((it, index) => {
               const done = state.matched.includes(it.word);
               const sel = state.sel === it.word;
@@ -162,7 +166,13 @@ function MatchPlay({
                   accessibilityLabel={display(it.word, settings.niqqud)}
                   accessibilityState={{ selected: sel, disabled: done }}
                   onPress={() => pickLeft(it.word)}
-                  style={[styles.item, shadowSm, done && styles.done, sel && styles.sel]}
+                  style={[
+                    styles.item,
+                    shadowSm,
+                    { minHeight: tokens.matchRowMinHeight },
+                    done && styles.done,
+                    sel && styles.sel,
+                  ]}
                 >
                   {sel ? <TalkiText testID={testIds.match.wordSelected} style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden' }} /> : null}
                   <TalkiText weight="extrabold" align="center">
@@ -172,7 +182,7 @@ function MatchPlay({
               );
             })}
           </View>
-          <View style={styles.col}>
+          <View style={[styles.col, { gap: Math.max(6, tokens.gap - 2) }]}>
             {state.pictures.map((it, index) => {
               const done = state.matched.includes(it.word);
               return (
@@ -183,7 +193,13 @@ function MatchPlay({
                   accessibilityLabel={display(it.word, settings.niqqud)}
                   accessibilityState={{ disabled: done }}
                   onPress={() => pickRight(it.word)}
-                  style={[styles.item, shadowSm, done && styles.done, wrongWord === it.word && styles.wrong]}
+                  style={[
+                    styles.item,
+                    shadowSm,
+                    { minHeight: tokens.matchRowMinHeight },
+                    done && styles.done,
+                    wrongWord === it.word && styles.wrong,
+                  ]}
                 >
                   <WordArt word={it} />
                 </Pressable>
@@ -199,22 +215,19 @@ function MatchPlay({
 const styles = StyleSheet.create({
   board: {
     flex: 1,
-    paddingInline: 14,
-    paddingBlock: 8,
-    gap: 12,
+    minHeight: 0,
   },
   cols: {
     flexDirection: 'row',
-    gap: 12,
     flex: 1,
+    minHeight: 0,
   },
   col: {
     flex: 1,
-    gap: 10,
+    minHeight: 0,
   },
   item: {
     flex: 1,
-    minHeight: 56,
     borderRadius: radii.card,
     backgroundColor: v3.surface,
     alignItems: 'center',
