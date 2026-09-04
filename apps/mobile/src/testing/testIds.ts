@@ -50,9 +50,13 @@ export const testIds = {
     practice: 'category-practice',
     word: (index: number) => `category-word-${index}`,
   },
-  /** app/games.tsx. */
+  /** app/games.tsx — Phase 21 landscape 3×2 paged hub. */
   gamesMenu: {
     root: 'games-menu-root',
+    title: 'games-menu-title',
+    grid: 'games-menu-grid',
+    page: (index: number) => `games-menu-page-${index}`,
+    pageIndicator: 'games-menu-page-indicator',
     card: (id: string) => `games-menu-card-${id}`,
     chip: (id: string) => `games-menu-chip-${id}`,
   },

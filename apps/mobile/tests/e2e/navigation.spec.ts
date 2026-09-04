@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 import { testIds } from '../../src/testing/testIds';
-import { captureMatrix, openApp } from './_helpers';
+import { openApp } from './_helpers';
 
 type RouterBridge = { push: (path: string) => void };
 
@@ -96,15 +96,15 @@ test.describe('Phase 7 / 19 navigation spine', () => {
     await expect(page.getByTestId(testIds.practiceMenu.root)).toBeVisible();
   });
 
-  test('captures the games-menu and practice-menu screenshot baselines', async ({ page }) => {
+  test('the games menu and practice menu remain reachable via route and cards', async ({ page }) => {
     await openApp(page);
     await pushRoute(page, '/games');
     await expect(page.getByTestId(testIds.gamesMenu.root)).toBeVisible();
-    await captureMatrix(page, '07', 'games-menu');
+    // Phase 21 owns Games hub matrix evidence (`games.spec.ts` → phase-21/).
+    await expect(page.getByTestId(testIds.gamesMenu.card('quiz'))).toBeVisible();
 
     await pushRoute(page, '/practice');
     await expect(page.getByTestId(testIds.practiceMenu.root)).toBeVisible();
-    await captureMatrix(page, '07', 'practice-menu');
   });
 
   test('no adult control (no <select>, no dropdown) on any child screen', async ({ page }) => {

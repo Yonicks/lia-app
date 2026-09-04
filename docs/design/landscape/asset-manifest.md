@@ -60,7 +60,7 @@ The current app registers **11 games** (`src/features/games/shell/gameRegistry.t
 | Asset family | Status | Notes |
 |---|---|---|
 | Card art — memory, quiz, missing, cards, sounds, count, puzzle (7) | EXISTING | `gameCardAssets` in `assets.ts` |
-| Card art — match, bubbles, sort, speech (4) | EXISTING | `assets/v2/game-menu/talki-game-card-{match,bubbles,sort,speech}.png` — supplied and verified against the reference style. Not yet added to `gameCardAssets`/`gameCards.ts` (Phase 21's job) |
+| Card art — match, bubbles, sort, speech (4) | EXISTING | `apps/mobile/assets/v2/game-menu/talki-game-card-{match,bubbles,sort,speech}.png` — registered in `gameCardAssets` (Phase 21) |
 
 ### Practice
 

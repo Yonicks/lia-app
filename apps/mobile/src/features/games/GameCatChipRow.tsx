@@ -15,6 +15,9 @@ export interface GameCatChipRowProps {
    *  practice menu reuses the same chip row visually (index.html 2412)
    *  without a second identifier namespace. */
   testIDFactory?: (id: string) => string;
+  /** When true (Games hub strip), keep a single non-wrapping row for
+   *  horizontal scroll parents. Practice keeps the default wrap. */
+  nowrap?: boolean;
 }
 
 /**
@@ -22,10 +25,10 @@ export interface GameCatChipRowProps {
  * only categories with 4+ items. Used by both the games menu and the
  * practice menu so choosing a category never happens inside a round.
  */
-export function GameCatChipRow({ chips, current, onSelect, testIDFactory }: GameCatChipRowProps) {
+export function GameCatChipRow({ chips, current, onSelect, testIDFactory, nowrap = false }: GameCatChipRowProps) {
   const idFor = testIDFactory ?? testIds.gamesMenu.chip;
   return (
-    <View style={styles.chipRow}>
+    <View style={[styles.chipRow, nowrap && styles.chipRowNowrap]}>
       {chips.cats.map((cat) => (
         <Pressable
           key={cat.id}
@@ -51,6 +54,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
+    alignItems: 'center',
+  },
+  chipRowNowrap: {
+    flexWrap: 'nowrap',
   },
   chipTouch: {
     minHeight: 48,

@@ -76,10 +76,9 @@ export const landscapeBackgrounds = {
   practice: require('../../assets/v2/landscape/talki-landscape-bg-practice.png'),
 } as const;
 
-/** Game card art — index.html 2355-2377 (renderGamesMenu). Seven of the
- *  eleven games have a dedicated card image; the rest (`match`, `bubbles`,
- *  `sort`, `speech`) render from an emoji/plain card in legacy and keep
- *  doing so here — see gameCards.ts. */
+/** Game card art — all eleven registered games (Phase 21). Files live under
+ *  `apps/mobile/assets/v2/game-menu/`; match/bubbles/sort/speech were added
+ *  to close the former plain-card gap (see asset-manifest.md). */
 export const gameCardAssets = {
   memory: require('../../assets/v2/game-menu/talki-game-card-memory.png'),
   quiz: require('../../assets/v2/game-menu/talki-game-card-where-is.png'),
@@ -88,6 +87,10 @@ export const gameCardAssets = {
   sounds: require('../../assets/v2/game-menu/talki-game-card-animal-sounds.png'),
   count: require('../../assets/v2/game-menu/talki-game-card-counting.png'),
   puzzle: require('../../assets/v2/game-menu/talki-game-card-challenge.png'),
+  match: require('../../assets/v2/game-menu/talki-game-card-match.png'),
+  bubbles: require('../../assets/v2/game-menu/talki-game-card-bubbles.png'),
+  sort: require('../../assets/v2/game-menu/talki-game-card-sort.png'),
+  speech: require('../../assets/v2/game-menu/talki-game-card-speech.png'),
 } as const;
 
 export const categoryIcons = {
