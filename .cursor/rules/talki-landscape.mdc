@@ -1,0 +1,35 @@
+---
+description: Talki global landscape redesign rules
+alwaysApply: true
+---
+
+# Talki repository rules
+
+Before changing Talki application code, read:
+
+- `/AGENTS.md`
+- `/docs/design/landscape/README.md`
+- `/docs/migration/landscape-roadmap.md`
+
+The full canonical contract is in `AGENTS.md`.
+
+Critical rules:
+
+- Talki child UI is landscape-only on phones and tablets.
+- Do not implement or preserve a portrait child layout.
+- Current source code is the behavioral source of truth.
+- `docs/design/landscape/reference/` is the visual source of truth.
+- Preserve every existing game, category, practice mode, parent feature, reward feature, and behavior even if absent from a mock.
+- Do not use the old `BottomNavigation` in the redesigned child experience.
+- Responsive/device classification and orientation must be centralized.
+- Never classify a landscape phone as a tablet by long-edge width alone.
+- Do not scatter `Dimensions`, `useWindowDimensions`, arbitrary breakpoints, or local `isTablet` checks through feature screens.
+- Do not duplicate whole phone/tablet screen trees.
+- Hebrew RTL and logical start/end layout are required.
+- Child controls require >= 48x48 dp effective touch targets.
+- Never stretch artwork.
+- Never use a reference screenshot itself as production UI.
+- Preserve reducers/domain/audio/storage/progress logic unless the active phase explicitly changes behavior.
+- Do not retire or delete the legacy Capacitor app during landscape phases.
+- Never weaken tests just to make them pass.
+- Implement one phase only, write its report, then stop.
