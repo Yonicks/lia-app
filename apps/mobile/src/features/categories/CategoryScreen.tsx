@@ -1,24 +1,36 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { RewardOverlay } from '@/components/shell';
-import { TalkiButton, TalkiHeading, TalkiIconButton, TalkiProgress, TalkiScreen, TalkiText } from '@/design-system/components';
-import { uiIcons } from '@/design-system/assets';
-import { useDevice } from '@/design-system/responsive/useDevice';
-import { homePaddingInline } from '@/design-system/theme/spacing';
-import { v3 } from '@/design-system/theme/colors';
+import { RewardOverlay, ToastHost } from '@/components/shell';
+import { landscapeBackgrounds, uiIcons } from '@/design-system/assets';
+import { TalkiButton, TalkiIconButton, TalkiText } from '@/design-system/components';
+import {
+  LandscapePageIndicator,
+  LandscapeProgress,
+  LandscapeTopBar,
+  LandscapeWordGrid,
+  LandscapeWorldShell,
+  landscapeTokens,
+} from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
+import { shadowCard } from '@/design-system/theme/shadows';
+import { v2, v3 } from '@/design-system/theme/colors';
+import { radii } from '@/design-system/theme/radii';
 import { celebrateTitle, shouldCelebrate } from '@/domain/progress/celebrate';
 import { cardsHref, gameHref, practiceMenuHref } from '@/domain/navigation/routes';
 import type { CategoryId } from '@/domain/types';
 import { display, plain } from '@/domain/vocabulary/niqqud';
+import { wordGridPages, wordGridPageSize } from '@/domain/vocabulary/wordGridPages';
 import { useGoBack } from '@/hooks/useGoBack';
 import { useGuardedPush } from '@/hooks/useGuardedPush';
+import { useParentBrand } from '@/hooks/useParentBrand';
 import { audioEngine } from '@/services/audio';
 import { wordVoiceService } from '@/services/voice';
+import { useProgressStore } from '@/state/progressStore';
 import { useSettingsStore } from '@/state/settingsStore';
 import { testIds } from '@/testing/testIds';
 
-import { WordGrid } from './WordGrid';
+import { WordTile } from './WordTile';
 import { useCategoryProgress } from './useCategoryProgress';
 
 export interface CategoryScreenProps {
@@ -26,34 +38,63 @@ export interface CategoryScreenProps {
 }
 
 /**
- * index.html `renderCategory()` (2293-2327). Tapping a word speaks it
- * (always the PLAIN form, regardless of the niqqud display setting — see
- * WordTile.tsx) and marks it learned. Opening the screen writes
- * `lia:lastcat` via `useCategoryProgress`'s equivalent of `enterCat()`.
+ * Landscape category / vocabulary learning surface (Phase 23).
  *
- * The three pills mirror legacy's own `data-cards`/`data-play`/
- * `data-practice` row (2309-2311) exactly, including which of them lead
- * to a real destination: `משחק` goes to the (stubbed) quiz game — the
- * only mode this phase wires end-to-end — while `כרטיסיות` (flashcards,
- * a mode of its own that this phase does not build) and `תרגול` (the
- * general practice menu, matching legacy's `view='practice'`) route to a
- * stub and the real practice menu respectively, per phase-07's "menus
- * only; cards route to a stub" scope.
+ * Composition:
+ *   LandscapeWorldShell (detail) + home world background
+ *   LandscapeTopBar with back accessory + points/music/parent brand
+ *   Compact header panel (title + progress + cards/play/practice CTAs)
+ *   LandscapeWordGrid page (token-driven columns × rows)
+ *   LandscapePageIndicator when words exceed one page
+ *
+ * Behavior preserved from legacy `renderCategory()`: speak PLAIN form on
+ * tap, mark learned, celebrate milestones, write lia:lastcat, keep all
+ * words/custom/mine reachable.
  */
 export function CategoryScreen({ catId }: CategoryScreenProps) {
   const goBack = useGoBack();
   const push = useGuardedPush();
-  const { deviceClass } = useDevice();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const { ready, category, learnedCount, isLearned, niqqudEnabled, markLearned } = useCategoryProgress(catId);
+  const learned = useProgressStore((s) => s.learned);
   const effects = useSettingsStore((s) => s.settings.effects);
+  const { settings, toggleMusic } = useSettingsStore();
+  const parent = useParentBrand();
   const [celebrate, setCelebrate] = useState<string | null>(null);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageScope, setPageScope] = useState({ catId, pageSize: 0 });
+
+  const pageSize = wordGridPageSize(tokens.wordGridColumns, tokens.wordGridRows);
+  const pages = useMemo(
+    () => (category ? wordGridPages(category.items, pageSize) : [[]]),
+    [category, pageSize],
+  );
+
+  // Reset paging when category or grid density changes (render-time adjust).
+  if (pageScope.catId !== catId || pageScope.pageSize !== pageSize) {
+    setPageScope({ catId, pageSize });
+    setPageIndex(0);
+  }
+
+  const safePage = Math.min(pageIndex, Math.max(0, pages.length - 1));
+  const activePage = pages[safePage] ?? [];
+
+  const selectPage = (index: number) => {
+    setPageIndex(Math.max(0, Math.min(index, pages.length - 1)));
+  };
 
   if (!ready || !category) {
-    return <TalkiScreen testID={testIds.category.root}>{null}</TalkiScreen>;
+    return (
+      <LandscapeWorldShell variant="detail" world="home" testID={testIds.category.root}>
+        {null}
+      </LandscapeWorldShell>
+    );
   }
 
   const total = category.items.length;
   const progress = total > 0 ? learnedCount / total : 0;
+  const progressLabel = total ? `${learnedCount} מתוך ${total} מילים כבר מוכרות` : 'עוד אין כאן מילים';
 
   const speakAndLearn = (word: string) => {
     void wordVoiceService.say(category.id, plain(word));
@@ -66,99 +107,184 @@ export function CategoryScreen({ catId }: CategoryScreenProps) {
   };
 
   return (
-    <TalkiScreen testID={testIds.category.root}>
-      <View style={[styles.header, { paddingInline: homePaddingInline(deviceClass) }]}>
-        <TalkiIconButton
-          testID={testIds.category.back}
-          icon={uiIcons.back}
-          accessibilityLabel="חזרה"
-          onPress={goBack}
+    <LandscapeWorldShell
+      variant="detail"
+      world="home"
+      backgroundSource={landscapeBackgrounds.home}
+      testID={testIds.category.root}
+      topBar={
+        <LandscapeTopBar
+          testID="landscape-category-topbar"
+          points={learned.size}
+          musicOn={settings.music}
+          onToggleMusic={() => void toggleMusic()}
+          onBrandLongPress={parent.onBrandLongPress}
+          onBrandShortPress={parent.onBrandShortPress}
+          showLogo
+          startAccessory={
+            <TalkiIconButton
+              testID={testIds.category.back}
+              icon={uiIcons.back}
+              accessibilityLabel="חזרה"
+              onPress={goBack}
+            />
+          }
         />
-        <View style={styles.titleWrap}>
-          <TalkiHeading testID={testIds.category.title} level={2} align="center">
+      }
+      auxiliary={
+        total > pageSize ? (
+          <LandscapePageIndicator
+            testID={testIds.category.pageIndicator}
+            pageCount={pages.length}
+            activeIndex={safePage}
+            onSelect={selectPage}
+          />
+        ) : null
+      }
+    >
+      <ToastHost message={parent.toast} onHide={parent.dismissToast} testID={testIds.parent.toast} />
+      <View style={[styles.body, { gap: tokens.gap }]}>
+        <View style={[styles.headerPanel, shadowCard, { gap: Math.max(4, tokens.gap - 4) }]}>
+          <TalkiText
+            testID={testIds.category.title}
+            weight="extrabold"
+            color={v3.purple800}
+            align="center"
+            style={{ fontSize: Math.round(tokens.titleSize * 0.78) }}
+          >
             {display(category.title, niqqudEnabled)}
-          </TalkiHeading>
-          <TalkiText align="center" color={v3.textSecondary}>
-            {total ? `${learnedCount} מתוך ${total} מילים כבר מוכרות` : 'עוד אין כאן מילים'}
           </TalkiText>
           {total ? (
-            <View style={styles.progressWrap}>
-              <TalkiProgress testID={testIds.category.progress} value={progress} />
-            </View>
+            <LandscapeProgress
+              testID={testIds.category.progress}
+              value={progress}
+              label={progressLabel}
+            />
+          ) : (
+            <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
+              {progressLabel}
+            </TalkiText>
+          )}
+          {total ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.playRow}
+              style={styles.playStrip}
+            >
+              <TalkiButton
+                testID={testIds.category.cards}
+                label="🖼️ כרטיסיות"
+                variant="secondary"
+                onPress={() => push(cardsHref(category.id))}
+                style={styles.playBtn}
+              />
+              <TalkiButton
+                testID={testIds.category.play}
+                label="🎮 משחק"
+                variant="secondary"
+                onPress={() => push(gameHref('quiz', category.id))}
+                style={styles.playBtn}
+              />
+              <TalkiButton
+                testID={testIds.category.practice}
+                label="🗣️ תרגול"
+                variant="secondary"
+                onPress={() => push(practiceMenuHref)}
+                style={styles.playBtn}
+              />
+            </ScrollView>
           ) : null}
         </View>
-        <View style={styles.spacer} />
+
+        <View style={styles.gridHost} testID={testIds.category.grid}>
+          {total ? (
+            <View style={styles.page} testID={testIds.category.page(safePage)}>
+              <LandscapeWordGrid>
+                {activePage.map((word, localIndex) => {
+                  const index = safePage * pageSize + localIndex;
+                  return (
+                    <WordTile
+                      key={`${word.word}-${index}`}
+                      word={word}
+                      index={index}
+                      niqqudEnabled={niqqudEnabled}
+                      learned={isLearned(word.word)}
+                      onPress={() => speakAndLearn(word.word)}
+                    />
+                  );
+                })}
+              </LandscapeWordGrid>
+            </View>
+          ) : (
+            <View style={[styles.emptyPanel, shadowCard]}>
+              <TalkiText align="center" color={v3.textSecondary} style={styles.empty}>
+                עוד אין כאן מילים. אפשר להוסיף מילים אישיות עם תמונה והקלטה במסך ההורים.
+              </TalkiText>
+            </View>
+          )}
+        </View>
       </View>
 
-      {total ? (
-        <View style={[styles.playRow, { paddingInline: homePaddingInline(deviceClass) }]}>
-          <TalkiButton
-            testID={testIds.category.cards}
-            label="🖼️ כרטיסיות"
-            variant="secondary"
-            onPress={() => push(cardsHref(category.id))}
-          />
-          <TalkiButton
-            testID={testIds.category.play}
-            label="🎮 משחק"
-            variant="secondary"
-            onPress={() => push(gameHref('quiz', category.id))}
-          />
-          <TalkiButton
-            testID={testIds.category.practice}
-            label="🗣️ תרגול"
-            variant="secondary"
-            onPress={() => push(practiceMenuHref)}
-          />
-        </View>
-      ) : null}
-
-      <ScrollView contentContainerStyle={[styles.content, { paddingInline: homePaddingInline(deviceClass) }]}>
-        {total ? (
-          <WordGrid words={category.items} niqqudEnabled={niqqudEnabled} isLearned={isLearned} onWordPress={(w) => speakAndLearn(w.word)} />
-        ) : (
-          <TalkiText align="center" color={v3.textSecondary} style={styles.empty}>
-            עוד אין כאן מילים. אפשר להוסיף מילים אישיות עם תמונה והקלטה במסך ההורים.
-          </TalkiText>
-        )}
-      </ScrollView>
       <RewardOverlay
         visible={celebrate !== null}
         title={celebrate ?? ''}
         onDismiss={() => setCelebrate(null)}
         testID="category-celebrate"
       />
-    </TalkiScreen>
+    </LandscapeWorldShell>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-    paddingBlock: 12,
-  },
-  titleWrap: {
+  body: {
     flex: 1,
-    gap: 2,
+    minHeight: 0,
   },
-  progressWrap: {
-    marginTop: 6,
+  headerPanel: {
+    flexGrow: 0,
+    flexShrink: 0,
+    backgroundColor: 'rgba(255,255,255,0.94)',
+    borderRadius: radii.card,
+    borderWidth: 2,
+    borderColor: v2.line,
+    paddingInline: 12,
+    paddingBlock: 8,
   },
-  spacer: {
-    width: 48,
+  playStrip: {
+    flexGrow: 0,
+    flexShrink: 0,
+    maxHeight: 52,
   },
   playRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    alignItems: 'center',
     gap: 8,
-    marginBottom: 8,
+    justifyContent: 'center',
+    paddingInline: 2,
   },
-  content: {
-    paddingBlock: 12,
+  playBtn: {
+    paddingInline: 14,
+  },
+  gridHost: {
+    flex: 1,
+    minHeight: 0,
+    minWidth: 0,
+  },
+  page: {
+    flex: 1,
+    minHeight: 0,
+  },
+  emptyPanel: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.94)',
+    borderRadius: radii.card,
+    borderWidth: 2,
+    borderColor: v2.line,
+    padding: 20,
   },
   empty: {
-    marginTop: 40,
+    fontSize: 15,
   },
 });

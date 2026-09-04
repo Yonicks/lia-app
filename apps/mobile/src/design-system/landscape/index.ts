@@ -21,3 +21,4 @@ export { LandscapeHeroPanel } from './LandscapeHeroPanel';
 export { LandscapeProgress } from './LandscapeProgress';
 export { LandscapeTitle } from './LandscapeTitle';
 export { LandscapePageIndicator } from './LandscapePageIndicator';
+export { LandscapeWordGrid } from './LandscapeWordGrid';

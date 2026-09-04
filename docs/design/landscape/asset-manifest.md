@@ -26,7 +26,7 @@ during the Phase 16 audit (see `docs/migration/phase-16-audit.md` §7).
 
 | Asset family | Status | Notes |
 |---|---|---|
-| Home world background | EXISTING | `assets/v2/landscape/talki-landscape-bg-home.png` (1672×941) — registered as `landscapeBackgrounds.home` in `assets.ts` (Phase 18). Cover + focal `{x:0.48,y:0.42}` via `LandscapeWorldBackground` / expo-image `contentPosition`. |
+| Home world background | EXISTING | `assets/v2/landscape/talki-landscape-bg-home.png` (1672×941) — registered as `landscapeBackgrounds.home` in `assets.ts` (Phase 18). Cover + focal `{x:0.48,y:0.42}` via `LandscapeWorldBackground` / expo-image `contentPosition`. Also reused by detail screens (Stickers; Category Phase 23). |
 | Games world background | EXISTING | `assets/v2/landscape/talki-landscape-bg-games.png` (1672×941) — `landscapeBackgrounds.games`; focal `{x:0.55,y:0.4}` (castle bias). |
 | Practice world background | EXISTING | `assets/v2/landscape/talki-landscape-bg-practice.png` (1672×941) — `landscapeBackgrounds.practice`; focal `{x:0.5,y:0.42}`. |
 | Tablet-compatible crops/source | EXISTING (single source + focal) | Source is ~16:9. On 4:3 tablets (1024×768) cover crops top/bottom (`coverCropAxis` → vertical). Focal Y ~0.42 keeps path/meadow; no separate tablet crop file required. Resolution is sufficient for 1366×1024 (cover scales up modestly). Revisit only if native QA shows softness. |

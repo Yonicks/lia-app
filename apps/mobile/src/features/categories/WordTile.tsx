@@ -1,8 +1,12 @@
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { uiIcons } from '@/design-system/assets';
-import { TalkiCard, TalkiPill, TalkiText } from '@/design-system/components';
-import { v3 } from '@/design-system/theme/colors';
+import { TalkiPill, TalkiText } from '@/design-system/components';
+import { landscapeTokens, LANDSCAPE_MIN_TOUCH } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
+import { radii } from '@/design-system/theme/radii';
+import { shadowCard } from '@/design-system/theme/shadows';
+import { v2, v3 } from '@/design-system/theme/colors';
 import { display } from '@/domain/vocabulary/niqqud';
 import { wordImage } from '@/domain/vocabulary/wordImage';
 import type { TalkiWord } from '@/domain/types';
@@ -17,70 +21,89 @@ export interface WordTileProps {
 }
 
 /**
- * index.html `renderCategory()`'s per-tile template (2317-2323) — a single
- * word tile. The speaker icon renders unconditionally on every tile, not
- * only learned ones (`<span class="speaker">` has no `isL` guard, unlike
- * the star which does) — it is a permanent affordance advertising "tap to
- * hear", not a learned-state indicator. Tapping speaks the word (the
- * caller's job — `onPress` is wired to `WordVoiceService.say()` with the
- * PLAIN form, never what is on screen) and marks it learned.
- * `niqqudEnabled` only ever changes what this component renders, never
- * what is spoken (phase-07 prompt, "Niqqud setting changes DISPLAY ONLY").
+ * Landscape word tile (Phase 23). Speaks via caller `onPress` (PLAIN form);
+ * niqqud only affects display. Art uses contain (never stretch). Touch floor
+ * ≥48 via layout cell + min sizes from landscape tokens.
  */
 export function WordTile({ word, index, niqqudEnabled, learned, onPress }: WordTileProps) {
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
+  const label = display(word.word, niqqudEnabled);
+  const art = tokens.wordArtSize;
+
   return (
-    <TalkiCard testID={testIds.category.word(index)} onPress={onPress} style={styles.card}>
+    <Pressable
+      testID={testIds.category.word(index)}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={({ pressed }) => [
+        styles.card,
+        shadowCard,
+        pressed && styles.pressed,
+      ]}
+    >
       <View style={styles.speaker}>
         <Image source={uiIcons.speaker} style={styles.speakerIcon} resizeMode="contain" />
       </View>
       {word.photo ? (
-        <Image source={{ uri: word.photo }} style={styles.art} resizeMode="contain" />
+        <Image source={{ uri: word.photo }} style={{ width: art, height: art }} resizeMode="contain" />
       ) : wordImage(word) ? (
-        <Image source={wordImage(word)} style={styles.art} resizeMode="contain" />
+        <Image source={wordImage(word)} style={{ width: art, height: art }} resizeMode="contain" />
       ) : (
-        <TalkiText style={styles.emoji}>{word.emoji}</TalkiText>
+        <TalkiText style={[styles.emoji, { fontSize: Math.round(art * 0.85) }]}>{word.emoji}</TalkiText>
       )}
-      <TalkiText weight="extrabold" align="center" style={styles.label}>
-        {display(word.word, niqqudEnabled)}
+      <TalkiText
+        weight="extrabold"
+        align="center"
+        numberOfLines={2}
+        style={[styles.label, { fontSize: tokens.wordLabelSize }]}
+      >
+        {label}
       </TalkiText>
       {learned ? (
         <View style={styles.badge}>
           <TalkiPill label="★" color={v3.gold500} />
         </View>
       ) : null}
-    </TalkiCard>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    minWidth: 130,
-    flexGrow: 1,
-    flexBasis: 130,
+    flex: 1,
+    minWidth: LANDSCAPE_MIN_TOUCH,
+    minHeight: LANDSCAPE_MIN_TOUCH,
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    gap: 4,
+    padding: 6,
+    borderRadius: radii.card,
+    borderWidth: 3,
+    borderColor: v2.line,
+    backgroundColor: v2.paper,
   },
-  art: {
-    width: 64,
-    height: 64,
+  pressed: {
+    transform: [{ translateY: 2 }],
   },
   emoji: {
-    fontSize: 48,
+    textAlign: 'center',
   },
   label: {
-    fontSize: 17,
+    paddingInline: 2,
   },
   badge: {
     position: 'absolute',
-    insetInlineEnd: 8,
-    top: 8,
+    insetInlineEnd: 4,
+    top: 4,
   },
   speaker: {
     position: 'absolute',
-    insetInlineStart: 8,
-    top: 8,
-    width: 22,
-    height: 22,
+    insetInlineStart: 4,
+    top: 4,
+    width: 18,
+    height: 18,
     opacity: 0.55,
   },
   speakerIcon: {

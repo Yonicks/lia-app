@@ -39,7 +39,7 @@ export const testIds = {
     sideEnd: 'landscape-side-end',
     rewards: 'landscape-rewards-entry',
   },
-  /** app/category/[id].tsx + src/features/categories/. */
+  /** app/category/[id].tsx + src/features/categories/ — Phase 23 landscape. */
   category: {
     root: 'category-root',
     title: 'category-title',
@@ -48,6 +48,9 @@ export const testIds = {
     play: 'category-play',
     cards: 'category-cards',
     practice: 'category-practice',
+    grid: 'category-grid',
+    page: (index: number) => `category-page-${index}`,
+    pageIndicator: 'category-page-indicator',
     word: (index: number) => `category-word-${index}`,
   },
   /** app/games.tsx — Phase 21 landscape 3×2 paged hub. */

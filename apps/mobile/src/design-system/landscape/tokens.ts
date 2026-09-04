@@ -98,6 +98,39 @@ const PAGE_DOT: Record<DeviceClass, number> = {
   largeTablet: 11,
 };
 
+/**
+ * Vocabulary word-grid density (Phase 23). Landscape height is scarce —
+ * prefer fewer, larger tiles + paging over a long vertical portrait grid.
+ * Columns grow on tablets; rows stay 2 so tiles remain readable.
+ */
+const WORD_GRID_COLS: Record<DeviceClass, number> = {
+  compactPhone: 5,
+  phone: 6,
+  tablet: 7,
+  largeTablet: 8,
+};
+
+const WORD_GRID_ROWS: Record<DeviceClass, number> = {
+  compactPhone: 2,
+  phone: 2,
+  tablet: 2,
+  largeTablet: 2,
+};
+
+const WORD_ART: Record<DeviceClass, number> = {
+  compactPhone: 40,
+  phone: 48,
+  tablet: 56,
+  largeTablet: 64,
+};
+
+const WORD_LABEL: Record<DeviceClass, number> = {
+  compactPhone: 13,
+  phone: 14,
+  tablet: 16,
+  largeTablet: 17,
+};
+
 export interface LandscapeTokens {
   gap: number;
   padInline: number;
@@ -115,6 +148,11 @@ export interface LandscapeTokens {
   sideNavLane: number;
   gridColumns: 3;
   gridRows: 2;
+  /** Category/vocabulary word grid — derived only here (no local breakpoints). */
+  wordGridColumns: number;
+  wordGridRows: number;
+  wordArtSize: number;
+  wordLabelSize: number;
 }
 
 export function landscapeTokens(deviceClass: DeviceClass, uiScale = 1): LandscapeTokens {
@@ -136,6 +174,10 @@ export function landscapeTokens(deviceClass: DeviceClass, uiScale = 1): Landscap
     sideNavLane: sideNavSize + scale(GAP[deviceClass]),
     gridColumns: 3,
     gridRows: 2,
+    wordGridColumns: WORD_GRID_COLS[deviceClass],
+    wordGridRows: WORD_GRID_ROWS[deviceClass],
+    wordArtSize: Math.max(32, scale(WORD_ART[deviceClass])),
+    wordLabelSize: Math.max(12, scale(WORD_LABEL[deviceClass])),
   };
 }
 

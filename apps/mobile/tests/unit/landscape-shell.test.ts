@@ -47,6 +47,19 @@ describe('landscapeTokens', () => {
       expect(t.gridRows).toBe(2);
     }
   });
+
+  it('exposes a landscape word-grid contract with ≥5×2 density', () => {
+    for (const deviceClass of CLASSES) {
+      const t = landscapeTokens(deviceClass);
+      expect(t.wordGridColumns).toBeGreaterThanOrEqual(5);
+      expect(t.wordGridRows).toBe(2);
+      expect(t.wordArtSize).toBeGreaterThanOrEqual(32);
+      expect(t.wordLabelSize).toBeGreaterThanOrEqual(12);
+    }
+    const compact = landscapeTokens('compactPhone');
+    const tablet = landscapeTokens('tablet');
+    expect(tablet.wordGridColumns).toBeGreaterThan(compact.wordGridColumns);
+  });
 });
 
 describe('landscape backgrounds', () => {
