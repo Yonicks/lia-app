@@ -27,4 +27,4 @@ Production implementation must keep:
 
 ## Gate
 
-Phase 16 must mark the reference-image acceptance criterion BLOCKED if the four expected image files above are not present and inspectable.
+Phase 16 must mark the reference-image acceptance criterion BLOCKED if `home.png`, `games.png`, and `practice.png` are not present and inspectable.
