@@ -1,8 +1,8 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useEffect, useState } from 'react';
 
-import { TalkiCard, TalkiHeading, TalkiScreen, TalkiText } from '@/design-system/components';
-import { ToastHost, TopBar } from '@/components/shell';
+import { TalkiCard, TalkiHeading, TalkiText } from '@/design-system/components';
+import { ToastHost } from '@/components/shell';
 import { useDevice } from '@/design-system/responsive/useDevice';
 import { homePaddingInline } from '@/design-system/theme/spacing';
 import { GAMES } from '@/domain/games/ids';
@@ -11,6 +11,7 @@ import { gameCatChips } from '@/domain/games/gameCatChips';
 import { gameHref } from '@/domain/navigation/routes';
 import type { CategoryId } from '@/domain/types';
 import { GameArtCard } from '@/features/home/GameArtCard';
+import { LandscapeHubFrame } from '@/features/shell/LandscapeHubFrame';
 import { useGuardedPush } from '@/hooks/useGuardedPush';
 import { useParentBrand } from '@/hooks/useParentBrand';
 import { useProgressStore } from '@/state/progressStore';
@@ -24,6 +25,8 @@ import { GameCatChipRow } from './GameCatChipRow';
  * fixed three. `gameCatChips()` (2282-2291) supplies the category chip row
  * (only categories with 4+ items). Cards route to a stub — no game is
  * built in this phase (phase-07 prompt, "Do not build any game").
+ *
+ * Phase 19: LandscapeHubFrame chrome; inner content unchanged until Phase 21.
  */
 export function GamesMenuScreen() {
   const push = useGuardedPush();
@@ -40,14 +43,15 @@ export function GamesMenuScreen() {
   const currentChip = activeChip ?? chips?.current ?? null;
 
   return (
-    <TalkiScreen testID={testIds.gamesMenu.root}>
-      <TopBar
-        points={learned.size}
-        musicOn={settings.music}
-        onToggleMusic={() => void toggleMusic()}
-        onBrandLongPress={parent.onBrandLongPress}
-        onBrandShortPress={parent.onBrandShortPress}
-      />
+    <LandscapeHubFrame
+      hub="games"
+      testID={testIds.gamesMenu.root}
+      points={learned.size}
+      musicOn={settings.music}
+      onToggleMusic={() => void toggleMusic()}
+      onBrandLongPress={parent.onBrandLongPress}
+      onBrandShortPress={parent.onBrandShortPress}
+    >
       <ToastHost message={parent.toast} onHide={parent.dismissToast} testID={testIds.parent.toast} />
       <ScrollView contentContainerStyle={[styles.content, { paddingInline: homePaddingInline(deviceClass) }]}>
         <TalkiHeading level={1} style={styles.heading}>
@@ -85,7 +89,7 @@ export function GamesMenuScreen() {
           })}
         </View>
       </ScrollView>
-    </TalkiScreen>
+    </LandscapeHubFrame>
   );
 }
 

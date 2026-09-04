@@ -1,8 +1,8 @@
 appId: com.yonicks.talki
 ---
-# Phase 7's native navigation spine: Home -> a category -> back -> the
-# Games tab -> the Rewards tab -> back to Home, using only hardware/gesture
-# back and the bespoke bottom nav (never a browser-only affordance).
+# Phase 7/19 navigation spine: Home -> category -> back -> Games (side nav)
+# -> Rewards (points) -> back to Games -> Home, using hardware/gesture back
+# and landscape side/top chrome (never a browser-only affordance).
 - launchApp:
     arguments:
       intro: '0'
@@ -24,16 +24,19 @@ appId: com.yonicks.talki
 - assertVisible:
     id: 'home-root'
 - tapOn:
-    id: 'bottom-nav-games'
+    id: 'landscape-side-end'
 - assertVisible:
     id: 'games-menu-root'
 - takeScreenshot: phase-07-games-menu
 - tapOn:
-    id: 'bottom-nav-stickers'
+    id: 'landscape-rewards-entry'
 - assertVisible:
     id: 'stickers-root'
 - takeScreenshot: phase-07-rewards
+- back
+- assertVisible:
+    id: 'games-menu-root'
 - tapOn:
-    id: 'bottom-nav-home'
+    id: 'landscape-side-start'
 - assertVisible:
     id: 'home-root'

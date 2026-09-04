@@ -12,7 +12,7 @@ export const testIds = {
     skipLayer: 'intro-skip-layer',
     layer: (id: string) => `intro-layer-${id}`,
   },
-  /** app/(tabs)/index.tsx + src/features/home/ (phase-07-plan.md). Section
+  /** app/index.tsx + src/features/home/ (phase-07-plan.md). Section
    *  order is hero, categories, practice, games; every dynamic id is a
    *  factory keyed by the same domain id (`CategoryId`/`GameId`/
    *  `PracticeModeId`) the data layer already uses. */
@@ -20,8 +20,8 @@ export const testIds = {
     root: 'home-root',
     hero: 'home-hero',
     heroContinue: 'home-hero-continue',
-    /** Reuses `TopBar`'s own points pill — Home does not render a second,
-     *  duplicate points node next to the persistent top bar. */
+    /** Reuses top-bar points — Home does not render a second,
+     *  duplicate points node next to the shared top chrome. */
     points: 'topbar-points',
     sectionCategories: 'home-section-categories',
     category: (id: string) => `home-category-${id}`,
@@ -32,12 +32,11 @@ export const testIds = {
     game: (id: string) => `home-game-${id}`,
     allGames: 'home-all-games',
   },
-  /** BottomNavigation already emits `bottom-nav-<route>`; these three are
-   *  the plan's requested aliases, used by navigation.spec.ts. */
+  /** Phase 19 landscape side/top navigation (replaces BottomNavigation). */
   nav: {
-    home: 'bottom-nav-home',
-    games: 'bottom-nav-games',
-    rewards: 'bottom-nav-stickers',
+    sideStart: 'landscape-side-start',
+    sideEnd: 'landscape-side-end',
+    rewards: 'landscape-rewards-entry',
   },
   /** app/category/[id].tsx + src/features/categories/. */
   category: {
@@ -50,7 +49,7 @@ export const testIds = {
     practice: 'category-practice',
     word: (index: number) => `category-word-${index}`,
   },
-  /** app/(tabs)/games.tsx. */
+  /** app/games.tsx. */
   gamesMenu: {
     root: 'games-menu-root',
     card: (id: string) => `games-menu-card-${id}`,
@@ -314,7 +313,7 @@ export const testIds = {
     },
     shell: {
       topBar: 'gallery-shell-topbar',
-      bottomNav: 'gallery-shell-bottom-nav',
+      sideNav: 'gallery-shell-side-nav',
       gameHeader: 'gallery-shell-game-header',
       parentGateOpenButton: 'gallery-shell-parent-gate-open',
       parentGate: 'gallery-shell-parent-gate',

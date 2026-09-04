@@ -9,15 +9,13 @@ import { auditReachability, auditTouchTargets, captureMatrix, openApp } from './
 
 const FIXTURE = readFileSync(resolve(__dirname, '../../../../docs/migration/fixtures/legacy-backup-v1.json'), 'utf8');
 
-async function holdParent(page: Page, ms = 950): Promise<void> {
+async function holdParent(page: Page, ms = 1000): Promise<void> {
   const btn = page.getByTestId(testIds.parent.button);
   await expect(btn).toBeVisible();
-  const box = await btn.boundingBox();
-  expect(box).toBeTruthy();
-  await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
-  await page.mouse.down();
-  await page.waitForTimeout(ms);
-  await page.mouse.up();
+  // Playwright's click delay keeps the pointer down for `ms`, which maps to
+  // RN Web Pressable onPressIn → hold timer → onBrandLongPress more reliably
+  // than raw mouse.down/up across landscape viewports.
+  await btn.click({ delay: ms });
 }
 
 async function unlockGate(page: Page): Promise<void> {
@@ -42,6 +40,8 @@ test.describe('Phase 12 parent centre', () => {
     await page.getByTestId(testIds.parent.button).click();
     await expect(page.getByTestId(testIds.parent.toast)).toBeVisible();
     await expect(page.getByTestId(testIds.parent.gateQuestion)).toHaveCount(0);
+    // Wait for the short-tap toast to dismiss so it cannot steal focus/layout.
+    await expect(page.getByTestId(testIds.parent.toast)).toHaveCount(0, { timeout: 4000 });
 
     const btn = page.getByTestId(testIds.parent.button);
     const box = await btn.boundingBox();

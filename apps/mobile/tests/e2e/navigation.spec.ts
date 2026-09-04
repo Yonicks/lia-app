@@ -10,19 +10,43 @@ async function pushRoute(page: Page, path: string): Promise<void> {
   await page.evaluate((p) => (window as unknown as { __talkiRouterE2E: RouterBridge }).__talkiRouterE2E.push(p), path);
 }
 
-test.describe('Phase 7 navigation spine', () => {
-  test('every tab is reachable from Home', async ({ page }) => {
+test.describe('Phase 7 / 19 navigation spine', () => {
+  test('every hub and rewards is reachable from Home', async ({ page }) => {
     await openApp(page);
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
 
-    await page.getByTestId(testIds.nav.games).click();
+    await page.getByTestId(testIds.nav.sideEnd).click();
     await expect(page.getByTestId(testIds.gamesMenu.root)).toBeVisible();
 
     await page.getByTestId(testIds.nav.rewards).click();
     await expect(page.getByTestId(testIds.stickers.root)).toBeVisible();
 
-    await page.getByTestId(testIds.nav.home).click();
+    await page.goBack();
+    await expect(page.getByTestId(testIds.gamesMenu.root)).toBeVisible();
+
+    await page.getByTestId(testIds.nav.sideStart).click();
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
+  });
+
+  test('hub cycle uses replace — history does not unwind through hubs', async ({ page }) => {
+    await openApp(page);
+    await expect(page.getByTestId(testIds.home.root)).toBeVisible();
+
+    // Home → Games → Practice → Home via side nav (replace semantics).
+    await page.getByTestId(testIds.nav.sideEnd).click();
+    await expect(page.getByTestId(testIds.gamesMenu.root)).toBeVisible();
+    await page.getByTestId(testIds.nav.sideEnd).click();
+    await expect(page.getByTestId(testIds.practiceMenu.root)).toBeVisible();
+    await page.getByTestId(testIds.nav.sideStart).click();
+    await expect(page.getByTestId(testIds.home.root)).toBeVisible();
+
+    // After the cycle, push a detail and goBack must return Home — not Practice/Games.
+    await page.getByTestId(testIds.home.category('animals')).click();
+    await expect(page.getByTestId(testIds.category.root)).toBeVisible();
+    await page.goBack();
+    await expect(page.getByTestId(testIds.home.root)).toBeVisible();
+    await expect(page.getByTestId(testIds.practiceMenu.root)).toHaveCount(0);
+    await expect(page.getByTestId(testIds.gamesMenu.root)).toHaveCount(0);
   });
 
   test('opening a category and going back returns to Home, never exiting', async ({ page }) => {
@@ -32,9 +56,9 @@ test.describe('Phase 7 navigation spine', () => {
 
     await page.goBack();
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
-    // Still on the app, not navigated away — the tab bar (a Home-only
-    // fixture) is still present.
-    await expect(page.getByTestId('tabs-bottom-nav')).toBeVisible();
+    // Landscape side chrome remains on the hub (no bottom tab bar).
+    await expect(page.getByTestId(testIds.nav.sideStart)).toBeVisible();
+    await expect(page.getByTestId(testIds.nav.sideEnd)).toBeVisible();
   });
 
   test('game and practice cards route to a stub screen, and back returns correctly', async ({ page }) => {

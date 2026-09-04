@@ -160,7 +160,7 @@ test.describe('Phase 14 full sweep', () => {
       await page.goBack();
     }
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
-    await expect(page.getByTestId('tabs-bottom-nav')).toBeVisible();
+    await expect(page.getByTestId(testIds.nav.sideStart)).toBeVisible();
     // One extra back: native must stay in-app (legacy pushState). On web
     // this can leave `expo serve`; record that as P14-M10 rather than
     // requiring a URL the static server cannot keep.

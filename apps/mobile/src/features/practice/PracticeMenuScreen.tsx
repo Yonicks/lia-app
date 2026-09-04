@@ -1,8 +1,8 @@
 import { ScrollView, StyleSheet } from 'react-native';
 import { useEffect, useState } from 'react';
 
-import { TalkiCard, TalkiHeading, TalkiScreen, TalkiText } from '@/design-system/components';
-import { ToastHost, TopBar } from '@/components/shell';
+import { TalkiCard, TalkiHeading, TalkiText } from '@/design-system/components';
+import { ToastHost } from '@/components/shell';
 import { v3 } from '@/design-system/theme/colors';
 import { useDevice } from '@/design-system/responsive/useDevice';
 import { homePaddingInline } from '@/design-system/theme/spacing';
@@ -11,6 +11,7 @@ import { PRACTICE_LIST } from '@/domain/practice/list';
 import { practiceHref } from '@/domain/navigation/routes';
 import type { CategoryId } from '@/domain/types';
 import { GameCatChipRow } from '@/features/games/GameCatChipRow';
+import { LandscapeHubFrame } from '@/features/shell/LandscapeHubFrame';
 import { useGuardedPush } from '@/hooks/useGuardedPush';
 import { useParentBrand } from '@/hooks/useParentBrand';
 import { useProgressStore } from '@/state/progressStore';
@@ -21,6 +22,8 @@ import { testIds } from '@/testing/testIds';
  * index.html `renderPractice()` (2394-2414) — the full six-entry
  * `PRACTICE_LIST` (Home shows only three) plus `gameCatChips()` (2412).
  * Cards route to the Phase 11 practice modes.
+ *
+ * Phase 19: LandscapeHubFrame chrome; inner content unchanged until Phase 22.
  */
 export function PracticeMenuScreen() {
   const push = useGuardedPush();
@@ -37,14 +40,15 @@ export function PracticeMenuScreen() {
   const currentChip = activeChip ?? chips?.current ?? null;
 
   return (
-    <TalkiScreen testID={testIds.practiceMenu.root}>
-      <TopBar
-        points={learned.size}
-        musicOn={settings.music}
-        onToggleMusic={() => void toggleMusic()}
-        onBrandLongPress={parent.onBrandLongPress}
-        onBrandShortPress={parent.onBrandShortPress}
-      />
+    <LandscapeHubFrame
+      hub="practice"
+      testID={testIds.practiceMenu.root}
+      points={learned.size}
+      musicOn={settings.music}
+      onToggleMusic={() => void toggleMusic()}
+      onBrandLongPress={parent.onBrandLongPress}
+      onBrandShortPress={parent.onBrandShortPress}
+    >
       <ToastHost message={parent.toast} onHide={parent.dismissToast} testID={testIds.parent.toast} />
       <ScrollView contentContainerStyle={[styles.content, { paddingInline: homePaddingInline(deviceClass) }]}>
         <TalkiHeading level={1} style={styles.heading}>
@@ -73,7 +77,7 @@ export function PracticeMenuScreen() {
           </TalkiCard>
         ))}
       </ScrollView>
-    </TalkiScreen>
+    </LandscapeHubFrame>
   );
 }
 

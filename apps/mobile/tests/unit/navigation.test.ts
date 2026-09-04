@@ -18,6 +18,7 @@ import {
   parseGameDeepLink,
   practiceHref,
   practiceMenuHref,
+  rewardsHref,
 } from '@/domain/navigation/routes';
 
 describe('navigation — every route in the map resolves', () => {
@@ -44,6 +45,7 @@ describe('navigation — every route in the map resolves', () => {
     expect(practiceMenuHref).toBe('/practice');
     expect(homeHref).toBe('/');
     expect(parentHref).toBe('/parent');
+    expect(rewardsHref).toBe('/rewards');
   });
 });
 

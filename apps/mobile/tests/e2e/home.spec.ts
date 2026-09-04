@@ -114,7 +114,8 @@ test.describe('Phase 7 Home', () => {
     await openApp(page);
     await page.getByTestId(testIds.home.allGames).click();
     await expect(page.getByTestId(testIds.gamesMenu.root)).toBeVisible();
-    await page.goBack();
+    // Hub switches use replace — return via side nav, not history back.
+    await page.getByTestId(testIds.nav.sideStart).click();
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
 
     await page.getByTestId(testIds.home.allPractice).click();

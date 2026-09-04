@@ -7,6 +7,7 @@ import { PARENT_HOLD_MOVE_PX, PARENT_HOLD_MS } from '@/domain/parent/gate';
 import { shadowSm } from '@/design-system/theme/shadows';
 import { v2, v3 } from '@/design-system/theme/colors';
 import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
+import { testIds } from '@/testing/testIds';
 
 import { landscapeTokens } from './tokens';
 
@@ -16,6 +17,10 @@ export interface LandscapeTopBarProps {
   onToggleMusic: () => void;
   onBrandLongPress?: () => void;
   onBrandShortPress?: () => void;
+  /** When set, the points pill opens Rewards (Phase 19). Display-only when unset. */
+  onPointsPress?: () => void;
+  /** Override points control testID (defaults to `${testID}-points`). */
+  pointsTestID?: string;
   /** Optional profile/settings control (reference shows a separate parent icon). */
   onProfilePress?: () => void;
   showLogo?: boolean;
@@ -27,11 +32,9 @@ export interface LandscapeTopBarProps {
 
 /**
  * Landscape top chrome: points pill, optional centered logo, music (+ optional
- * profile). Slot-oriented so Home can hide the logo when the title band owns
- * branding, while Games/Practice keep logo + title.
- *
- * Parent hold behavior matches existing TopBar (900 ms) so Phase 19 can swap
- * chrome without changing the gate contract.
+ * profile). Parent hold matches legacy TopBar (900 ms) so Phase 19 can swap
+ * chrome without changing the gate contract. Brand uses the same absolute
+ * center slot as TopBar so Playwright parent-hold coordinates stay valid.
  */
 export function LandscapeTopBar({
   points,
@@ -39,6 +42,8 @@ export function LandscapeTopBar({
   onToggleMusic,
   onBrandLongPress,
   onBrandShortPress,
+  onPointsPress,
+  pointsTestID,
   onProfilePress,
   showLogo = true,
   startAccessory,
@@ -108,6 +113,8 @@ export function LandscapeTopBar({
 
   useEffect(() => () => cancelHold(), []);
 
+  const resolvedPointsId = pointsTestID ?? (testID ? `${testID}-points` : 'topbar-points');
+
   return (
     <View
       testID={testID}
@@ -115,17 +122,32 @@ export function LandscapeTopBar({
     >
       <View style={styles.sideGroup}>
         {startAccessory}
-        <View
-          testID={testID ? `${testID}-points` : undefined}
-          style={[styles.pointsPill, shadowSm]}
-          accessibilityRole="image"
-          accessibilityLabel={`${points} נקודות שנצברו`}
-        >
-          <Image source={uiIcons.star} style={styles.pointsIcon} resizeMode="contain" />
-          <TalkiText weight="extrabold" style={{ writingDirection: 'ltr' }}>
-            {points}
-          </TalkiText>
-        </View>
+        {onPointsPress ? (
+          <Pressable
+            testID={resolvedPointsId}
+            onPress={onPointsPress}
+            accessibilityRole="button"
+            accessibilityLabel={`${points} נקודות שנצברו — פתח פרסים`}
+            style={[styles.pointsPill, styles.pointsPressable, shadowSm]}
+          >
+            <Image source={uiIcons.star} style={styles.pointsIcon} resizeMode="contain" />
+            <TalkiText weight="extrabold" style={{ writingDirection: 'ltr' }}>
+              {points}
+            </TalkiText>
+          </Pressable>
+        ) : (
+          <View
+            testID={resolvedPointsId}
+            style={[styles.pointsPill, shadowSm]}
+            accessibilityRole="image"
+            accessibilityLabel={`${points} נקודות שנצברו`}
+          >
+            <Image source={uiIcons.star} style={styles.pointsIcon} resizeMode="contain" />
+            <TalkiText weight="extrabold" style={{ writingDirection: 'ltr' }}>
+              {points}
+            </TalkiText>
+          </View>
+        )}
         {onProfilePress ? (
           <TalkiIconButton
             testID={testID ? `${testID}-profile` : undefined}
@@ -136,10 +158,10 @@ export function LandscapeTopBar({
         ) : null}
       </View>
 
-      <View style={styles.brandSlot}>
-        {showLogo ? (
+      {showLogo ? (
+        <View pointerEvents="box-none" style={styles.brandSlot}>
           <Pressable
-            testID={testID ? `${testID}-brand` : undefined}
+            testID={testIds.parent.button}
             accessibilityRole="button"
             accessibilityLabel="מסך הורים (לחיצה ארוכה)"
             style={styles.brandButton}
@@ -158,16 +180,16 @@ export function LandscapeTopBar({
               if (!hold.current.fired) onBrandShortPress?.();
             }}
           >
-            <View pointerEvents="none">
+            <View testID="topbar-brand" pointerEvents="none">
               <Image source={logoSource} style={styles.logo} resizeMode="contain" />
             </View>
           </Pressable>
-        ) : null}
-      </View>
+        </View>
+      ) : null}
 
       <View style={styles.utils}>
         <TalkiIconButton
-          testID={testID ? `${testID}-music` : undefined}
+          testID="topbar-music"
           icon={uiIcons.music}
           active={musicOn}
           onPress={onToggleMusic}
@@ -187,10 +209,10 @@ const styles = StyleSheet.create({
     paddingBlock: 4,
   },
   sideGroup: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+    zIndex: 2,
   },
   pointsPill: {
     flexDirection: 'row',
@@ -203,13 +225,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: v2.line,
   },
+  pointsPressable: {
+    minHeight: 48,
+    minWidth: 48,
+    justifyContent: 'center',
+  },
   pointsIcon: { width: 22, height: 22 },
   brandSlot: {
-    flexShrink: 0,
+    position: 'absolute',
+    insetBlock: 0,
+    insetInlineStart: 0,
+    insetInlineEnd: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 48,
-    minHeight: 48,
   },
   brandButton: {
     minHeight: 48,
@@ -219,10 +247,9 @@ const styles = StyleSheet.create({
   },
   logo: { width: 110, height: 36 },
   utils: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
     gap: 6,
+    zIndex: 2,
   },
 });

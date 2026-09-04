@@ -1,13 +1,15 @@
 import { useCallback } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import { TalkiScreen } from '@/design-system/components';
-import { ToastHost, TopBar } from '@/components/shell';
+import { ToastHost } from '@/components/shell';
+import { LandscapeScreen } from '@/design-system/landscape';
 import { homePaddingInline, homeSectionGap } from '@/design-system/theme/spacing';
 import { useDevice } from '@/design-system/responsive/useDevice';
 import { categoryHref, gameHref, gamesMenuHref, practiceHref, practiceMenuHref } from '@/domain/navigation/routes';
 import type { CategoryId, GameId, PracticeModeId } from '@/domain/types';
+import { LandscapeHubFrame } from '@/features/shell/LandscapeHubFrame';
 import { useGuardedPush } from '@/hooks/useGuardedPush';
+import { useGuardedReplace } from '@/hooks/useGuardedReplace';
 import { useParentBrand } from '@/hooks/useParentBrand';
 import { useSettingsStore } from '@/state/settingsStore';
 import { DevStorageProbe } from '@/testing/DevStorageProbe';
@@ -25,9 +27,13 @@ import { useHomeData } from './useHomeData';
  * Visual arrangement follows `docs/design/talki-home-approved.png`; the
  * hero specifically follows the newer `talki-home-hero-mockup.png`
  * (phase-07-plan.md "Which mock governs").
+ *
+ * Phase 19: lives inside LandscapeHubFrame (top/side chrome); inner content
+ * unchanged until Phase 20.
  */
 export function HomeScreen() {
   const push = useGuardedPush();
+  const replace = useGuardedReplace();
   const { deviceClass } = useDevice();
   const data = useHomeData();
   const { settings, toggleMusic } = useSettingsStore();
@@ -55,19 +61,19 @@ export function HomeScreen() {
   );
 
   if (!data.ready) {
-    return <TalkiScreen testID={testIds.home.root}>{null}</TalkiScreen>;
+    return <LandscapeScreen testID={testIds.home.root}>{null}</LandscapeScreen>;
   }
 
   return (
-    <TalkiScreen testID={testIds.home.root}>
-      {/* toast sits above the scroll so a short parent-tap is visible */}
-      <TopBar
-        points={data.points}
-        musicOn={settings.music}
-        onToggleMusic={() => void toggleMusic()}
-        onBrandLongPress={parent.onBrandLongPress}
-        onBrandShortPress={parent.onBrandShortPress}
-      />
+    <LandscapeHubFrame
+      hub="home"
+      testID={testIds.home.root}
+      points={data.points}
+      musicOn={settings.music}
+      onToggleMusic={() => void toggleMusic()}
+      onBrandLongPress={parent.onBrandLongPress}
+      onBrandShortPress={parent.onBrandShortPress}
+    >
       <ToastHost message={parent.toast} onHide={parent.dismissToast} testID={testIds.parent.toast} />
       <ScrollView
         contentContainerStyle={[
@@ -84,11 +90,11 @@ export function HomeScreen() {
           />
         ) : null}
         <CategoryGrid categories={data.categories} learnedByCategory={data.learnedByCategory} onOpen={openCategory} />
-        <HomePracticeRow onOpen={openPractice} onOpenAll={() => push(practiceMenuHref)} />
-        <HomeGamesRow onOpen={openGame} onOpenAll={() => push(gamesMenuHref)} />
+        <HomePracticeRow onOpen={openPractice} onOpenAll={() => replace(practiceMenuHref)} />
+        <HomeGamesRow onOpen={openGame} onOpenAll={() => replace(gamesMenuHref)} />
         <DevStorageProbe />
       </ScrollView>
-    </TalkiScreen>
+    </LandscapeHubFrame>
   );
 }
 

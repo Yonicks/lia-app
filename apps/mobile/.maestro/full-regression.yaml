@@ -33,7 +33,7 @@ appId: com.yonicks.talki
 
 # Games menu (scroll — lower cards sit below the fold on phone)
 - tapOn:
-    id: bottom-nav-games
+    id: landscape-side-end
 - assertVisible:
     id: games-menu-root
 - tapOn:
@@ -141,9 +141,9 @@ appId: com.yonicks.talki
     id: speech-unsupported
 - back
 
-# Practice (stack outside tabs — return to Home before stickers)
+# Practice (stack outside hubs — return to Home before stickers)
 - tapOn:
-    id: bottom-nav-home
+    id: landscape-side-start
 - assertVisible:
     id: home-root
 - scrollUntilVisible:
@@ -228,13 +228,14 @@ appId: com.yonicks.talki
 
 # Rewards / stickers
 - tapOn:
-    id: bottom-nav-stickers
+    id: landscape-rewards-entry
 - assertVisible:
     id: stickers-root
 
 # Parent gate via deep link (TopBar hold is a custom timer)
-- tapOn:
-    id: bottom-nav-home
+- back
+- assertVisible:
+    id: home-root
 - openLink: talki://parent
 - assertVisible:
     id: parent-gate-question

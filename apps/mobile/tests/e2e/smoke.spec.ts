@@ -5,7 +5,7 @@ import { auditReachability, auditTouchTargets, captureMatrix, openApp } from './
 
 /**
  * Phase 1's placeholder ("Talki Native Migration") was replaced by real
- * Home in Phase 7 (app/(tabs)/index.tsx) — this suite now proves the same
+ * Home in Phase 7 (app/index.tsx) — this suite now proves the same
  * harness properties (renders, no console errors, touch-safe, reachable)
  * against the real landing screen instead. `home.spec.ts` owns Home's own
  * behaviour in depth.

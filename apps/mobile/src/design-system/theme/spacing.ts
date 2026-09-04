@@ -33,7 +33,8 @@ export function homeGridGap(deviceClass: DeviceClass): number {
 export const barHeight = 68;
 /** Static default when no banner is reserved. Live height lives in adLayout. */
 export const adHeight = 0;
-/** BottomNavigation item minHeight 48 + paddingBlock 8+8. */
+/** Historical tab-bar height token — landscape hubs no longer mount a bottom nav;
+ *  retained for ad/safe-layout accounting until those callers are retargeted. */
 export const tabBarHeight = 64;
 export function tbSideClear(deviceClass: DeviceClass): number {
   return deviceClass === 'compactPhone' ? 106 : 104;

@@ -4,7 +4,7 @@ appId: com.yonicks.talki
 ---
 - launchApp
 - tapOn:
-    id: bottom-nav-games
+    id: landscape-side-end
 - tapOn:
     id: games-menu-card-sounds
 - assertVisible:

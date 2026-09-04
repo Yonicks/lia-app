@@ -10,7 +10,7 @@ appId: com.yonicks.talki
 - tapOn:
     id: game-header-back
 - tapOn:
-    id: bottom-nav-games
+    id: landscape-side-end
 - tapOn:
     id: games-menu-card-missing
 - assertVisible:

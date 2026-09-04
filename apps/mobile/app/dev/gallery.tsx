@@ -15,8 +15,8 @@ import {
   TalkiText,
 } from '@/design-system/components';
 import { colors } from '@/design-system/theme/colors';
-import { BottomNavigation, GameHeader, ParentGate, RewardOverlay, ToastHost, TopBar } from '@/components/shell';
-import type { NavRoute } from '@/components/shell';
+import { GameHeader, ParentGate, RewardOverlay, ToastHost, TopBar } from '@/components/shell';
+import { LandscapeSideNav } from '@/design-system/landscape';
 import { testIds } from '@/testing/testIds';
 
 /**
@@ -34,7 +34,6 @@ import { testIds } from '@/testing/testIds';
  */
 export default function Gallery() {
   const [musicOn, setMusicOn] = useState(false);
-  const [navRoute, setNavRoute] = useState<NavRoute>('home');
   const [parentGateOpen, setParentGateOpen] = useState(false);
   const [rewardOpen, setRewardOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -142,10 +141,11 @@ export default function Gallery() {
             onBack={() => {}}
           />
           <View style={{ height: 12 }} />
-          <BottomNavigation
-            testID={testIds.gallery.shell.bottomNav}
-            active={navRoute}
-            onNavigate={setNavRoute}
+          <LandscapeSideNav
+            testID={testIds.gallery.shell.sideNav}
+            label="משחקים"
+            direction="forward"
+            onPress={() => {}}
           />
           <View style={styles.row}>
             <TalkiButton

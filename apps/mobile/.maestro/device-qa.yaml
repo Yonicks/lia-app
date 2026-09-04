@@ -27,11 +27,11 @@ appId: com.yonicks.talki
 
 # 2 — games + stickers (PNG cells are stickers-item-*; assert the grid mounted)
 - tapOn:
-    id: bottom-nav-games
+    id: landscape-side-end
 - assertVisible:
     id: games-menu-root
 - tapOn:
-    id: bottom-nav-stickers
+    id: landscape-rewards-entry
 - assertVisible:
     id: stickers-root
 - assertVisible:
@@ -40,8 +40,13 @@ appId: com.yonicks.talki
 # 3 — parent gate → words photo + recordings (OS picker/mic: open and dismiss)
 # TopBar uses a 900ms onPressIn timer, not RN onLongPress, so Maestro's
 # accessibility long-click does not unlock. Open /parent via the app scheme.
+- back
+- assertVisible:
+    id: games-menu-root
 - tapOn:
-    id: bottom-nav-home
+    id: landscape-side-start
+- assertVisible:
+    id: home-root
 - openLink: talki://parent
 - extendedWaitUntil:
     visible:
@@ -114,7 +119,7 @@ appId: com.yonicks.talki
 
 # 4 — rotate in a game, Home, resume without a process kill
 - tapOn:
-    id: bottom-nav-games
+    id: landscape-side-end
 - tapOn:
     id: games-menu-card-quiz
 - assertVisible:
