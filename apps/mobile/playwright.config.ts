@@ -1,10 +1,22 @@
 import { defineConfig, devices } from '@playwright/test';
 
+import { SHORT_EDGE_TABLET, shortEdgeOf } from './src/design-system/responsive/breakpoints';
 import { VIEWPORTS } from './tests/e2e/viewports';
 
 /* The Expo web port (8081) appears exactly once, here. The legacy dev server
  * owns 8000; the two must never be confused. */
 const PORT = 8081;
+
+/* Phase 16 (docs/migration/phase-16-audit.md §2) found the app's own
+ * classifier misclassified landscape phones as tablets by using raw width;
+ * this file had the identical bug — `isMobile`/`hasTouch` were keyed off
+ * `width < 900`, so a 932-wide landscape phone (a real phone, held
+ * sideways) got Playwright's desktop/no-touch emulation. Phase 17 fixes
+ * both with the same short-edge logic, imported from the one canonical
+ * source rather than re-implemented here. */
+function isPhoneViewport(width: number, height: number): boolean {
+  return shortEdgeOf(width, height) < SHORT_EDGE_TABLET;
+}
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -22,8 +34,8 @@ export default defineConfig({
     use: {
       ...devices['Desktop Chrome'],
       viewport: { width, height },
-      isMobile: width < 900,
-      hasTouch: width < 900,
+      isMobile: isPhoneViewport(width, height),
+      hasTouch: isPhoneViewport(width, height),
     },
   })),
   webServer: {

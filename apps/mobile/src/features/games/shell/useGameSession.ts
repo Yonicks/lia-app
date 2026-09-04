@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { resolveStartCategory, START_GAME_TOAST } from '@/domain/games/startGame';
 import type { CategoryId, GameId, PracticeModeId, TalkiCategory } from '@/domain/types';
 import { allCats } from '@/domain/vocabulary/allCats';
-import { orientationService } from '@/services/orientation';
 import { useProgressStore } from '@/state/progressStore';
 
 import { createManagedTimers, type TimerId } from './managedTimers';
@@ -39,8 +38,11 @@ export interface GameSession {
 
 /**
  * Shared lifecycle: resolve category (`startGame` 2491-2495), fire
- * `game.levelStart`, lock landscape through OrientationService, and own
- * the rapid-tap lock. Per-game board state stays in the game's reducer.
+ * `game.levelStart`, and own the rapid-tap lock. Per-game board state
+ * stays in the game's reducer. Orientation is locked once, app-wide, at
+ * boot (`app/_layout.tsx`) since Phase 17 — no per-session lock/unlock
+ * here anymore, since unlocking on unmount would fight that app-wide
+ * contract (docs/migration/phase-17-report.md).
  */
 export function useGameSession({ gameId, requestedCatId, mode = 'game', fixedCatId }: UseGameSessionArgs): GameSession {
   const { hydrated, custom, hydrate } = useProgressStore();
@@ -58,11 +60,9 @@ export function useGameSession({ gameId, requestedCatId, mode = 'game', fixedCat
   }, []);
 
   useEffect(() => {
-    void orientationService.applyFor('games');
     const t = timers.current;
     return () => {
       t.cancelAll();
-      void orientationService.unlock();
     };
   }, []);
 

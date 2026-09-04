@@ -15,6 +15,7 @@ import { gameHref, parseGameDeepLink } from '../src/domain/navigation/routes';
 import { IntroSequence } from '../src/features/intro/IntroSequence';
 import { StudioBumper } from '../src/features/intro/studioBumper';
 import { useTalkiKeepAwake } from '../src/services/keepAwake';
+import { orientationService } from '../src/services/orientation';
 import { installE2ERouterBridge } from '../src/testing/e2eRouterBridge';
 import { installE2EStorageBridge } from '../src/testing/e2eStorageBridge';
 import { installE2EStoreBridge } from '../src/testing/e2eStoreBridge';
@@ -63,6 +64,15 @@ function DeepLinkAfterIntro() {
 export default function RootLayout() {
   useTalkiKeepAwake();
   const fontsLoaded = useTalkiFonts();
+
+  /* App-wide landscape contract (phase-17-plan.md "Make landscape the
+     app-wide child product contract from boot"). One call, once, for the
+     lifetime of the app — no per-route or per-screen orientation call
+     site exists anymore (see docs/migration/phase-17-report.md). */
+  useEffect(() => {
+    void orientationService.lockLandscape();
+  }, []);
+
   const params = useGlobalSearchParams() as { intro?: string };
   const introDisabled = params.intro === '0';
   const [stage, setStage] = useState<OpeningStage>(

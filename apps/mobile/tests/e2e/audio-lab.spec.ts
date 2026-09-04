@@ -1,12 +1,10 @@
 import { expect, test } from '@playwright/test';
 
 import { SFX_FILES } from '../../src/domain/audio/audioPolicy';
-import { orientationPolicy } from '../../src/services/orientation/policy';
 import { testIds } from '../../src/testing/testIds';
 import { captureMatrix, degradeNativeApis, speechSpy } from './_helpers';
 
 const SFX_EVENTS = Object.keys(SFX_FILES);
-const ORIENTATION_ROUTES = Object.keys(orientationPolicy) as (keyof typeof orientationPolicy)[];
 
 /**
  * Tier 2 coverage for app/dev/audio-lab.tsx, per phase-04-plan.md's Tier 2
@@ -75,10 +73,9 @@ test.describe('audio-lab', () => {
     // All 10 music-state buttons + rewardScreen present.
     await expect(page.getByTestId(testIds.audioLab.musicButton('home'))).toBeVisible();
     await expect(page.getByTestId(testIds.audioLab.musicButton('rewardScreen'))).toBeVisible();
-    // All 5 orientation route buttons present.
-    for (const route of ORIENTATION_ROUTES) {
-      await expect(page.getByTestId(testIds.audioLab.orientationButton(route))).toBeVisible();
-    }
+    // Both orientation-service buttons present.
+    await expect(page.getByTestId(testIds.audioLab.orientationLockButton)).toBeVisible();
+    await expect(page.getByTestId(testIds.audioLab.orientationUnlockButton)).toBeVisible();
     await expect(page.getByTestId(testIds.audioLab.recordStartButton)).toBeVisible();
     await expect(page.getByTestId(testIds.audioLab.recordStopButton)).toBeVisible();
     await expect(page.getByTestId(testIds.audioLab.recognitionRunButton)).toBeVisible();
@@ -187,16 +184,19 @@ test.describe('audio-lab', () => {
     expect(pageErrors).toHaveLength(0);
   });
 
-  test('orientation buttons run the policy without throwing, for every route', async ({ page }) => {
+  test('orientation lock/unlock run without throwing', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(String(err)));
 
     await gotoAudioLab(page);
-    for (const route of ORIENTATION_ROUTES) {
-      await page.getByTestId(testIds.audioLab.orientationButton(route)).click();
-      await page.waitForTimeout(50);
-    }
-    const current = await page.getByTestId(testIds.audioLab.orientationCurrentLabel).innerText();
+    await page.getByTestId(testIds.audioLab.orientationLockButton).click();
+    await page.waitForTimeout(50);
+    let current = await page.getByTestId(testIds.audioLab.orientationCurrentLabel).innerText();
+    expect(current.length).toBeGreaterThan(0);
+
+    await page.getByTestId(testIds.audioLab.orientationUnlockButton).click();
+    await page.waitForTimeout(50);
+    current = await page.getByTestId(testIds.audioLab.orientationCurrentLabel).innerText();
     expect(current.length).toBeGreaterThan(0);
     expect(pageErrors).toHaveLength(0);
   });

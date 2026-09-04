@@ -1,7 +1,6 @@
 import * as ScreenOrientation from 'expo-screen-orientation';
 
-import type { CurrentOrientation, OrientationService } from './OrientationService';
-import { policyFor, type RouteKind } from './policy';
+import { withOrientationFallback, type CurrentOrientation, type OrientationService } from './OrientationService';
 
 /**
  * The one and only caller of `expo-screen-orientation`'s `lockAsync` /
@@ -14,34 +13,31 @@ import { policyFor, type RouteKind } from './policy';
  *
  * iPad multitasking note (phase-04-plan.md "iPad needs specific
  * attention"): when an iPad app supports Split View / Slide Over, iOS may
- * refuse a orientation lock outright — `lockAsync` still resolves (it does
+ * refuse an orientation lock outright — `lockAsync` still resolves (it does
  * not throw), but the device may simply not rotate. That is a Tier-3,
  * device-only fact; see phase-04-native-report.md for what this
  * environment could and could not verify.
  */
 class ExpoOrientationService implements OrientationService {
-  async applyFor(route: RouteKind): Promise<void> {
-    const value = policyFor(route);
-    if (value === 'landscape') {
-      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-    } else {
-      await ScreenOrientation.unlockAsync();
-    }
+  async lockLandscape(): Promise<void> {
+    await withOrientationFallback(
+      () => ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE),
+      undefined,
+    );
   }
 
   async unlock(): Promise<void> {
-    await ScreenOrientation.unlockAsync();
+    await withOrientationFallback(() => ScreenOrientation.unlockAsync(), undefined);
   }
 
   async current(): Promise<CurrentOrientation> {
-    const o = await ScreenOrientation.getOrientationAsync();
-    if (
-      o === ScreenOrientation.Orientation.LANDSCAPE_LEFT ||
-      o === ScreenOrientation.Orientation.LANDSCAPE_RIGHT
-    ) {
-      return 'landscape';
-    }
-    return 'portrait';
+    return withOrientationFallback(async () => {
+      const o = await ScreenOrientation.getOrientationAsync();
+      if (o === ScreenOrientation.Orientation.LANDSCAPE_LEFT || o === ScreenOrientation.Orientation.LANDSCAPE_RIGHT) {
+        return 'landscape';
+      }
+      return 'portrait';
+    }, 'landscape');
   }
 }
 

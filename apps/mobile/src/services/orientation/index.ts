@@ -1,3 +1,3 @@
 export type { CurrentOrientation, OrientationService } from './OrientationService';
-export { orientationPolicy, type OrientationPolicyValue, policyFor, type RouteKind } from './policy';
+export { withOrientationFallback } from './OrientationService';
 export { orientationService } from './expoOrientation';
