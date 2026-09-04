@@ -65,6 +65,17 @@ export const homeAssets = {
   heroStar: require('../../assets/v2/home/talki-hero-star.webp'),
 } as const;
 
+/**
+ * Landscape world backgrounds (Phase 18). Full-bleed painterly scenes with
+ * no baked UI chrome. Source size 1672×941 — cover + focal crop via
+ * `LandscapeWorldBackground`; never use reference/*.png as runtime art.
+ */
+export const landscapeBackgrounds = {
+  home: require('../../assets/v2/landscape/talki-landscape-bg-home.png'),
+  games: require('../../assets/v2/landscape/talki-landscape-bg-games.png'),
+  practice: require('../../assets/v2/landscape/talki-landscape-bg-practice.png'),
+} as const;
+
 /** Game card art — index.html 2355-2377 (renderGamesMenu). Seven of the
  *  eleven games have a dedicated card image; the rest (`match`, `bubbles`,
  *  `sort`, `speech`) render from an emoji/plain card in legacy and keep

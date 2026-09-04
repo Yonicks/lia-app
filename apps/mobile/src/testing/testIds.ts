@@ -327,4 +327,22 @@ export const testIds = {
       swatch: (name: string) => `gallery-color-swatch-${name}`,
     },
   },
+  /**
+   * app/dev/landscape-shell.tsx — Phase 18 non-production fixtures proving
+   * the shared shell can compose Home / Games / Practice frames. Unreachable
+   * from child navigation; exercised only by landscape-shell.spec.ts.
+   */
+  landscapeShell: {
+    root: 'landscape-shell-root',
+    frame: (name: 'home' | 'games' | 'practice') => `landscape-shell-frame-${name}`,
+    topBar: (name: string) => `landscape-shell-topbar-${name}`,
+    sideStart: (name: string) => `landscape-shell-side-start-${name}`,
+    sideEnd: (name: string) => `landscape-shell-side-end-${name}`,
+    grid: (name: string) => `landscape-shell-grid-${name}`,
+    strip: 'landscape-shell-category-strip',
+    hero: 'landscape-shell-hero',
+    title: (name: string) => `landscape-shell-title-${name}`,
+    pageIndicator: 'landscape-shell-page-indicator',
+    switcher: (name: 'home' | 'games' | 'practice') => `landscape-shell-switch-${name}`,
+  },
 } as const;
