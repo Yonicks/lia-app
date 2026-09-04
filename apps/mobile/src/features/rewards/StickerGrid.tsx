@@ -1,5 +1,7 @@
 import { Image, StyleSheet, View } from 'react-native';
 
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { v3 } from '@/design-system/theme/colors';
 import { radii } from '@/design-system/theme/radii';
 import { stickerImage } from '@/domain/rewards/stickerArt';
@@ -11,14 +13,31 @@ export function StickerGrid({
   items,
   learned,
   custom,
+  baseIndex = 0,
 }: {
   items: Sticker[];
   learned: ReadonlySet<string>;
   custom: TalkiWord[];
+  /** Absolute index of the first item on this page (for stable testIDs). */
+  baseIndex?: number;
 }) {
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
+  const cell = tokens.stickerCellSize;
+  const art = Math.max(32, cell - 12);
+
   return (
-    <View style={styles.grid}>
-      {items.map((s, index) => {
+    <View
+      style={[
+        styles.grid,
+        {
+          gap: tokens.gap,
+          paddingInline: tokens.padInline,
+        },
+      ]}
+    >
+      {items.map((s, i) => {
+        const index = baseIndex + i;
         const on = stickerUnlocked(s, learned, custom);
         const src = stickerImage(s);
         return (
@@ -28,11 +47,17 @@ export function StickerGrid({
             accessibilityRole="image"
             accessibilityState={{ disabled: !on }}
             accessibilityLabel={s.word ?? s.img}
-            style={[styles.cell, !on && styles.locked]}
+            style={[
+              styles.cell,
+              {
+                width: cell,
+                height: cell,
+                borderRadius: radii.card,
+              },
+              !on && styles.locked,
+            ]}
           >
-            {src ? (
-              <Image source={src} style={styles.art} resizeMode="contain" />
-            ) : null}
+            {src ? <Image source={src} style={{ width: art, height: art }} resizeMode="contain" /> : null}
           </View>
         );
       })}
@@ -45,14 +70,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 10,
-    paddingInline: 16,
-    paddingBlockEnd: 24,
+    alignContent: 'center',
+    flex: 1,
+    minHeight: 0,
   },
   cell: {
-    width: 72,
-    height: 72,
-    borderRadius: radii.card,
     backgroundColor: v3.surface,
     borderWidth: 1,
     borderColor: v3.borderSoft,
@@ -60,5 +82,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   locked: { opacity: 0.35 },
-  art: { width: 56, height: 56 },
 });

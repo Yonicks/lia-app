@@ -118,6 +118,22 @@ describe('landscapeTokens', () => {
     expect(tablet.practiceArtSize).toBeGreaterThan(compact.practiceArtSize);
     expect(tablet.practiceOptionMin).toBeGreaterThan(compact.practiceOptionMin);
   });
+
+  it('exposes Phase 27 rewards/parent tokens without local breakpoints', () => {
+    for (const deviceClass of CLASSES) {
+      const t = landscapeTokens(deviceClass);
+      expect(t.stickerCellSize).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.stickerColumns).toBeGreaterThanOrEqual(6);
+      expect(t.stickerRows).toBeGreaterThanOrEqual(2);
+      expect(t.parentGateKeySize).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.parentContentMaxWidth).toBeGreaterThan(400);
+    }
+    const compact = landscapeTokens('compactPhone');
+    const tablet = landscapeTokens('tablet');
+    expect(compact.stickerColumns * compact.stickerRows).toBeLessThanOrEqual(24);
+    expect(tablet.stickerCellSize).toBeGreaterThan(compact.stickerCellSize);
+    expect(tablet.parentGateKeySize).toBeGreaterThan(compact.parentGateKeySize);
+  });
 });
 
 describe('landscape backgrounds', () => {

@@ -38,7 +38,7 @@ const ITEMS: [string, string, string][] = [
 
 export function MethodTab() {
   return (
-    <ScrollView contentContainerStyle={styles.pad}>
+    <ScrollView contentContainerStyle={styles.pad} keyboardShouldPersistTaps="handled" style={styles.fill}>
       <TalkiCard>
         <TalkiHeading level={3}>על מה מבוססים משחקי הדיבור</TalkiHeading>
         {ITEMS.map(([title, tech, desc]) => (
@@ -60,6 +60,7 @@ export function MethodTab() {
 }
 
 const styles = StyleSheet.create({
+  fill: { flex: 1 },
   pad: { padding: 16, gap: 12, paddingBlockEnd: 32 },
   row: { gap: 4, marginBlockStart: 12 },
   note: { marginBlockStart: 12 },

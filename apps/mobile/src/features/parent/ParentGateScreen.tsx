@@ -2,18 +2,28 @@ import { useMemo, useReducer, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import { TalkiHeading, TalkiScreen, TalkiText } from '@/design-system/components';
+import { TalkiHeading, TalkiText } from '@/design-system/components';
 import { ToastHost } from '@/components/shell';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { v3 } from '@/design-system/theme/colors';
 import { radii } from '@/design-system/theme/radii';
 import { gateReducer, initGate } from '@/domain/parent/gate';
 import { makeRnd } from '@/features/games/shell/e2eSeed';
 import { testIds } from '@/testing/testIds';
 
+import { ParentShell } from './ParentShell';
+
 const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'ok'] as const;
 
+/**
+ * Parent gate — landscape (Phase 27). Challenge semantics unchanged
+ * (gateReducer / initGate). Layout is a short-height row: prompt | keypad.
+ */
 export function ParentGateScreen({ onUnlocked }: { onUnlocked: () => void }) {
   const router = useRouter();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const params = useLocalSearchParams<{ seed?: string }>();
   const seedParam = params.seed != null ? Number(params.seed) : undefined;
   const rnd = useMemo(() => makeRnd(Number.isFinite(seedParam) ? seedParam : undefined), [seedParam]);
@@ -41,23 +51,35 @@ export function ParentGateScreen({ onUnlocked }: { onUnlocked: () => void }) {
 
   const { a, b } = state.question;
   const display = `${a} × ${b} = ${state.input || '?'}`;
+  const keySize = tokens.parentGateKeySize;
 
   return (
-    <TalkiScreen testID={testIds.parent.root}>
-      <View style={styles.wrap}>
-        <TalkiText style={styles.lockIcon} align="center">
-          🔒
-        </TalkiText>
-        <TalkiHeading level={2} align="center">
-          מסך הורים
-        </TalkiHeading>
-        <TalkiText align="center" color={v3.textSecondary} weight="semibold">
-          כדי להיכנס, פתרו את התרגיל
-        </TalkiText>
-        <TalkiText testID={testIds.parent.gateQuestion} align="center" weight="extrabold" style={styles.q}>
-          {display}
-        </TalkiText>
-        <View style={styles.grid}>
+    <ParentShell testID={testIds.parent.root}>
+      <View style={[styles.row, { gap: tokens.gap }]}>
+        <View style={[styles.prompt, { gap: Math.max(4, tokens.gap - 4) }]}>
+          <TalkiText style={styles.lockIcon} align="center">
+            🔒
+          </TalkiText>
+          <TalkiHeading level={2} align="center">
+            מסך הורים
+          </TalkiHeading>
+          <TalkiText align="center" color={v3.textSecondary} weight="semibold">
+            כדי להיכנס, פתרו את התרגיל
+          </TalkiText>
+          <TalkiText testID={testIds.parent.gateQuestion} align="center" weight="extrabold" style={styles.q}>
+            {display}
+          </TalkiText>
+          <Pressable
+            testID={testIds.parent.gateBack}
+            accessibilityRole="button"
+            accessibilityLabel="חזרה לאפליקציה"
+            onPress={() => router.back()}
+            style={styles.back}
+          >
+            <TalkiText weight="semibold">חזרה לאפליקציה</TalkiText>
+          </Pressable>
+        </View>
+        <View style={[styles.grid, { gap: Math.max(6, tokens.gap - 2), maxWidth: keySize * 3 + 24 }]}>
           {KEYS.map((k) => {
             const label = k === 'clear' ? '⌫' : k === 'ok' ? '✓' : k;
             const id =
@@ -69,7 +91,14 @@ export function ParentGateScreen({ onUnlocked }: { onUnlocked: () => void }) {
                 accessibilityRole="button"
                 accessibilityLabel={label}
                 onPress={() => onKey(k)}
-                style={styles.key}
+                style={[
+                  styles.key,
+                  {
+                    width: keySize,
+                    minHeight: keySize,
+                    borderRadius: radii.btn,
+                  },
+                ]}
               >
                 <TalkiText weight="extrabold" align="center">
                   {label}
@@ -78,54 +107,49 @@ export function ParentGateScreen({ onUnlocked }: { onUnlocked: () => void }) {
             );
           })}
         </View>
-        <Pressable
-          testID={testIds.parent.gateBack}
-          accessibilityRole="button"
-          accessibilityLabel="חזרה לאפליקציה"
-          onPress={() => router.back()}
-          style={styles.back}
-        >
-          <TalkiText weight="semibold">חזרה לאפליקציה</TalkiText>
-        </Pressable>
       </View>
       <ToastHost message={toast} onHide={() => setToast(null)} testID={testIds.parent.toast} />
-    </TalkiScreen>
+    </ParentShell>
   );
 }
 
 const styles = StyleSheet.create({
-  wrap: {
+  row: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBlock: 8,
+    minHeight: 0,
+  },
+  prompt: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
-    padding: 20,
+    minWidth: 0,
+    paddingInline: 8,
   },
-  lockIcon: { fontSize: 48 },
-  q: { fontSize: 28, marginBlock: 8 },
+  lockIcon: { fontSize: 36 },
+  q: { fontSize: 26, marginBlock: 4 },
   grid: {
-    width: '100%',
-    maxWidth: 280,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 8,
+    flexShrink: 0,
   },
   key: {
-    width: 80,
-    minHeight: 56,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: radii.btn,
     backgroundColor: v3.surface,
     borderWidth: 1,
     borderColor: v3.borderSoft,
   },
   back: {
     minHeight: 48,
+    minWidth: 48,
     paddingInline: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBlockStart: 8,
+    marginBlockStart: 4,
   },
 });

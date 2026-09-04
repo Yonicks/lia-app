@@ -29,22 +29,37 @@ export function CustomWordForm() {
     <View>
       <TalkiHeading level={3}>הוספת מילה אישית</TalkiHeading>
       <TalkiText color={v3.textSecondary}>
-        &quot;סבתא רותי&quot;, הכלב של השכנים, הבובה האהובה — המילים שהכי מדברות אליה.
+        המילים שהכי מדברות אליה — סבתא, הכלב של השכנים, הבובה האהובה.
       </TalkiText>
-      <TalkiText weight="bold" style={styles.label}>
-        המילה
-      </TalkiText>
-      <TextInput
-        testID={testIds.parent.wordsInput}
-        value={word}
-        onChangeText={setWord}
-        placeholder="למשל: סַבְתָּא רוּתִי"
-        style={styles.input}
-      />
-      <TalkiText weight="bold" style={styles.label}>
-        אימוג׳י
-      </TalkiText>
-      <TextInput value={emoji} onChangeText={setEmoji} maxLength={4} style={styles.input} />
+      <View style={styles.row}>
+        <View style={styles.wordCol}>
+          <TalkiText weight="bold" style={styles.label}>
+            המילה
+          </TalkiText>
+          <TextInput
+            testID={testIds.parent.wordsInput}
+            value={word}
+            onChangeText={setWord}
+            placeholder="למשל: סַבְתָּא רוּתִי"
+            style={styles.input}
+            returnKeyType="next"
+            blurOnSubmit={false}
+          />
+        </View>
+        <View style={styles.emojiCol}>
+          <TalkiText weight="bold" style={styles.label}>
+            אימוג׳י
+          </TalkiText>
+          <TextInput
+            value={emoji}
+            onChangeText={setEmoji}
+            maxLength={4}
+            style={styles.input}
+            returnKeyType="done"
+            onSubmitEditing={save}
+          />
+        </View>
+      </View>
       <PhotoPicker photo={photo} onPicked={setPhoto} />
       <TalkiButton testID={testIds.parent.wordsSave} label="הוספת מילה" onPress={save} />
     </View>
@@ -52,7 +67,10 @@ export function CustomWordForm() {
 }
 
 const styles = StyleSheet.create({
-  label: { marginBlockStart: 10 },
+  row: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
+  wordCol: { flex: 1, minWidth: 0 },
+  emojiCol: { width: 88 },
+  label: { marginBlockStart: 8 },
   input: {
     minHeight: 48,
     borderWidth: 1,

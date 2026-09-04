@@ -13,7 +13,7 @@ export function ReportTab() {
   const hard = hardestWords(stats, 10);
 
   return (
-    <ScrollView contentContainerStyle={styles.pad}>
+    <ScrollView contentContainerStyle={styles.pad} keyboardShouldPersistTaps="handled" style={styles.fill}>
       <TalkiCard>
         <TalkiHeading level={3}>התקדמות לפי קטגוריה</TalkiHeading>
         {rows.map((r) => (
@@ -54,6 +54,7 @@ export function ReportTab() {
 }
 
 const styles = StyleSheet.create({
+  fill: { flex: 1 },
   pad: { padding: 16, gap: 12, paddingBlockEnd: 32 },
   row: { gap: 6, marginBlockStart: 12 },
   lbl: { gap: 2 },

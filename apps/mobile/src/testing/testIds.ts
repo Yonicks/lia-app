@@ -247,6 +247,8 @@ export const testIds = {
     filter: (key: string) => `stickers-filter-${key}`,
     item: (index: number) => `stickers-item-${index}`,
     counter: 'stickers-counter',
+    pageIndicator: 'stickers-page',
+    back: 'stickers-back',
   },
   /** Dev-only, native-only (never rendered on web — see
    *  app/index.tsx and phase-03-plan.md Tier 3 test plan). Lets

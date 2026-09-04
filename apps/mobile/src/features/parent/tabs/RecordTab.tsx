@@ -46,7 +46,7 @@ export function RecordTab() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.pad}>
+    <ScrollView contentContainerStyle={styles.pad} keyboardShouldPersistTaps="handled" style={styles.fill}>
       <TalkiCard>
         <TalkiHeading level={3}>הקלטת קול אמיתי</TalkiHeading>
         <TalkiText color={v3.textSecondary}>
@@ -130,6 +130,7 @@ export function RecordTab() {
 }
 
 const styles = StyleSheet.create({
+  fill: { flex: 1 },
   pad: { padding: 16, gap: 12, paddingBlockEnd: 32 },
   label: { marginBlockStart: 10 },
   chips: { gap: 8, paddingBlock: 8 },

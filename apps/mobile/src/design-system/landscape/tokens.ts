@@ -301,6 +301,47 @@ const PRACTICE_MOD_ART: Record<DeviceClass, number> = {
   largeTablet: 44,
 };
 
+/**
+ * Rewards sticker grid (Phase 27). Prefer denser landscape pages over a
+ * tall portrait wrap; paging when catalog exceeds one viewport.
+ */
+const STICKER_COLS: Record<DeviceClass, number> = {
+  compactPhone: 8,
+  phone: 8,
+  tablet: 10,
+  largeTablet: 12,
+};
+
+const STICKER_ROWS: Record<DeviceClass, number> = {
+  compactPhone: 2,
+  phone: 3,
+  tablet: 3,
+  largeTablet: 2,
+};
+
+const STICKER_CELL: Record<DeviceClass, number> = {
+  compactPhone: 48,
+  phone: 56,
+  tablet: 72,
+  largeTablet: 80,
+};
+
+/** Parent gate keypad key edge (adult UI — still ≥48 for reliable taps). */
+const PARENT_GATE_KEY: Record<DeviceClass, number> = {
+  compactPhone: 56,
+  phone: 64,
+  tablet: 72,
+  largeTablet: 80,
+};
+
+/** Parent Center content max width on large tablets (breathing room). */
+const PARENT_CONTENT_MAX_W: Record<DeviceClass, number> = {
+  compactPhone: 720,
+  phone: 800,
+  tablet: 960,
+  largeTablet: 1100,
+};
+
 export interface LandscapeTokens {
   gap: number;
   padInline: number;
@@ -367,6 +408,14 @@ export interface LandscapeTokens {
   practiceModArtSize: number;
   /** Combine: tablets put modifiers beside the picture grid. */
   practiceCombineSplitLayout: boolean;
+  /** Rewards sticker grid columns / rows / cell edge (Phase 27). */
+  stickerColumns: number;
+  stickerRows: number;
+  stickerCellSize: number;
+  /** Parent gate keypad key minimum edge (dp). */
+  parentGateKeySize: number;
+  /** Parent Center scroll content max width. */
+  parentContentMaxWidth: number;
 }
 
 export function landscapeTokens(deviceClass: DeviceClass, uiScale = 1): LandscapeTokens {
@@ -420,6 +469,11 @@ export function landscapeTokens(deviceClass: DeviceClass, uiScale = 1): Landscap
     practiceModMin: Math.max(LANDSCAPE_MIN_TOUCH, scale(PRACTICE_MOD_MIN[deviceClass])),
     practiceModArtSize: Math.max(24, scale(PRACTICE_MOD_ART[deviceClass])),
     practiceCombineSplitLayout: isTablet,
+    stickerColumns: STICKER_COLS[deviceClass],
+    stickerRows: STICKER_ROWS[deviceClass],
+    stickerCellSize: Math.max(LANDSCAPE_MIN_TOUCH, scale(STICKER_CELL[deviceClass])),
+    parentGateKeySize: Math.max(LANDSCAPE_MIN_TOUCH, scale(PARENT_GATE_KEY[deviceClass])),
+    parentContentMaxWidth: scale(PARENT_CONTENT_MAX_W[deviceClass]),
   };
 }
 

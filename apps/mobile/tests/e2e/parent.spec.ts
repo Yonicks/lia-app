@@ -30,7 +30,7 @@ async function unlockGate(page: Page): Promise<void> {
   await expect(page.getByTestId(testIds.parent.tab('settings'))).toBeVisible();
 }
 
-test.describe('Phase 12 parent centre', () => {
+test.describe('Phase 27 parent centre', () => {
   test('hold opens the gate; short tap toasts; wrong stays locked; tabs and reset; leaving re-locks', async ({
     page,
   }) => {
@@ -54,7 +54,7 @@ test.describe('Phase 12 parent centre', () => {
 
     await holdParent(page);
     await expect(page.getByTestId(testIds.parent.gateQuestion)).toBeVisible();
-    await captureMatrix(page, '12', 'parent-gate');
+    await captureMatrix(page, '27', 'parent-gate');
 
     await page.getByTestId(testIds.parent.gateKey('0')).click();
     await page.getByTestId(testIds.parent.gateOk).click();
@@ -63,7 +63,7 @@ test.describe('Phase 12 parent centre', () => {
 
     await unlockGate(page);
     await expect(page.getByTestId(testIds.parent.settingsRate(0.85))).toBeVisible();
-    await captureMatrix(page, '12', 'parent-settings');
+    await captureMatrix(page, '27', 'parent-settings');
 
     await expect(page.getByTestId(testIds.parent.settingsLastBackup)).toContainText('עוד לא גובה');
     await expect(page.getByTestId(testIds.parent.settingsImport)).toContainText('החלפה מוחקת הכול קודם');
@@ -77,24 +77,24 @@ test.describe('Phase 12 parent centre', () => {
     await expect(page.locator('body')).toContainText(RESET_CONFIRM_TEXT);
     await expect(page.locator('body')).toContainText(RESET_DELETES_TEXT);
     await expect(page.locator('body')).toContainText(RESET_KEEPS_TEXT);
-    await captureMatrix(page, '12', 'parent-reset-confirm');
+    await captureMatrix(page, '27', 'parent-reset-confirm');
 
     await page.getByTestId(testIds.parent.tab('record')).click();
     await expect(page.getByTestId(testIds.parent.recordCategory)).toBeVisible();
     await expect(page.getByTestId(testIds.parent.recordWord(0))).toBeVisible();
-    await captureMatrix(page, '12', 'parent-record');
+    await captureMatrix(page, '27', 'parent-record');
 
     await page.getByTestId(testIds.parent.tab('words')).click();
     await expect(page.getByTestId(testIds.parent.wordsInput)).toBeVisible();
-    await captureMatrix(page, '12', 'parent-words');
+    await captureMatrix(page, '27', 'parent-words');
 
     await page.getByTestId(testIds.parent.tab('report')).click();
     await expect(page.getByTestId(testIds.parent.reportCategory('animals'))).toBeVisible();
-    await captureMatrix(page, '12', 'parent-report');
+    await captureMatrix(page, '27', 'parent-report');
 
     await page.getByTestId(testIds.parent.tab('method')).click();
     await expect(page.getByText('על מה מבוססים משחקי הדיבור')).toBeVisible();
-    await captureMatrix(page, '12', 'parent-method');
+    await captureMatrix(page, '27', 'parent-method');
 
     await page.getByTestId(testIds.parent.tab('settings')).click();
     await page.waitForFunction(() => Boolean((window as unknown as { __talkiStorageE2E?: unknown }).__talkiStorageE2E));
@@ -124,5 +124,52 @@ test.describe('Phase 12 parent centre', () => {
     expect(touch, JSON.stringify(touch)).toHaveLength(0);
     const reach = await auditReachability(page, testIds.parent.root);
     expect(reach, JSON.stringify(reach)).toHaveLength(0);
+  });
+
+  test('custom word CRUD persists and appears in mine category', async ({ page }) => {
+    await openApp(page);
+    await holdParent(page);
+    await unlockGate(page);
+
+    await page.getByTestId(testIds.parent.tab('words')).click();
+    const input = page.getByTestId(testIds.parent.wordsInput);
+    await expect(input).toBeVisible();
+    await input.click();
+    await input.fill('סבתא רותי');
+    // Adult forms may scroll in landscape — save must be scroll-reachable.
+    const save = page.getByTestId(testIds.parent.wordsSave);
+    await save.scrollIntoViewIfNeeded();
+    await expect(save).toBeVisible();
+    const saveBox = await save.boundingBox();
+    const vp = page.viewportSize();
+    expect(saveBox).toBeTruthy();
+    expect(vp).toBeTruthy();
+    expect(saveBox!.y).toBeGreaterThanOrEqual(-1);
+    expect(saveBox!.y + saveBox!.height).toBeLessThanOrEqual(vp!.height + 1);
+    await save.click();
+
+    await expect(page.locator('[data-testid^="parent-words-item-"]').filter({ hasText: 'סבתא רותי' })).toBeVisible();
+    await captureMatrix(page, '27', 'parent-words-created');
+
+    // Persist across leave/re-enter
+    await page.getByTestId(testIds.parent.gateBack).click();
+    await expect(page.getByTestId(testIds.home.root)).toBeVisible();
+
+    const mine = page.getByTestId(testIds.home.category('mine'));
+    await mine.scrollIntoViewIfNeeded();
+    await mine.click();
+    await expect(page.getByTestId(testIds.category.root)).toBeVisible();
+    await expect(page.getByTestId(testIds.category.word(0))).toContainText('סבתא רותי');
+    await captureMatrix(page, '27', 'mine-custom-word');
+
+    // Delete from parent words tab
+    await page.getByTestId(testIds.category.back).click();
+    await holdParent(page);
+    await unlockGate(page);
+    await page.getByTestId(testIds.parent.tab('words')).click();
+    const deleteBtn = page.locator('[data-testid^="parent-words-delete-"]').first();
+    await expect(deleteBtn).toBeVisible();
+    await deleteBtn.click();
+    await expect(page.getByText('עוד לא הוספתם מילים אישיות.')).toBeVisible();
   });
 });

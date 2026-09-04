@@ -44,7 +44,7 @@ export function SettingsTab() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.pad}>
+    <ScrollView contentContainerStyle={styles.pad} keyboardShouldPersistTaps="handled" style={styles.fill}>
       <TalkiCard>
         <TalkiHeading level={3}>הקראה ותצוגה</TalkiHeading>
         <TalkiText weight="bold">מהירות דיבור</TalkiText>
@@ -203,6 +203,7 @@ function Toggle({
 }
 
 const styles = StyleSheet.create({
+  fill: { flex: 1 },
   pad: { padding: 16, gap: 12, paddingBlockEnd: 32 },
   seg: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBlock: 8 },
   segBtn: {
