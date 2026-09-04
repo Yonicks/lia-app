@@ -19,6 +19,8 @@ export interface LandscapeHeroPanelProps {
   progressLabel?: string;
   ctaLabel?: string;
   onCtaPress?: () => void;
+  /** Defaults to `${testID}-cta` when testID is set. */
+  ctaTestID?: string;
   mascot?: ImageSourcePropType;
   style?: StyleProp<ViewStyle>;
   testID?: string;
@@ -37,6 +39,7 @@ export function LandscapeHeroPanel({
   progressLabel,
   ctaLabel,
   onCtaPress,
+  ctaTestID,
   mascot,
   style,
   testID,
@@ -44,17 +47,21 @@ export function LandscapeHeroPanel({
 }: LandscapeHeroPanelProps) {
   const layout = useLandscapeLayout();
   const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
+  const resolvedCtaTestID = ctaTestID ?? (testID ? `${testID}-cta` : undefined);
+  const isCompact = layout.deviceClass === 'compactPhone';
+  const panelPad = isCompact ? 10 : 14;
+  const mascotH = tokens.heroMaxWidth * (isCompact ? 0.42 : 0.55);
 
   return (
     <View testID={testID} style={[styles.row, { gap: tokens.gap, maxWidth: tokens.heroMaxWidth * 2 }, style]}>
       {mascot ? (
-        <Image source={mascot} style={[styles.mascot, { height: tokens.heroMaxWidth * 0.55 }]} resizeMode="contain" />
+        <Image source={mascot} style={[styles.mascot, { height: mascotH }]} resizeMode="contain" />
       ) : (
-        <View style={[styles.mascotPlaceholder, { width: tokens.heroMaxWidth * 0.4, height: tokens.heroMaxWidth * 0.55 }]} />
+        <View style={[styles.mascotPlaceholder, { width: tokens.heroMaxWidth * 0.4, height: mascotH }]} />
       )}
 
-      <View style={[styles.panelCol, { maxWidth: tokens.heroMaxWidth, gap: tokens.gap }]}>
-        <View style={[styles.panel, shadowCard]}>
+      <View style={[styles.panelCol, { maxWidth: tokens.heroMaxWidth, gap: isCompact ? 6 : tokens.gap }]}>
+        <View style={[styles.panel, shadowCard, { padding: panelPad }]}>
           {eyebrow ? (
             <TalkiText weight="semibold" color={v3.textSecondary} style={styles.eyebrow}>
               {eyebrow}
@@ -69,14 +76,14 @@ export function LandscapeHeroPanel({
             </TalkiText>
           ) : null}
           {progress !== undefined ? (
-            <LandscapeProgress value={progress} label={progressLabel} style={{ marginTop: 8 }} />
+            <LandscapeProgress value={progress} label={progressLabel} style={{ marginTop: isCompact ? 4 : 8 }} />
           ) : null}
           {children}
         </View>
 
         {ctaLabel ? (
           <Pressable
-            testID={testID ? `${testID}-cta` : undefined}
+            testID={resolvedCtaTestID}
             onPress={onCtaPress}
             accessibilityRole="button"
             accessibilityLabel={ctaLabel}
@@ -126,7 +133,6 @@ const styles = StyleSheet.create({
     borderRadius: radii.hero,
     borderWidth: 2,
     borderColor: '#fff',
-    padding: 14,
   },
   eyebrow: { fontSize: 12, marginBottom: 2 },
   subtitle: { fontSize: 12, marginTop: 4 },

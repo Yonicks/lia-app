@@ -32,8 +32,8 @@ async function seedProgress(page: Page, progress: string[], lastCat: string | nu
   await page.waitForLoadState('networkidle');
 }
 
-test.describe('Phase 7 Home', () => {
-  test('renders all four sections in the correct order, with real progress seeded', async ({ page }) => {
+test.describe('Phase 7 / 20 Home', () => {
+  test('renders landscape Home composition: hero above category strip, no bottom nav', async ({ page }) => {
     const consoleErrors: string[] = [];
     const pageErrors: string[] = [];
     page.on('console', (msg) => {
@@ -47,22 +47,18 @@ test.describe('Phase 7 Home', () => {
 
     const hero = page.getByTestId(testIds.home.hero);
     const categories = page.getByTestId(testIds.home.sectionCategories);
-    const practice = page.getByTestId(testIds.home.sectionPractice);
-    const games = page.getByTestId(testIds.home.sectionGames);
     await expect(hero).toBeVisible();
     await expect(categories).toBeVisible();
-    await expect(practice).toBeVisible();
-    await expect(games).toBeVisible();
+    await expect(page.getByTestId(testIds.nav.sideStart)).toBeVisible();
+    await expect(page.getByTestId(testIds.nav.sideEnd)).toBeVisible();
+    await expect(page.locator('[data-testid^="bottom-nav"]')).toHaveCount(0);
 
-    const [heroBox, catBox, practiceBox, gamesBox] = await Promise.all([
-      hero.boundingBox(),
-      categories.boundingBox(),
-      practice.boundingBox(),
-      games.boundingBox(),
-    ]);
+    const [heroBox, catBox] = await Promise.all([hero.boundingBox(), categories.boundingBox()]);
     expect(heroBox!.y).toBeLessThan(catBox!.y);
-    expect(catBox!.y).toBeLessThan(practiceBox!.y);
-    expect(practiceBox!.y).toBeLessThan(gamesBox!.y);
+
+    // Former Home practice/games rows are not on the landscape Home surface.
+    await expect(page.getByTestId(testIds.home.sectionPractice)).toHaveCount(0);
+    await expect(page.getByTestId(testIds.home.sectionGames)).toHaveCount(0);
 
     expect(consoleErrors, `console errors: ${consoleErrors.join('; ')}`).toHaveLength(0);
     expect(pageErrors, `page errors: ${pageErrors.join('; ')}`).toHaveLength(0);
@@ -81,48 +77,48 @@ test.describe('Phase 7 Home', () => {
   test('the hero is a welcome banner on a completely fresh app (learned.size === 0), not a fabricated 0% continue card', async ({
     page,
   }) => {
-    // homeHero() (index.html 1415-1438): a new user cannot be detected from
-    // currentCategory() (it always returns a category), only from
-    // learned.size === 0. Fresh state renders "היי כאן דברי" with no tile,
-    // bar or numbers.
     await openApp(page);
     await expect(page.getByTestId(testIds.home.hero)).toBeVisible();
     await expect(page.getByTestId(testIds.home.hero)).toContainText('היי כאן דברי');
     await expect(page.getByTestId(testIds.home.heroContinue)).toHaveText('מתחילים ללמוד');
   });
 
-  test('exactly three game cards (memory, quiz, missing) and three practice cards (focus, receptive, cloze)', async ({
-    page,
-  }) => {
+  test('all categories including mine remain reachable in the strip', async ({ page }) => {
     await openApp(page);
-    await expect(page.getByTestId(testIds.home.game('memory'))).toBeVisible();
-    await expect(page.getByTestId(testIds.home.game('quiz'))).toBeVisible();
-    await expect(page.getByTestId(testIds.home.game('missing'))).toBeVisible();
-    for (const other of ['cards', 'sounds', 'count', 'puzzle', 'match', 'bubbles', 'sort', 'speech'] as const) {
-      await expect(page.getByTestId(testIds.home.game(other))).toHaveCount(0);
+    const expected = [
+      'animals',
+      'food',
+      'colors',
+      'home',
+      'outside',
+      'actions',
+      'family',
+      'body',
+      'numbers',
+      'emotions',
+      'mine',
+    ] as const;
+    for (const id of expected) {
+      await expect(page.getByTestId(testIds.home.category(id))).toBeAttached();
     }
-
-    await expect(page.getByTestId(testIds.home.practice('focus'))).toBeVisible();
-    await expect(page.getByTestId(testIds.home.practice('receptive'))).toBeVisible();
-    await expect(page.getByTestId(testIds.home.practice('cloze'))).toBeVisible();
-    for (const other of ['temptation', 'pairs', 'combine'] as const) {
-      await expect(page.getByTestId(testIds.home.practice(other))).toHaveCount(0);
-    }
+    // Scroll the strip end-ward so mine is interactable, then open it.
+    await page.getByTestId(testIds.home.category('mine')).scrollIntoViewIfNeeded();
+    await page.getByTestId(testIds.home.category('mine')).click();
+    await expect(page.getByTestId(testIds.category.root)).toBeVisible();
   });
 
-  test('both "all" links are present and navigate to their menus', async ({ page }) => {
+  test('side nav reaches Games and Practice hubs (replacing former Home rows)', async ({ page }) => {
     await openApp(page);
-    await page.getByTestId(testIds.home.allGames).click();
+    await page.getByTestId(testIds.nav.sideEnd).click();
     await expect(page.getByTestId(testIds.gamesMenu.root)).toBeVisible();
-    // Hub switches use replace — return via side nav, not history back.
     await page.getByTestId(testIds.nav.sideStart).click();
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
 
-    await page.getByTestId(testIds.home.allPractice).click();
+    await page.getByTestId(testIds.nav.sideStart).click();
     await expect(page.getByTestId(testIds.practiceMenu.root)).toBeVisible();
   });
 
-  test('touch targets and reachability are clean, with no horizontal overflow', async ({ page }) => {
+  test('touch targets and reachability are clean, with no horizontal page overflow', async ({ page }) => {
     await openApp(page);
     await seedProgress(page, ['animals:כֶּלֶב'], 'animals');
 
@@ -141,20 +137,11 @@ test.describe('Phase 7 Home', () => {
     await burst(page, testIds.home.category('animals'), 10);
     await expect(page.getByTestId(testIds.category.root)).toBeVisible();
     await expect(page.getByTestId(testIds.category.title)).toHaveText('חיות');
-    // A double/triple navigation would have pushed the same route N times;
-    // a single back returns all the way to Home only if exactly one push
-    // happened.
     await page.goBack();
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
   });
 
   test('no listener growth on the music toggle across ten re-renders', async ({ page }) => {
-    // react-native-web's Pressable attaches a small, constant number of its
-    // own hover/press listeners per mount — not zero, and not this
-    // component's concern. The regression this guards against is *linear*
-    // growth with render count (an app-level listener leaked on every
-    // render); a flat plateau across two equal-sized batches of clicks
-    // proves that, regardless of the constant RNW attaches once.
     await openApp(page);
     for (let i = 0; i < 10; i++) {
       await page.getByTestId('topbar-music').click();
@@ -178,17 +165,17 @@ test.describe('Phase 7 Home', () => {
     await openApp(page);
     await seedProgress(page, ['animals:כֶּלֶב'], 'animals');
     await expect(page).toHaveScreenshot();
-    await captureMatrix(page, '07', 'home');
+    await captureMatrix(page, '20', 'home');
   });
 
   test('captures the empty-progress Home baseline screenshot', async ({ page }) => {
     await openApp(page);
-    await captureMatrix(page, '07', 'home-empty');
+    await captureMatrix(page, '20', 'home-empty');
   });
 
   test('captures the seeded-progress Home baseline screenshot', async ({ page }) => {
     await openApp(page);
     await seedProgress(page, ['animals:כֶּלֶב', 'animals:חָתוּל', 'animals:סוּס'], 'animals');
-    await captureMatrix(page, '07', 'home-progressed');
+    await captureMatrix(page, '20', 'home-progressed');
   });
 });

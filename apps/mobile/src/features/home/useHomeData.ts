@@ -2,8 +2,6 @@ import { useEffect } from 'react';
 
 import { currentCategory } from '../../domain/progress/currentCategory';
 import { catLearned } from '../../domain/progress/totals';
-import { HOME_PRACTICE_HOME } from '../../domain/practice/list';
-import { HOME_GAMES } from '../../domain/games/homeGames';
 import type { TalkiCategory } from '../../domain/types';
 import { allCats } from '../../domain/vocabulary/allCats';
 import { useProgressStore } from '../../state/progressStore';
@@ -49,5 +47,3 @@ export function useHomeData(): HomeData {
     learnedByCategory: (cat) => catLearned(cat, learned),
   };
 }
-
-export { HOME_PRACTICE_HOME, HOME_GAMES };

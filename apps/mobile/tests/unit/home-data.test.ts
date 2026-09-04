@@ -33,7 +33,7 @@ describe('Home data — the practice row', () => {
   });
 });
 
-describe('Home data — the category grid', () => {
+describe('Home data — category strip source', () => {
   it('matches allCats() including the synthetic mine category when custom words exist', () => {
     const custom: TalkiWord[] = [{ word: 'כדור', emoji: '⚽', id: 'c1' }];
     const cats = allCats(custom);

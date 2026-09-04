@@ -192,7 +192,9 @@ test.describe('Phase 14 full sweep', () => {
     const coldMs = Date.now() - coldStart;
 
     const transitionStart = Date.now();
-    await page.getByTestId(testIds.home.game('quiz')).click();
+    await page.getByTestId(testIds.nav.sideEnd).click();
+    await expect(page.getByTestId(testIds.gamesMenu.root)).toBeVisible();
+    await page.getByTestId(testIds.gamesMenu.card('quiz')).click();
     await page.waitForSelector(
       `[data-testid="${testIds.quiz.root}"], [data-testid="${testIds.game.doneCard}"]`,
     );

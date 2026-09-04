@@ -12,10 +12,11 @@ export const testIds = {
     skipLayer: 'intro-skip-layer',
     layer: (id: string) => `intro-layer-${id}`,
   },
-  /** app/index.tsx + src/features/home/ (phase-07-plan.md). Section
-   *  order is hero, categories, practice, games; every dynamic id is a
-   *  factory keyed by the same domain id (`CategoryId`/`GameId`/
-   *  `PracticeModeId`) the data layer already uses. */
+  /** app/index.tsx + src/features/home/ (phase-07 / phase-20). Landscape
+   *  Home is hero + category strip; practice/games entry is via side-nav
+   *  hubs. Dynamic factories stay keyed by domain ids. Legacy
+   *  practice/game Home testIds remain for historical specs that route
+   *  through hubs instead. */
   home: {
     root: 'home-root',
     hero: 'home-hero',

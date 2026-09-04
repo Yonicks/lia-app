@@ -36,7 +36,7 @@ during the Phase 16 audit (see `docs/migration/phase-16-audit.md` §7).
 | Asset family | Status | Notes |
 |---|---|---|
 | Talki logo | EXISTING | `brand.headerLogo` (`assets/v2/brand/talki-header-logo.png`); verify fit at landscape scale |
-| Yellow Talki mascot | EXISTING | Two variants registered — `introAssets.star` and `homeAssets.heroStar`; Phase 18/20 must pick one |
+| Yellow Talki mascot | EXISTING | Phase 20 Home uses `homeAssets.heroStar` in `LandscapeHeroPanel` (world-bg composition; no hero-scene card) |
 | Music control art | EXISTING | `uiIcons.music` (`assets/v2/icons/talki-ui-icon-music.png`) |
 | Parent/profile control art | VERIFY | `uiIcons.settings` exists but is not wired into `TopBar` today — the logo itself is the only tappable/long-press parent trigger (`src/components/shell/TopBar.tsx`); the reference shows a separate small parent icon. Open wiring decision, not a missing-art blocker |
 | Star/reward art | EXISTING | `uiIcons.star` (`assets/v2/icons/talki-ui-icon-star.png`); note the current `TopBar` points pill is display-only, not tappable — see interaction-map "Stars/rewards" |

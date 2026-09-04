@@ -61,16 +61,25 @@ test.describe('Phase 7 / 19 navigation spine', () => {
     await expect(page.getByTestId(testIds.nav.sideEnd)).toBeVisible();
   });
 
-  test('game and practice cards route to a stub screen, and back returns correctly', async ({ page }) => {
+  test('game and practice cards route from hubs, and back returns correctly', async ({ page }) => {
     await openApp(page);
-    await page.getByTestId(testIds.home.game('memory')).click();
+    // Phase 20: Home no longer hosts featured game/practice rows — open via side nav hubs.
+    await page.getByTestId(testIds.nav.sideEnd).click();
+    await expect(page.getByTestId(testIds.gamesMenu.root)).toBeVisible();
+    await page.getByTestId(testIds.gamesMenu.card('memory')).click();
     await expect(page.getByTestId(testIds.game.shellRoot)).toBeVisible();
     await page.goBack();
+    await expect(page.getByTestId(testIds.gamesMenu.root)).toBeVisible();
+    await page.getByTestId(testIds.nav.sideStart).click();
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
 
-    await page.getByTestId(testIds.home.practice('focus')).click();
+    await page.getByTestId(testIds.nav.sideStart).click();
+    await expect(page.getByTestId(testIds.practiceMenu.root)).toBeVisible();
+    await page.getByTestId(testIds.practiceMenu.card('focus')).click();
     await expect(page.getByTestId(testIds.focus.card)).toBeVisible();
     await page.goBack();
+    await expect(page.getByTestId(testIds.practiceMenu.root)).toBeVisible();
+    await page.getByTestId(testIds.nav.sideStart).click();
     await expect(page.getByTestId(testIds.home.root)).toBeVisible();
   });
 
