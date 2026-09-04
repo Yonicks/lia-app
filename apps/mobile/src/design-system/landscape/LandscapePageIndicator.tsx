@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import { useReducedMotion } from 'react-native-reanimated';
 
+import { useTalkiReducedMotion } from '@/design-system/motion';
 import { v3 } from '@/design-system/theme/colors';
 import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 
@@ -28,7 +28,7 @@ export function LandscapePageIndicator({
 }: LandscapePageIndicatorProps) {
   const layout = useLandscapeLayout();
   const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useTalkiReducedMotion();
   const dot = tokens.pageDotSize;
 
   if (pageCount <= 1) return null;

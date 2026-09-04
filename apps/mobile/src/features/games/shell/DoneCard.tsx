@@ -2,6 +2,8 @@ import { Image, StyleSheet, View } from 'react-native';
 
 import { uiIcons } from '@/design-system/assets';
 import { TalkiButton, TalkiHeading, TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape/tokens';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { radii } from '@/design-system/theme/radii';
 import { shadowCard } from '@/design-system/theme/shadows';
 import { v3 } from '@/design-system/theme/colors';
@@ -22,6 +24,8 @@ export interface DoneCardProps {
  * threshold table.
  */
 export function DoneCard({ result, onReplay, onHome }: DoneCardProps) {
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const filled = doneCardStars(result.score, result.total);
   const summary = [
     `${result.score} מתוך ${result.total}`,
@@ -32,7 +36,18 @@ export function DoneCard({ result, onReplay, onHome }: DoneCardProps) {
     .join(' • ');
 
   return (
-    <View testID={testIds.game.doneCard} style={[styles.card, shadowCard]}>
+    <View
+      testID={testIds.game.doneCard}
+      style={[
+        styles.card,
+        shadowCard,
+        {
+          marginInline: tokens.padInline,
+          padding: Math.max(16, tokens.padBlock + 8),
+          maxWidth: layout.width - tokens.padInline * 2,
+        },
+      ]}
+    >
       <View testID={testIds.game.doneStars} style={styles.stars} accessibilityLabel={`${filled} כוכבים`}>
         {[0, 1, 2].map((i) => (
           <Image
@@ -40,6 +55,8 @@ export function DoneCard({ result, onReplay, onHome }: DoneCardProps) {
             source={uiIcons.star}
             style={[styles.star, i < filled ? styles.starOn : styles.starOff]}
             resizeMode="contain"
+            accessibilityElementsHidden
+            importantForAccessibility="no"
           />
         ))}
       </View>
@@ -59,12 +76,11 @@ export function DoneCard({ result, onReplay, onHome }: DoneCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    marginInline: 20,
-    padding: 24,
     borderRadius: radii.hero,
     backgroundColor: v3.surface,
     alignItems: 'center',
     gap: 12,
+    alignSelf: 'center',
   },
   stars: {
     flexDirection: 'row',

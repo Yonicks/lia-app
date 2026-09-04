@@ -207,16 +207,21 @@ Production art rules:
 
 Landscape has limited vertical height.
 
-The existing global banner placement must not simply be carried forward without a layout decision.
+Route-aware banner placement is defined in
+[`ad-placement-policy.md`](./ad-placement-policy.md) and implemented by
+`apps/mobile/src/services/ads/adPlacement.ts`.
 
-The landscape program must explicitly decide:
+Summary:
 
-- which screens show banners;
-- whether gameplay screens are ad-free;
-- reserved banner height;
-- placement relative to safe areas and side navigation.
+- banners only on hub/parent exact routes (`/`, `/games`, `/practice`,
+  `/rewards`, `/parent`);
+- active gameplay / practice detail / category / cards / intro / dev are
+  ad-free (no overlay, no play-area shrink);
+- reserved height collapses on load failure;
+- no app-open or interstitial formats.
 
-Until that policy is approved in a phase plan, do not distort the reference layout to make room for an inherited banner.
+Do not distort reference hub layouts with an always-on root banner on
+ineligible surfaces.
 
 ## Validation philosophy
 

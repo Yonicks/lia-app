@@ -4,6 +4,10 @@
  * one-file change instead of a grep-and-pray across every spec.
  */
 export const testIds = {
+  /** Root boot surfaces (`app/_layout.tsx`) — Phase 28. */
+  boot: {
+    fontsLoading: 'boot-fonts-loading',
+  },
   /** app/_layout.tsx + src/features/intro/ — the native opening sequence
    *  (phase-06-plan.md). `layer(id)` matches every `IntroLayerId` so a spec
    *  can assert on the exact same identifiers `layers.ts` exports. */

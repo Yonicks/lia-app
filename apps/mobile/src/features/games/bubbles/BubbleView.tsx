@@ -3,6 +3,7 @@ import { Platform, Pressable, StyleSheet } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { TalkiText } from '@/design-system/components';
+import { useTalkiReducedMotion } from '@/design-system/motion';
 import { display } from '@/domain/vocabulary/niqqud';
 import { testIds } from '@/testing/testIds';
 
@@ -79,12 +80,17 @@ function NativeRisingBubble({
   niqqud: boolean;
   onPop: () => void;
 }) {
+  const reduceMotion = useTalkiReducedMotion();
   const ty = useSharedValue(0);
   const tx = useSharedValue(0);
 
   useEffect(() => {
     ty.value = 0;
     tx.value = 0;
+    if (reduceMotion) {
+      // Still tappable; skip decorative rise so feedback stays readable.
+      return;
+    }
     ty.value = withTiming(-rise, {
       duration: bubble.duration * 1000,
       easing: Easing.linear,
@@ -93,7 +99,7 @@ function NativeRisingBubble({
       duration: bubble.duration * 1000,
       easing: Easing.linear,
     });
-  }, [bubble.id, bubble.duration, bubble.drift, rise, ty, tx]);
+  }, [bubble.id, bubble.duration, bubble.drift, rise, ty, tx, reduceMotion]);
 
   const style = useAnimatedStyle(() => ({
     transform: [{ translateY: ty.value }, { translateX: tx.value }],

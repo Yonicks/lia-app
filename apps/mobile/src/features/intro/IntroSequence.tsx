@@ -3,13 +3,13 @@ import { Image, Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   useAnimatedStyle,
-  useReducedMotion,
   useSharedValue,
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
 
 import { TalkiText } from '@/design-system/components';
+import { REDUCED_MOTION_INTRO_HOLD_MS, useTalkiReducedMotion } from '@/design-system/motion';
 import { v3 } from '@/design-system/theme/colors';
 import { useDevice } from '@/design-system/responsive/useDevice';
 import { testIds } from '@/testing/testIds';
@@ -45,7 +45,7 @@ export interface IntroSequenceProps {
 export function IntroSequence({ onComplete, testID }: IntroSequenceProps) {
   const { width, height } = useDevice();
   const preloadReady = useIntroPreload();
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = useTalkiReducedMotion();
   const { playBeat } = useIntroAudio();
 
   const bg = useSharedValue(0);
@@ -126,7 +126,7 @@ export function IntroSequence({ onComplete, testID }: IntroSequenceProps) {
       // move on" — the fully-settled frame appears with no animation at
       // all, then the sequence hands off shortly after.
       jumpToSettled();
-      timers.current.push(setTimeout(finish, 400));
+      timers.current.push(setTimeout(finish, REDUCED_MOTION_INTRO_HOLD_MS));
       return () => timers.current.forEach(clearTimeout);
     }
 

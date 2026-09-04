@@ -2,6 +2,7 @@ import { Modal, StyleSheet, View } from 'react-native';
 
 import { uiIcons } from '@/design-system/assets';
 import { TalkiButton, TalkiHeading, TalkiIconButton, TalkiText } from '@/design-system/components';
+import { modalAnimationType, useTalkiReducedMotion } from '@/design-system/motion';
 import { radii } from '@/design-system/theme/radii';
 import { shadowFloating } from '@/design-system/theme/shadows';
 import { v2, v3 } from '@/design-system/theme/colors';
@@ -22,10 +23,18 @@ export interface ParentGateProps {
  * index.html `renderLock()` — a modal challenge gating the parent screen,
  * reached by long-pressing the topbar brand mark. SHELL ONLY: no answer
  * input, no verification, no wrong-answer state. Those are Phase 12.
+ * Production parent gate is `ParentGateScreen` (Phase 27); this remains
+ * gallery/dev chrome.
  */
 export function ParentGate({ visible, question, onConfirm, onCancel, testID }: ParentGateProps) {
+  const reduceMotion = useTalkiReducedMotion();
   return (
-    <Modal visible={visible} transparent animationType="fade" testID={testID}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType={modalAnimationType(reduceMotion, 'fade')}
+      testID={testID}
+    >
       <View style={styles.backdrop}>
         <View style={[styles.card, shadowFloating]}>
           <TalkiIconButton

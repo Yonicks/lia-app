@@ -90,8 +90,12 @@ export default function RootLayout() {
 
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: v3.bg }}>
-        <ActivityIndicator color={v3.purple600} />
+      <View
+        testID={testIds.boot.fontsLoading}
+        accessibilityLabel="טוען"
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: v3.bg }}
+      >
+        <ActivityIndicator color={v3.purple600} accessibilityLabel="טוען" />
       </View>
     );
   }
