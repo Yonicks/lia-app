@@ -2,6 +2,8 @@ import { useEffect, useMemo, useReducer, useRef } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { TalkiButton, TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { radii } from '@/design-system/theme/radii';
 import { shadowSm } from '@/design-system/theme/shadows';
 import { v3 } from '@/design-system/theme/colors';
@@ -15,10 +17,10 @@ import { useSettingsStore } from '@/state/settingsStore';
 import { testIds } from '@/testing/testIds';
 
 import { WordArt } from '../../games/shell/WordArt';
-import { GameShell } from '../../games/shell/GameShell';
 import { makeRnd } from '../../games/shell/e2eSeed';
 import type { GameSession } from '../../games/shell/useGameSession';
 import { PracticeGate } from '../PracticeGate';
+import { PracticeShell } from '../shell/PracticeShell';
 import {
   initReceptive,
   receptiveChips,
@@ -38,6 +40,8 @@ export function ReceptiveScreen({ catId, seed }: { catId: string | null; seed?: 
 function ReceptivePlay({ session, seed }: { session: GameSession; seed?: number }) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const { stats, markLearned, recordSeen } = useProgressStore();
   const settings = useSettingsStore((s) => s.settings);
   const spoken = useRef<string | null>(null);
@@ -59,12 +63,14 @@ function ReceptivePlay({ session, seed }: { session: GameSession; seed?: number 
   }, [state.done, session.audio]);
 
   const cols = receptiveColumns(state.options.length);
+  const optMin = tokens.practiceOptionMin;
+  const boardGap = Math.max(6, tokens.gap - 2);
   const prompt = () => {
     void wordVoiceService.say(session.category!.id, `תַּרְאִי לִי ${plain(state.target.word)}`, { core: true });
   };
 
   return (
-    <GameShell
+    <PracticeShell
       title="👈 תראי לי"
       chips={receptiveChips(state)}
       chipTestIDs={[undefined, undefined, testIds.receptive.level]}
@@ -78,10 +84,22 @@ function ReceptivePlay({ session, seed }: { session: GameSession; seed?: number 
       celebrateMessage={null}
       onDismissCelebrate={() => undefined}
     >
-      <View testID={testIds.receptive.root} style={styles.box}>
-        <TalkiText align="center">מקשיבים ולוחצים על התמונה הנכונה</TalkiText>
+      <View
+        testID={testIds.receptive.root}
+        style={[
+          styles.box,
+          {
+            gap: boardGap,
+            paddingInline: tokens.padInline,
+            paddingBlock: tokens.padBlock,
+          },
+        ]}
+      >
+        <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
+          מקשיבים ולוחצים על התמונה הנכונה
+        </TalkiText>
         <TalkiButton testID={testIds.receptive.replay} label="🔊 לשמוע שוב" onPress={prompt} />
-        <View style={styles.grid}>
+        <View style={[styles.grid, { gap: boardGap }]}>
           {state.options.map((o, index) => (
             <Pressable
               key={`${o.word}-${index}`}
@@ -103,28 +121,43 @@ function ReceptivePlay({ session, seed }: { session: GameSession; seed?: number 
                   session.schedule(420, () => dispatch({ type: 'UNLOCK' }));
                 }
               }}
-              style={[styles.opt, { flexBasis: cols === 3 ? '30%' : '45%' }]}
+              style={[
+                styles.opt,
+                shadowSm,
+                {
+                  minWidth: optMin,
+                  minHeight: optMin,
+                  flexBasis: cols === 3 ? optMin : optMin + 24,
+                  maxWidth: cols === 3 ? optMin + 28 : optMin + 48,
+                },
+              ]}
             >
               <WordArt word={o} size="72%" />
             </Pressable>
           ))}
         </View>
       </View>
-    </GameShell>
+    </PracticeShell>
   );
 }
 
 const styles = StyleSheet.create({
-  box: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 16 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 10, width: '100%' },
+  box: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 0 },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    flex: 1,
+    minHeight: 0,
+    alignContent: 'center',
+  },
   opt: {
-    minWidth: 96,
-    minHeight: 96,
     aspectRatio: 1,
     borderRadius: radii.card,
     backgroundColor: v3.surface,
     alignItems: 'center',
     justifyContent: 'center',
-    ...shadowSm,
   },
 });

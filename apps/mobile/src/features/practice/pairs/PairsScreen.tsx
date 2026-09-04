@@ -2,6 +2,8 @@ import { useEffect, useMemo, useReducer, useRef } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { TalkiButton, TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { radii } from '@/design-system/theme/radii';
 import { shadowSm } from '@/design-system/theme/shadows';
 import { v3 } from '@/design-system/theme/colors';
@@ -14,10 +16,10 @@ import { useSettingsStore } from '@/state/settingsStore';
 import { testIds } from '@/testing/testIds';
 
 import { WordArt } from '../../games/shell/WordArt';
-import { GameShell } from '../../games/shell/GameShell';
 import { makeRnd } from '../../games/shell/e2eSeed';
 import type { GameSession } from '../../games/shell/useGameSession';
 import { PracticeGate } from '../PracticeGate';
+import { PracticeShell } from '../shell/PracticeShell';
 import { initPairs, pairsChips, pairsReducer, pairsResult } from './pairsReducer';
 
 export function PairsScreen({ catId, seed }: { catId: string | null; seed?: number }) {
@@ -31,10 +33,14 @@ export function PairsScreen({ catId, seed }: { catId: string | null; seed?: numb
 function PairsPlay({ session, seed }: { session: GameSession; seed?: number }) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const niqqud = useSettingsStore((s) => s.settings.niqqud);
   const spoken = useRef<number | null>(null);
   const rnd = useMemo(() => makeRnd(seed), [seed]);
   const [state, dispatch] = useReducer(pairsReducer, undefined, () => initPairs(rnd));
+  const optMin = tokens.practiceOptionMin;
+  const boardGap = Math.max(6, tokens.gap - 2);
 
   useEffect(() => {
     if (state.done) return;
@@ -48,7 +54,7 @@ function PairsPlay({ session, seed }: { session: GameSession; seed?: number }) {
   }, [state.done, session.audio]);
 
   return (
-    <GameShell
+    <PracticeShell
       title="👂 דומה אבל לא"
       chips={pairsChips(state)}
       done={state.done}
@@ -61,14 +67,26 @@ function PairsPlay({ session, seed }: { session: GameSession; seed?: number }) {
       celebrateMessage={null}
       onDismissCelebrate={() => undefined}
     >
-      <View testID={testIds.pairs.root} style={styles.box}>
-        <TalkiText align="center">שתי מילים כמעט זהות — איזו נשמעה?</TalkiText>
+      <View
+        testID={testIds.pairs.root}
+        style={[
+          styles.box,
+          {
+            gap: boardGap,
+            paddingInline: tokens.padInline,
+            paddingBlock: tokens.padBlock,
+          },
+        ]}
+      >
+        <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
+          שתי מילים כמעט זהות — איזו נשמעה?
+        </TalkiText>
         <TalkiButton
           testID={testIds.pairs.replay}
           label="🔊 לשמוע שוב"
           onPress={() => void wordVoiceService.say(session.category!.id, plain(state.target.word), { core: true })}
         />
-        <View style={styles.grid}>
+        <View style={[styles.grid, { gap: boardGap }]}>
           {state.shown.map((o, index) => (
             <Pressable
               key={`${o.word}-${index}`}
@@ -93,30 +111,46 @@ function PairsPlay({ session, seed }: { session: GameSession; seed?: number }) {
                   );
                 }
               }}
-              style={styles.opt}
+              style={[
+                styles.opt,
+                shadowSm,
+                {
+                  minWidth: optMin,
+                  minHeight: optMin,
+                  flexBasis: optMin + 40,
+                  maxWidth: optMin + 80,
+                  padding: Math.max(6, tokens.gap - 2),
+                  gap: Math.max(4, tokens.gap - 4),
+                },
+              ]}
             >
               <WordArt word={o} size="64%" />
-              <TalkiText>{display(o.word, niqqud)}</TalkiText>
+              <TalkiText style={{ fontSize: tokens.wordLabelSize }}>{display(o.word, niqqud)}</TalkiText>
             </Pressable>
           ))}
         </View>
       </View>
-    </GameShell>
+    </PracticeShell>
   );
 }
 
 const styles = StyleSheet.create({
-  box: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 16 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 10, width: '100%' },
+  box: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 0 },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    flex: 1,
+    minHeight: 0,
+    alignContent: 'center',
+  },
   opt: {
     flexGrow: 1,
-    flexBasis: 140,
-    minHeight: 96,
     borderRadius: radii.card,
     backgroundColor: v3.surface,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
-    ...shadowSm,
   },
 });

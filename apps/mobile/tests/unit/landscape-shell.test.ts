@@ -97,6 +97,27 @@ describe('landscapeTokens', () => {
     expect(landscapeTokens('compactPhone').sortSplitLayout).toBe(false);
     expect(landscapeTokens('tablet').sortSplitLayout).toBe(true);
   });
+
+  it('exposes Phase 26 practice-board tokens without local breakpoints', () => {
+    for (const deviceClass of CLASSES) {
+      const t = landscapeTokens(deviceClass);
+      expect(t.practiceOptionMin).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.practiceModMin).toBeGreaterThanOrEqual(LANDSCAPE_MIN_TOUCH);
+      expect(t.practiceArtSize).toBeGreaterThanOrEqual(72);
+      expect(t.practiceJarSize).toBeGreaterThanOrEqual(40);
+      expect(t.practiceWordSize).toBeGreaterThanOrEqual(18);
+      expect(t.practicePhraseSize).toBeGreaterThanOrEqual(16);
+      expect(t.practiceModArtSize).toBeGreaterThanOrEqual(24);
+    }
+    expect(landscapeTokens('compactPhone').practiceCombineSplitLayout).toBe(false);
+    expect(landscapeTokens('phone').practiceCombineSplitLayout).toBe(false);
+    expect(landscapeTokens('tablet').practiceCombineSplitLayout).toBe(true);
+    expect(landscapeTokens('largeTablet').practiceCombineSplitLayout).toBe(true);
+    const compact = landscapeTokens('compactPhone');
+    const tablet = landscapeTokens('tablet');
+    expect(tablet.practiceArtSize).toBeGreaterThan(compact.practiceArtSize);
+    expect(tablet.practiceOptionMin).toBeGreaterThan(compact.practiceOptionMin);
+  });
 });
 
 describe('landscape backgrounds', () => {

@@ -247,6 +247,60 @@ const SPEECH_ART: Record<DeviceClass, number> = {
   largeTablet: 180,
 };
 
+/**
+ * Practice-activity board metrics (Phase 26). Same DeviceClass-only rule —
+ * Focus/Receptive/Cloze/Temptation/Pairs/Combine must not invent local
+ * breakpoints for stimulus, options, jar, or modifier chrome.
+ */
+const PRACTICE_ART: Record<DeviceClass, number> = {
+  compactPhone: 88,
+  phone: 110,
+  tablet: 140,
+  largeTablet: 160,
+};
+
+const PRACTICE_WORD: Record<DeviceClass, number> = {
+  compactPhone: 24,
+  phone: 28,
+  tablet: 34,
+  largeTablet: 38,
+};
+
+const PRACTICE_OPTION_MIN: Record<DeviceClass, number> = {
+  compactPhone: 72,
+  phone: 84,
+  tablet: 108,
+  largeTablet: 120,
+};
+
+const PRACTICE_JAR: Record<DeviceClass, number> = {
+  compactPhone: 48,
+  phone: 56,
+  tablet: 72,
+  largeTablet: 80,
+};
+
+const PRACTICE_PHRASE: Record<DeviceClass, number> = {
+  compactPhone: 18,
+  phone: 20,
+  tablet: 24,
+  largeTablet: 26,
+};
+
+const PRACTICE_MOD_MIN: Record<DeviceClass, number> = {
+  compactPhone: 48,
+  phone: 52,
+  tablet: 64,
+  largeTablet: 72,
+};
+
+const PRACTICE_MOD_ART: Record<DeviceClass, number> = {
+  compactPhone: 28,
+  phone: 32,
+  tablet: 40,
+  largeTablet: 44,
+};
+
 export interface LandscapeTokens {
   gap: number;
   padInline: number;
@@ -297,6 +351,22 @@ export interface LandscapeTokens {
   sortSplitLayout: boolean;
   puzzlePieceMin: number;
   speechArtSize: number;
+  /** Focus / temptation primary stimulus max edge (dp). */
+  practiceArtSize: number;
+  /** Focus target word label size. */
+  practiceWordSize: number;
+  /** Receptive / pairs / combine picture option minimum edge (dp). */
+  practiceOptionMin: number;
+  /** Temptation jar emoji size. */
+  practiceJarSize: number;
+  /** Cloze / combine phrase text size. */
+  practicePhraseSize: number;
+  /** Combine modifier chip minimum height (dp). */
+  practiceModMin: number;
+  /** Combine modifier art edge (dp). */
+  practiceModArtSize: number;
+  /** Combine: tablets put modifiers beside the picture grid. */
+  practiceCombineSplitLayout: boolean;
 }
 
 export function landscapeTokens(deviceClass: DeviceClass, uiScale = 1): LandscapeTokens {
@@ -342,6 +412,14 @@ export function landscapeTokens(deviceClass: DeviceClass, uiScale = 1): Landscap
     sortSplitLayout: isTablet,
     puzzlePieceMin: Math.max(LANDSCAPE_MIN_TOUCH, scale(PUZZLE_PIECE_MIN[deviceClass])),
     speechArtSize: Math.max(72, scale(SPEECH_ART[deviceClass])),
+    practiceArtSize: Math.max(72, scale(PRACTICE_ART[deviceClass])),
+    practiceWordSize: Math.max(18, scale(PRACTICE_WORD[deviceClass])),
+    practiceOptionMin: Math.max(LANDSCAPE_MIN_TOUCH, scale(PRACTICE_OPTION_MIN[deviceClass])),
+    practiceJarSize: Math.max(40, scale(PRACTICE_JAR[deviceClass])),
+    practicePhraseSize: Math.max(16, scale(PRACTICE_PHRASE[deviceClass])),
+    practiceModMin: Math.max(LANDSCAPE_MIN_TOUCH, scale(PRACTICE_MOD_MIN[deviceClass])),
+    practiceModArtSize: Math.max(24, scale(PRACTICE_MOD_ART[deviceClass])),
+    practiceCombineSplitLayout: isTablet,
   };
 }
 

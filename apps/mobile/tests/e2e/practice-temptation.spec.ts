@@ -4,18 +4,18 @@ import { testIds } from '../../src/testing/testIds';
 import { auditReachability, auditTouchTargets, captureMatrix, countListeners, degradeNativeApis, speechSpy } from './_helpers';
 import { gotoPath } from './_practice';
 
-test.describe('Phase 11 temptation', () => {
+test.describe('Phase 26 temptation', () => {
   test('closed jar, manual open, no failure', async ({ page }) => {
     const spy = await speechSpy(page);
     await gotoPath(page, '/practice/temptation?catId=animals&seed=42', testIds.temptation.root);
     await expect(page.getByTestId(testIds.temptation.jar)).toBeVisible();
     await expect(page.getByTestId(testIds.temptation.open)).toBeVisible();
     expect((await spy.calls()).length).toBe(1);
-    await captureMatrix(page, '11', 'temptation-closed');
+    await captureMatrix(page, '26', 'temptation-closed');
     await expect(page).toHaveScreenshot();
     await page.getByTestId(testIds.temptation.open).click();
     await expect(page.getByTestId(testIds.temptation.next)).toBeVisible();
-    await captureMatrix(page, '11', 'temptation-open');
+    await captureMatrix(page, '26', 'temptation-open');
   });
 
   test('stubbed recognition of ANY content opens the jar', async ({ page }) => {

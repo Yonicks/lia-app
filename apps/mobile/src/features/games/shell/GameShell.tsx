@@ -31,6 +31,8 @@ export interface GameShellProps {
   /** `false` for cards — a flashcard browser, not a scored game. */
   scoring?: boolean;
   chipTestIDs?: (string | undefined)[];
+  /** Detail world — games default; practice activities use `practice`. */
+  world?: 'games' | 'practice';
   children: ReactNode;
 }
 
@@ -53,6 +55,7 @@ export function GameShell({
   onDismissCelebrate,
   scoring = true,
   chipTestIDs,
+  world = 'games',
   children,
 }: GameShellProps) {
   const layout = useLandscapeLayout();
@@ -61,17 +64,18 @@ export function GameShell({
   const { settings, toggleMusic } = useSettingsStore();
   const parent = useParentBrand();
   const showDone = scoring && done;
+  const isPractice = world === 'practice';
 
   return (
     <LandscapeWorldShell
-      variant="detail"
-      world="games"
-      backgroundSource={landscapeBackgrounds.games}
+      variant={isPractice ? 'practice' : 'detail'}
+      world={world}
+      backgroundSource={isPractice ? landscapeBackgrounds.practice : landscapeBackgrounds.games}
       testID={testIds.game.shellRoot}
       contentStyle={styles.shellContent}
       topBar={
         <LandscapeTopBar
-          testID="landscape-game-topbar"
+          testID={isPractice ? 'landscape-practice-topbar' : 'landscape-game-topbar'}
           points={learned.size}
           musicOn={settings.music}
           onToggleMusic={() => void toggleMusic()}

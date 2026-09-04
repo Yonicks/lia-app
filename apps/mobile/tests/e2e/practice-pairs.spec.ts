@@ -4,7 +4,7 @@ import { testIds } from '../../src/testing/testIds';
 import { auditReachability, auditTouchTargets, captureMatrix, countListeners, degradeNativeApis, speechSpy } from './_helpers';
 import { gotoPath } from './_practice';
 
-test.describe('Phase 11 pairs', () => {
+test.describe('Phase 26 pairs', () => {
   test('two options; replay works', async ({ page }) => {
     const spy = await speechSpy(page);
     await gotoPath(page, '/practice/pairs?catId=animals&seed=42', testIds.pairs.root, () => {
@@ -16,7 +16,7 @@ test.describe('Phase 11 pairs', () => {
     expect(first.length).toBe(1);
     await page.getByTestId(testIds.pairs.replay).click();
     expect((await spy.calls()).length).toBe(first.length + 1);
-    await captureMatrix(page, '11', 'pairs-board');
+    await captureMatrix(page, '26', 'pairs-board');
     await expect(page).toHaveScreenshot();
   });
 

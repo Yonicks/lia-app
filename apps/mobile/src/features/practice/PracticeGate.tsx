@@ -8,8 +8,8 @@ import { useGoBack } from '@/hooks/useGoBack';
 import { useGuardedPush } from '@/hooks/useGuardedPush';
 import { testIds } from '@/testing/testIds';
 
-import { GameShell } from '../games/shell/GameShell';
 import { useGameSession, type GameSession } from '../games/shell/useGameSession';
+import { PracticeShell } from './shell/PracticeShell';
 
 export function PracticeGate({
   modeId,
@@ -40,7 +40,7 @@ export function PracticeGate({
 
   if (!session.ready || !session.category) {
     return (
-      <GameShell
+      <PracticeShell
         title={title}
         chips={[]}
         done={false}
@@ -54,7 +54,7 @@ export function PracticeGate({
         onDismissCelebrate={() => undefined}
       >
         {null}
-      </GameShell>
+      </PracticeShell>
     );
   }
 

@@ -10,7 +10,7 @@ async function gotoReceptive(page: Parameters<typeof gotoPath>[0]) {
   });
 }
 
-test.describe('Phase 11 receptive', () => {
+test.describe('Phase 26 receptive', () => {
   test('starts at level 2 with two options; columns follow the rule', async ({ page }) => {
     const spy = await speechSpy(page);
     await gotoReceptive(page);
@@ -18,7 +18,7 @@ test.describe('Phase 11 receptive', () => {
     await expect(page.getByTestId(testIds.receptive.option(1))).toBeVisible();
     await expect(page.getByTestId(testIds.receptive.option(2))).toHaveCount(0);
     expect((await spy.calls()).length).toBe(1);
-    await captureMatrix(page, '11', 'receptive-level2');
+    await captureMatrix(page, '26', 'receptive-level2');
     await expect(page).toHaveScreenshot();
     for (let i = 0; i < 6; i++) {
       await page.getByTestId(testIds.receptive.option(0)).click();
@@ -26,7 +26,7 @@ test.describe('Phase 11 receptive', () => {
     }
     await expect(page.getByTestId(testIds.receptive.option(3))).toBeVisible();
     await expect(page.getByTestId(testIds.receptive.level)).toContainText('4');
-    await captureMatrix(page, '11', 'receptive-level4');
+    await captureMatrix(page, '26', 'receptive-level4');
   });
 
   test('audits; degradeNativeApis; no listener growth', async ({ page }) => {

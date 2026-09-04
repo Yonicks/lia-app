@@ -4,7 +4,7 @@ import { testIds } from '../../src/testing/testIds';
 import { auditReachability, auditTouchTargets, captureMatrix, countListeners, degradeNativeApis, speechSpy } from './_helpers';
 import { gotoPath } from './_practice';
 
-test.describe('Phase 11 focus', () => {
+test.describe('Phase 26 focus', () => {
   test('renders, speaks once, dots advance, bespoke done card', async ({ page }) => {
     const spy = await speechSpy(page);
     await gotoPath(page, '/practice/focus?catId=animals&seed=42', testIds.focus.card);
@@ -13,7 +13,7 @@ test.describe('Phase 11 focus', () => {
     await expect(page.getByTestId(testIds.focus.dots)).toBeVisible();
     const first = await spy.calls();
     expect(first.length).toBe(1);
-    await captureMatrix(page, '11', 'focus-step1');
+    await captureMatrix(page, '26', 'focus-step1');
     await expect(page).toHaveScreenshot();
     for (let i = 0; i < 8; i++) {
       await page.getByTestId(testIds.focus.card).click();
@@ -22,7 +22,7 @@ test.describe('Phase 11 focus', () => {
     await expect(page.getByTestId(testIds.focus.done)).toBeVisible();
     await expect(page.getByTestId(testIds.focus.nextWord)).toBeVisible();
     await expect(page.getByText('המילה נשמעה 8 פעמים במשפטים שונים')).toBeVisible();
-    await captureMatrix(page, '11', 'focus-done');
+    await captureMatrix(page, '26', 'focus-done');
   });
 
   test('audits; degradeNativeApis; no listener growth', async ({ page }) => {

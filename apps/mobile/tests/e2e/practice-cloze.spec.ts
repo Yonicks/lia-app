@@ -4,7 +4,7 @@ import { testIds } from '../../src/testing/testIds';
 import { auditReachability, auditTouchTargets, captureMatrix, countListeners, degradeNativeApis, speechSpy } from './_helpers';
 import { gotoPath } from './_practice';
 
-test.describe('Phase 11 cloze', () => {
+test.describe('Phase 26 cloze', () => {
   test('say / wait / model are distinct; she-said scores', async ({ page }) => {
     const spy = await speechSpy(page);
     await gotoPath(page, '/practice/cloze?catId=animals&seed=42', testIds.cloze.root, () => {
@@ -12,7 +12,7 @@ test.describe('Phase 11 cloze', () => {
     });
     await expect(page.getByTestId(testIds.cloze.phaseSay)).toBeVisible();
     expect((await spy.calls()).length).toBe(1);
-    await captureMatrix(page, '11', 'cloze-say');
+    await captureMatrix(page, '26', 'cloze-say');
     await expect(page).toHaveScreenshot();
   });
 
@@ -22,7 +22,7 @@ test.describe('Phase 11 cloze', () => {
       (window as unknown as { __talkiClozeSkipSay?: boolean }).__talkiClozeSkipSay = true;
     });
     await expect(page.getByTestId(testIds.cloze.phaseWait)).toBeVisible({ timeout: 8000 });
-    await captureMatrix(page, '11', 'cloze-wait');
+    await captureMatrix(page, '26', 'cloze-wait');
     await page.evaluate(() => {
       (window as unknown as { __talkiClozeWaitMs?: number }).__talkiClozeWaitMs = 1;
     });
@@ -36,7 +36,7 @@ test.describe('Phase 11 cloze', () => {
     await page.waitForTimeout(4500);
     await expect(page.getByTestId(testIds.cloze.phaseWait)).toBeVisible();
     await expect(page.getByTestId(testIds.cloze.phaseModel)).toBeVisible({ timeout: 2000 });
-    await captureMatrix(page, '11', 'cloze-model');
+    await captureMatrix(page, '26', 'cloze-model');
     await page.getByTestId(testIds.cloze.said).click();
     await expect(page.getByTestId(testIds.game.chip(1))).toContainText('1');
   });

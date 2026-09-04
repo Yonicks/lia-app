@@ -2,6 +2,8 @@ import { useEffect, useReducer, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { TalkiButton, TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { v3 } from '@/design-system/theme/colors';
 import { display } from '@/domain/vocabulary/niqqud';
 import { homeHref } from '@/domain/navigation/routes';
@@ -15,11 +17,11 @@ import { useSettingsStore } from '@/state/settingsStore';
 import { testIds } from '@/testing/testIds';
 
 import { WordArt } from '../../games/shell/WordArt';
-import { GameShell } from '../../games/shell/GameShell';
 import { makeRnd } from '../../games/shell/e2eSeed';
 import type { GameSession } from '../../games/shell/useGameSession';
 import { PracticeGate } from '../PracticeGate';
 import { TEMPTATION_LISTEN_MS } from '../practiceTimings';
+import { PracticeShell } from '../shell/PracticeShell';
 import {
   initTemptation,
   temptationChips,
@@ -45,6 +47,8 @@ export function TemptationScreen({ catId, seed }: { catId: string | null; seed?:
 function TemptationPlay({ session, seed }: { session: GameSession; seed?: number }) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const { stats, markLearned } = useProgressStore();
   const settings = useSettingsStore((s) => s.settings);
   const spoken = useRef<number | null>(null);
@@ -52,6 +56,7 @@ function TemptationPlay({ session, seed }: { session: GameSession; seed?: number
     initTemptation({ category: session.category!, stats, settings, rnd: makeRnd(seed) }),
   );
   const it = state.pool[state.i];
+  const boardGap = Math.max(6, tokens.gap - 2);
 
   useEffect(() => {
     if (state.done || state.opened) return;
@@ -98,7 +103,7 @@ function TemptationPlay({ session, seed }: { session: GameSession; seed?: number
   };
 
   return (
-    <GameShell
+    <PracticeShell
       title="🫙 הצנצנת"
       chips={temptationChips(state)}
       done={state.done}
@@ -111,32 +116,52 @@ function TemptationPlay({ session, seed }: { session: GameSession; seed?: number
       celebrateMessage={null}
       onDismissCelebrate={() => undefined}
     >
-      <View testID={testIds.temptation.root} style={styles.box}>
-        <TalkiText align="center">{state.opened ? 'נפתח!' : 'רואים מה יש בפנים? צריך להגיד כדי לפתוח'}</TalkiText>
-        <View testID={testIds.temptation.jar} style={styles.jar}>
-          <TalkiText style={styles.emoji}>{state.opened ? '' : '🫙'}</TalkiText>
+      <View
+        testID={testIds.temptation.root}
+        style={[
+          styles.box,
+          {
+            gap: boardGap,
+            paddingInline: tokens.padInline,
+            paddingBlock: tokens.padBlock,
+            maxWidth: tokens.cardsStageMaxWidth,
+            alignSelf: 'center',
+            width: '100%',
+          },
+        ]}
+      >
+        <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
+          {state.opened ? 'נפתח!' : 'רואים מה יש בפנים? צריך להגיד כדי לפתוח'}
+        </TalkiText>
+        <View testID={testIds.temptation.jar} style={[styles.jar, { minHeight: tokens.practiceJarSize }]}>
+          <TalkiText style={{ fontSize: tokens.practiceJarSize }}>{state.opened ? '' : '🫙'}</TalkiText>
         </View>
-        {state.opened && it ? <WordArt word={it} /> : null}
-        {state.opened && it ? <TalkiText>{display(it.word, settings.niqqud)}</TalkiText> : null}
+        {state.opened && it ? <WordArt word={it} size={tokens.practiceArtSize} /> : null}
+        {state.opened && it ? (
+          <TalkiText style={{ fontSize: tokens.practiceWordSize }}>{display(it.word, settings.niqqud)}</TalkiText>
+        ) : null}
         {state.opened ? (
           <TalkiButton testID={testIds.temptation.next} label="הצנצנת הבאה" onPress={() => dispatch({ type: 'NEXT' })} />
         ) : (
-          <View style={styles.row}>
-            <TalkiButton testID={testIds.temptation.mic} label={state.listening ? 'מקשיבים...' : 'להקשיב'} onPress={() => void listen()} />
+          <View style={[styles.row, { gap: boardGap }]}>
+            <TalkiButton
+              testID={testIds.temptation.mic}
+              label={state.listening ? 'מקשיבים...' : 'להקשיב'}
+              onPress={() => void listen()}
+            />
             <TalkiButton testID={testIds.temptation.open} label="👐 לפתוח" variant="secondary" onPress={open} />
           </View>
         )}
-        <TalkiText align="center" color={v3.textMuted}>
+        <TalkiText align="center" color={v3.textMuted} style={{ fontSize: tokens.subtitleSize }}>
           כל ניסיון פותח: מילה, הברה, קול או הצבעה
         </TalkiText>
       </View>
-    </GameShell>
+    </PracticeShell>
   );
 }
 
 const styles = StyleSheet.create({
-  box: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 16 },
-  jar: { minHeight: 80, alignItems: 'center' },
-  emoji: { fontSize: 64 },
-  row: { flexDirection: 'row', gap: 10, flexWrap: 'wrap', justifyContent: 'center' },
+  box: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 0 },
+  jar: { alignItems: 'center', justifyContent: 'center' },
+  row: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' },
 });

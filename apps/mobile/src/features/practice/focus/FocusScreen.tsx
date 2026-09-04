@@ -2,6 +2,8 @@ import { useEffect, useReducer, useRef } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { TalkiButton, TalkiHeading, TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { radii } from '@/design-system/theme/radii';
 import { v3 } from '@/design-system/theme/colors';
 import { CARRIERS } from '@/domain/practice/content';
@@ -16,10 +18,10 @@ import { useSettingsStore } from '@/state/settingsStore';
 import { testIds } from '@/testing/testIds';
 
 import { WordArt } from '../../games/shell/WordArt';
-import { GameShell } from '../../games/shell/GameShell';
 import { makeRnd } from '../../games/shell/e2eSeed';
 import type { GameSession } from '../../games/shell/useGameSession';
 import { PracticeGate } from '../PracticeGate';
+import { PracticeShell } from '../shell/PracticeShell';
 import { focusChips, focusPhrase, focusReducer, initFocus } from './focusReducer';
 
 export function FocusScreen({ catId, seed }: { catId: string | null; seed?: number }) {
@@ -41,6 +43,8 @@ function FocusPlay({
 }) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const { stats, recordSeen, markLearned } = useProgressStore();
   const settings = useSettingsStore((s) => s.settings);
   const spoken = useRef<number | null>(null);
@@ -58,8 +62,10 @@ function FocusPlay({
     if (state.done) session.audio.complete();
   }, [state.done, session.audio]);
 
+  const boardGap = Math.max(6, tokens.gap - 2);
+
   return (
-    <GameShell
+    <PracticeShell
       title="🎯 מילה במיקוד"
       chips={focusChips(state)}
       done={false}
@@ -74,7 +80,17 @@ function FocusPlay({
       scoring={false}
     >
       {state.done ? (
-        <View testID={testIds.focus.done} style={styles.done}>
+        <View
+          testID={testIds.focus.done}
+          style={[
+            styles.done,
+            {
+              gap: boardGap,
+              padding: tokens.padInline,
+              margin: Math.max(8, tokens.gap),
+            },
+          ]}
+        >
           <TalkiHeading level={1} align="center">
             {`סיימנו את ${display(state.it.word, settings.niqqud)}`}
           </TalkiHeading>
@@ -86,44 +102,72 @@ function FocusPlay({
         </View>
       ) : (
         <View testID={testIds.focus.root} style={styles.card}>
-        <Pressable
-          testID={testIds.focus.card}
-          accessibilityRole="button"
-          onPress={() => {
-            void markLearned(category.id, state.it.word);
-            if (state.step + 1 >= state.total) void recordSeen(category.id, state.it.word, false);
-            dispatch({ type: 'ADVANCE' });
-          }}
-          style={styles.press}
-        >
-          <WordArt word={state.it} size="56%" />
-          <TalkiText testID={testIds.focus.word} style={styles.word}>
-            {display(state.it.word, settings.niqqud)}
-          </TalkiText>
-          <TalkiText testID={testIds.focus.phrase} align="center">
-            {focusPhrase(state, display(state.it.word, settings.niqqud))}
-          </TalkiText>
-          <View testID={testIds.focus.dots} style={styles.dots}>
-            {CARRIERS.map((_, i) => (
-              <View key={i} style={[styles.dot, i <= state.step && styles.dotOn]} />
-            ))}
-          </View>
-          <TalkiText align="center" color={v3.textSecondary}>
-            לוחצים על התמונה כדי לשמוע שוב ולהתקדם
-          </TalkiText>
-        </Pressable>
+          <Pressable
+            testID={testIds.focus.card}
+            accessibilityRole="button"
+            onPress={() => {
+              void markLearned(category.id, state.it.word);
+              if (state.step + 1 >= state.total) void recordSeen(category.id, state.it.word, false);
+              dispatch({ type: 'ADVANCE' });
+            }}
+            style={[
+              styles.press,
+              {
+                gap: boardGap,
+                paddingInline: tokens.padInline,
+                paddingBlock: tokens.padBlock,
+              },
+            ]}
+          >
+            <WordArt word={state.it} size={tokens.practiceArtSize} />
+            <TalkiText testID={testIds.focus.word} style={{ fontSize: tokens.practiceWordSize }}>
+              {display(state.it.word, settings.niqqud)}
+            </TalkiText>
+            <TalkiText
+              testID={testIds.focus.phrase}
+              align="center"
+              style={{ fontSize: tokens.practicePhraseSize }}
+            >
+              {focusPhrase(state, display(state.it.word, settings.niqqud))}
+            </TalkiText>
+            <View testID={testIds.focus.dots} style={[styles.dots, { gap: Math.max(4, tokens.gap - 4) }]}>
+              {CARRIERS.map((_, i) => (
+                <View
+                  key={i}
+                  style={[
+                    styles.dot,
+                    {
+                      width: tokens.pageDotSize,
+                      height: tokens.pageDotSize,
+                      borderRadius: tokens.pageDotSize / 2,
+                    },
+                    i <= state.step && styles.dotOn,
+                  ]}
+                />
+              ))}
+            </View>
+            <TalkiText align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
+              לוחצים על התמונה כדי לשמוע שוב ולהתקדם
+            </TalkiText>
+          </Pressable>
         </View>
       )}
-    </GameShell>
+    </PracticeShell>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { flex: 1 },
-  press: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10, padding: 16 },
-  word: { fontSize: 32 },
-  done: { margin: 20, padding: 24, borderRadius: radii.hero, backgroundColor: v3.surface, alignItems: 'center', gap: 12 },
-  dots: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 6, marginBlock: 8 },
-  dot: { width: 10, height: 10, borderRadius: 5, backgroundColor: v3.borderSoft },
+  card: { flex: 1, minHeight: 0 },
+  press: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 0 },
+  done: {
+    borderRadius: radii.hero,
+    backgroundColor: v3.surface,
+    alignItems: 'center',
+    alignSelf: 'center',
+    maxWidth: 520,
+    width: '100%',
+  },
+  dots: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginBlock: 4 },
+  dot: { backgroundColor: v3.borderSoft },
   dotOn: { backgroundColor: v3.purple600 },
 });

@@ -2,6 +2,8 @@ import { useEffect, useReducer, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { TalkiButton, TalkiText } from '@/design-system/components';
+import { landscapeTokens } from '@/design-system/landscape';
+import { useLandscapeLayout } from '@/design-system/responsive/useLandscapeLayout';
 import { v3 } from '@/design-system/theme/colors';
 import { display } from '@/domain/vocabulary/niqqud';
 import { homeHref } from '@/domain/navigation/routes';
@@ -11,11 +13,11 @@ import { wordVoiceService } from '@/services/voice';
 import { useSettingsStore } from '@/state/settingsStore';
 import { testIds } from '@/testing/testIds';
 
-import { GameShell } from '../../games/shell/GameShell';
 import { makeRnd } from '../../games/shell/e2eSeed';
 import type { GameSession } from '../../games/shell/useGameSession';
 import { PracticeGate } from '../PracticeGate';
 import { CLOZE_WAIT_MS } from '../practiceTimings';
+import { PracticeShell } from '../shell/PracticeShell';
 import { clozeChips, clozeModelSpeech, clozeReducer, clozeResult, initCloze } from './clozeReducer';
 
 function waitMs(): number {
@@ -35,6 +37,8 @@ export function ClozeScreen({ catId, seed }: { catId: string | null; seed?: numb
 function ClozePlay({ session, seed }: { session: GameSession; seed?: number }) {
   const goBack = useGoBack();
   const push = useGuardedPush();
+  const layout = useLandscapeLayout();
+  const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const niqqud = useSettingsStore((s) => s.settings.niqqud);
   const catId = session.category!.id;
   const [state, dispatch] = useReducer(clozeReducer, undefined, () => initCloze(makeRnd(seed)));
@@ -89,9 +93,10 @@ function ClozePlay({ session, seed }: { session: GameSession; seed?: number }) {
   const it = state.pool[state.i];
   const phaseId =
     state.phase === 'wait' ? testIds.cloze.phaseWait : state.phase === 'model' ? testIds.cloze.phaseModel : testIds.cloze.phaseSay;
+  const boardGap = Math.max(6, tokens.gap - 2);
 
   return (
-    <GameShell
+    <PracticeShell
       title="⏸️ משלימים ביחד"
       chips={clozeChips(state)}
       done={state.done}
@@ -104,39 +109,55 @@ function ClozePlay({ session, seed }: { session: GameSession; seed?: number }) {
       celebrateMessage={null}
       onDismissCelebrate={() => undefined}
     >
-      <View testID={testIds.cloze.root} style={styles.box}>
-        <TalkiText testID={testIds.cloze.phrase} align="center">
+      <View
+        testID={testIds.cloze.root}
+        style={[
+          styles.box,
+          {
+            gap: boardGap,
+            paddingInline: tokens.padInline,
+            paddingBlock: tokens.padBlock,
+            maxWidth: tokens.cardsStageMaxWidth,
+            alignSelf: 'center',
+            width: '100%',
+          },
+        ]}
+      >
+        <TalkiText testID={testIds.cloze.phrase} align="center" style={{ fontSize: tokens.practicePhraseSize }}>
           {it ? display(it.phrase, niqqud) : ''}
         </TalkiText>
-        <TalkiText testID={phaseId} align="center" color={v3.textSecondary}>
+        <TalkiText testID={phaseId} align="center" color={v3.textSecondary} style={{ fontSize: tokens.subtitleSize }}>
           {state.phase === 'wait' ? 'מחכים... תני לה חמש שניות שלמות' : state.phase === 'model' ? display(it?.answer ?? '', niqqud) : 'מקשיבים למשפט...'}
         </TalkiText>
-        <TalkiButton
-          testID={testIds.cloze.said}
-          label="✅ היא אמרה!"
-          onPress={() => {
-            wordVoiceService.cancel();
-            session.audio.correct();
-            dispatch({ type: 'NEXT', scored: true });
-          }}
-        />
-        <TalkiButton
-          testID={testIds.cloze.next}
-          label="להמשיך"
-          variant="secondary"
-          onPress={() => {
-            wordVoiceService.cancel();
-            dispatch({ type: 'NEXT', scored: false });
-          }}
-        />
-        <TalkiText align="center" color={v3.textMuted}>
+        <View style={[styles.actions, { gap: boardGap }]}>
+          <TalkiButton
+            testID={testIds.cloze.said}
+            label="✅ היא אמרה!"
+            onPress={() => {
+              wordVoiceService.cancel();
+              session.audio.correct();
+              dispatch({ type: 'NEXT', scored: true });
+            }}
+          />
+          <TalkiButton
+            testID={testIds.cloze.next}
+            label="להמשיך"
+            variant="secondary"
+            onPress={() => {
+              wordVoiceService.cancel();
+              dispatch({ type: 'NEXT', scored: false });
+            }}
+          />
+        </View>
+        <TalkiText align="center" color={v3.textMuted} style={{ fontSize: tokens.subtitleSize }}>
           כל ניסיון נחשב — גם צליל, גם הברה אחת
         </TalkiText>
       </View>
-    </GameShell>
+    </PracticeShell>
   );
 }
 
 const styles = StyleSheet.create({
-  box: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 16 },
+  box: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: 0 },
+  actions: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' },
 });

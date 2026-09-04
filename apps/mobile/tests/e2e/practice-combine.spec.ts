@@ -4,17 +4,17 @@ import { testIds } from '../../src/testing/testIds';
 import { auditReachability, auditTouchTargets, captureMatrix, countListeners, degradeNativeApis, speechSpy } from './_helpers';
 import { gotoPath } from './_practice';
 
-test.describe('Phase 11 combine', () => {
+test.describe('Phase 26 combine', () => {
   test('modifier then picture builds the phrase', async ({ page }) => {
     const spy = await speechSpy(page);
     await gotoPath(page, '/practice/combine?catId=animals&seed=42', testIds.combine.root);
     expect((await spy.calls()).length).toBe(1);
-    await captureMatrix(page, '11', 'combine-board');
+    await captureMatrix(page, '26', 'combine-board');
     await expect(page).toHaveScreenshot();
     await page.getByTestId(testIds.combine.modifier(0)).click();
     await page.getByTestId(testIds.combine.picture(0)).click();
     await expect(page.getByTestId(testIds.combine.phrase)).not.toHaveText('');
-    await captureMatrix(page, '11', 'combine-phrase');
+    await captureMatrix(page, '26', 'combine-phrase');
   });
 
   test('audits; degradeNativeApis; no listener growth', async ({ page }) => {
