@@ -93,6 +93,17 @@ export const gameCardAssets = {
   speech: require('../../assets/v2/game-menu/talki-game-card-speech.png'),
 } as const;
 
+/** Practice card art — all six PRACTICE_LIST modes (Phase 22). Files live
+ *  under `apps/mobile/assets/v2/practice-menu/` (see asset-manifest.md). */
+export const practiceCardAssets = {
+  focus: require('../../assets/v2/practice-menu/talki-practice-card-focus.png'),
+  cloze: require('../../assets/v2/practice-menu/talki-practice-card-cloze.png'),
+  temptation: require('../../assets/v2/practice-menu/talki-practice-card-temptation.png'),
+  receptive: require('../../assets/v2/practice-menu/talki-practice-card-receptive.png'),
+  pairs: require('../../assets/v2/practice-menu/talki-practice-card-pairs.png'),
+  combine: require('../../assets/v2/practice-menu/talki-practice-card-combine.png'),
+} as const;
+
 export const categoryIcons = {
   animals: require('../../assets/v2/categories/talki-cat-icon-animals.png'),
   food: require('../../assets/v2/categories/talki-cat-icon-food.png'),

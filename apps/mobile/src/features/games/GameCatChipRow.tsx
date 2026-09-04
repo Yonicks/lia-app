@@ -11,12 +11,11 @@ export interface GameCatChipRowProps {
   chips: GameCatChips;
   current: string | null;
   onSelect: (id: CategoryId) => void;
-  /** Games menu owns the plan's `games-menu-chip-<id>` testIds; the
-   *  practice menu reuses the same chip row visually (index.html 2412)
-   *  without a second identifier namespace. */
+  /** Games menu owns the plan's `games-menu-chip-<id>` testIds; Practice
+   *  hub may pass `practiceMenu.chip` via `testIDFactory`. */
   testIDFactory?: (id: string) => string;
-  /** When true (Games hub strip), keep a single non-wrapping row for
-   *  horizontal scroll parents. Practice keeps the default wrap. */
+  /** When true (Games/Practice hub strip), keep a single non-wrapping row
+   *  for horizontal scroll parents. */
   nowrap?: boolean;
 }
 

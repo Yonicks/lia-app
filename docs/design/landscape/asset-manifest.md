@@ -69,7 +69,7 @@ card illustrations matching the reference visual language.
 
 | Asset family | Status | Notes |
 |---|---|---|
-| Card art — focus, cloze, temptation, receptive, pairs, combine (6) | EXISTING | `assets/v2/practice-menu/talki-practice-card-{focus,cloze,temptation,receptive,pairs,combine}.png` — supplied and verified. No registry entry/component wiring yet (Phase 22's job); `PracticeMenuScreen` is still the plain text list from Phase 11 |
+| Card art — focus, cloze, temptation, receptive, pairs, combine (6) | EXISTING | `assets/v2/practice-menu/talki-practice-card-{focus,cloze,temptation,receptive,pairs,combine}.png` — registered in `practiceCardAssets` (Phase 22) |
 
 ## Asset implementation rules
 

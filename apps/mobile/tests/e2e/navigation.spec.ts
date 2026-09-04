@@ -105,6 +105,9 @@ test.describe('Phase 7 / 19 navigation spine', () => {
 
     await pushRoute(page, '/practice');
     await expect(page.getByTestId(testIds.practiceMenu.root)).toBeVisible();
+    // Phase 22 owns Practice hub matrix evidence (`practice.spec.ts` → phase-22/).
+    await expect(page.getByTestId(testIds.practiceMenu.card('focus'))).toBeVisible();
+    await expect(page.getByTestId(testIds.practiceMenu.grid)).toBeVisible();
   });
 
   test('no adult control (no <select>, no dropdown) on any child screen', async ({ page }) => {

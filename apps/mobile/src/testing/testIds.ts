@@ -60,10 +60,13 @@ export const testIds = {
     card: (id: string) => `games-menu-card-${id}`,
     chip: (id: string) => `games-menu-chip-${id}`,
   },
-  /** app/practice/index.tsx. */
+  /** app/practice/index.tsx — Phase 22 landscape 3×2 hub. */
   practiceMenu: {
     root: 'practice-menu-root',
+    title: 'practice-menu-title',
+    grid: 'practice-menu-grid',
     card: (id: string) => `practice-menu-card-${id}`,
+    chip: (id: string) => `practice-menu-chip-${id}`,
   },
   /** app/game/[id].tsx + src/features/games/shell/ (phase-08-plan.md). */
   game: {
