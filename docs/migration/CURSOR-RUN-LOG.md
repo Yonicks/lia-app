@@ -1,8 +1,8 @@
 # Cursor unattended landscape run log
 
-**Last phase attempted:** 28  
-**Exact final status:** `PRODUCT COMPLETION GATE PASSED`  
-**Blocked reason:** (none for product gate - native AdMob/device/Maestro/OSK attestation marked BLOCKED inside report criteria for Phase 29; overall phase exit PASSED)
+**Last phase attempted:** 29  
+**Exact final status:** `NO-GO`  
+**Blocked reason:** missing required five-device hardware matrix (compact/older Android phone, modern Android phone, recent iPhone, Android tablet, iPad); also no adb/Maestro/emulators in this sandbox
 
 ---
 
@@ -16,4 +16,5 @@ Phase 24: GAMES WAVE A READY FOR PHASE 25
 Phase 25: GAMES WAVE B READY FOR PHASE 26  
 Phase 26: CHILD FEATURE COMPLETION GATE PASSED  
 Phase 27: REWARDS AND PARENT READY FOR PHASE 28  
-Phase 28: PRODUCT COMPLETION GATE PASSED
+Phase 28: PRODUCT COMPLETION GATE PASSED  
+Phase 29: NO-GO
