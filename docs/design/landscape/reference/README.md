@@ -2,12 +2,12 @@
 
 This directory is the canonical location for the landscape redesign mocks.
 
-Before Phase 16 is executed, add these four image files here:
+Before Phase 16 is executed, add these image files here:
 
-- `talki-landscape-master.jpg` — the original composite reference containing Games, Practice, and Home.
-- `home.jpg` — crop of the Home mock.
-- `games.jpg` — crop of the Games mock.
-- `practice.jpg` — crop of the Practice mock.
+- `talki-landscape-master.jpg` — optional original composite containing Games, Practice, and Home.
+- `home.png` — crop of the Home mock.
+- `games.png` — crop of the Games mock.
+- `practice.png` — crop of the Practice mock.
 
 The source for these files is the approved landscape composite supplied when the landscape redesign program was created.
 
