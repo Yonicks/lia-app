@@ -1,5 +1,5 @@
 ---
-generated: 2026-09-01T19:44:20.219Z
+generated: 2026-09-05T22:11:27.872Z
 branch: master
 command: message
 model: gemini-3.5-flash
@@ -8,5 +8,5 @@ model: gemini-3.5-flash
 # Suggested commit message
 
 ```
-chore: add new logo asset and legacy domain extraction tool
+fix: prevent landscape mascot overflow and account for ad height
 ```

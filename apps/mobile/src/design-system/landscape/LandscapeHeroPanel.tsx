@@ -48,9 +48,18 @@ export function LandscapeHeroPanel({
   const layout = useLandscapeLayout();
   const tokens = landscapeTokens(layout.deviceClass, layout.uiScale);
   const resolvedCtaTestID = ctaTestID ?? (testID ? `${testID}-cta` : undefined);
-  const isCompact = layout.deviceClass === 'compactPhone';
+  // Phone-class landscape devices are just as height-starved as compactPhone
+  // once the top bar, an eligible ad banner, and the category strip below
+  // this hero all take their share of `usableHeight` — width-only device
+  // class was letting a fixed-width-derived mascot/panel overflow into the
+  // category strip on real phones (no ad banner renders on web, which is
+  // why this only showed up on-device). Tablets keep the roomier variant.
+  const isCompact = layout.deviceClass === 'compactPhone' || layout.deviceClass === 'phone';
   const panelPad = isCompact ? 10 : 14;
-  const mascotH = tokens.heroMaxWidth * (isCompact ? 0.42 : 0.55);
+  // Bound the mascot by remaining screen height, not just hero width — a
+  // width-only size can exceed what's actually left above the category
+  // strip on a short landscape phone.
+  const mascotH = Math.min(tokens.heroMaxWidth * (isCompact ? 0.42 : 0.55), layout.usableHeight * 0.32);
 
   return (
     <View testID={testID} style={[styles.row, { gap: tokens.gap, maxWidth: tokens.heroMaxWidth * 2 }, style]}>

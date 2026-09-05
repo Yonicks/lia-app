@@ -48,12 +48,23 @@ const SUBTITLE_SIZE: Record<DeviceClass, number> = {
   largeTablet: 16,
 };
 
-/** Activity card (games/practice) — width is grid-driven; these cap height. */
+/**
+ * Activity card (games/practice) — width is grid-driven; these cap height.
+ * Raised from the original 118–190 range: that ceiling bound cards well
+ * below what the 3×2 grid's own flex space actually offers on any viewport
+ * roomier than a real ad-bearing phone (desktop/tablet web preview, and any
+ * device where `useLandscapeLayout()`'s ad-aware `usableHeight` still
+ * leaves slack), producing large dead gaps between the two rows that the
+ * reference mock's tightly-packed grid never has. On a genuinely tight
+ * device (phone class + a live ad banner), real flex space is already
+ * below even the old ceiling, so raising it changes nothing there — it
+ * only stops clamping cards on the viewports that had room to spare.
+ */
 const ACTIVITY_CARD_MAX_H: Record<DeviceClass, number> = {
-  compactPhone: 118,
-  phone: 132,
-  tablet: 168,
-  largeTablet: 190,
+  compactPhone: 150,
+  phone: 180,
+  tablet: 260,
+  largeTablet: 300,
 };
 
 const CATEGORY_CARD_W: Record<DeviceClass, number> = {
